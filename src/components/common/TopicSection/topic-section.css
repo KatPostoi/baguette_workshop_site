@@ -1,0 +1,14 @@
+﻿.topic-section {
+  border-top: 3px solid #000;
+  padding-top: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  width: 100%;
+}
+
+.topic-section__title {
+  margin: 0;
+  display: grid;
+  justify-items: center;
+}

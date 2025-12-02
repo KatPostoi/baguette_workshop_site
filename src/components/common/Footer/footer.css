@@ -1,0 +1,74 @@
+.footer-all {
+  background-image: url('../src/assets/images/block_footer.png');
+  background-repeat: no-repeat; /* чтобы картинка не повторялась */
+  background-size: cover; /* чтобы картинка покрывала весь фон */
+  background-position: center; /* позиционирование по центру */
+  padding: 40px 60px 40px 540px;
+  gap: 40px;
+  display: grid;
+  grid-template-columns: 1fr 5fr;
+}
+
+.footer-wrapper {
+  gap: 40px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.footer__item {
+  cursor: pointer;
+}
+
+.footer__item:hover {
+  color: #e97721;
+  transition: all 300ms ease-out;
+}
+
+.social {
+  align-self: start;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* 2 колонки */
+  grid-template-rows: auto auto; /* 2 строки */
+  gap: 20px; /* отступы между ячейками */
+}
+
+.social > :nth-child(1) {
+  grid-column: 1 / span 2; /* растянуть на 2 колонки */
+  grid-row: 1;
+}
+
+.social > :nth-child(2) {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+.social img {
+  width: 100%; /* Растягивает ширину картинки под ширину контейнера */
+  object-fit: cover; /* Картинка сохранит пропорции, при этом заполнит весь контейнер */
+  display: block; /* Убирает лишние отступы вокруг изображения */
+}
+
+.social-link-tg {
+  width: 100%; /* Растягивает ширину картинки под ширину контейнера */
+  object-fit: cover; /* Картинка сохранит пропорции, при этом заполнит весь контейнер */
+  display: block; /* Убирает лишние отступы вокруг изображения */
+  content: url('../src/assets/images/TelegramLogo.svg');
+  transition: opacity 300ms ease;
+}
+
+.social-link-tg:hover {
+  content: url('../src/assets/images/TelegramLogo_orange.svg');
+}
+
+.social-link-vk {
+  width: 100%; /* Растягивает ширину картинки под ширину контейнера */
+  object-fit: cover; /* Картинка сохранит пропорции, при этом заполнит весь контейнер */
+  display: block; /* Убирает лишние отступы вокруг изображения */
+  content: url('../src/assets/images/VkLogo.svg');
+  transition: opacity 300ms ease;
+}
+
+.social-link-vk:hover {
+  content: url('../src/assets/images/VkLogo_orange.svg');
+}

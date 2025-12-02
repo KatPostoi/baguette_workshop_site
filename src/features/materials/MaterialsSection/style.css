@@ -1,0 +1,16 @@
+.materials-section__cards-wrapper .materials-card:nth-child(3) {
+  background-color: #8b8273;
+}
+
+.materials-section__cards-wrapper .materials-card:nth-child(4) {
+  background-color: #000000;
+}
+
+.materials-section__cards-wrapper .materials-card:nth-child(3) .home-text-block__md__left,
+.materials-section__cards-wrapper .materials-card:nth-child(4) .home-text-block__md__left {
+  color: #e97721;
+}
+
+.materials-section__cards-wrapper .materials-card:nth-child(3) .home-text-block__sm_white {
+  color: #000000;
+}

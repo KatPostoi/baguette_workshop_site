@@ -1,0 +1,28 @@
+.link-as-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 65px;
+  height: 65px;
+  width: 380px;
+  font-family: 'Anonymous Pro', monospace;
+  font-weight: 700;
+  font-style: normal;
+  text-decoration: none;
+  font-size: 32px;
+}
+
+.link-as-button:hover {
+  background-color: #e97721;
+  transition: background-color 300ms ease-out;
+}
+
+.link-as-button_primary {
+  background-color: black;
+  color: white;
+}
+
+.link-as-button_secondary {
+  background-color: white;
+  color: black;
+}
