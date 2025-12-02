@@ -58,3 +58,18 @@
   height: 20px;
   transform: rotate(-45deg);
 }
+
+.data-text-input {
+  width: 100%;
+  border: none;
+  background-color: transparent;
+  font: inherit;
+  color: inherit;
+  padding: 10px 0;
+  outline: none;
+}
+
+.data-text-input::placeholder {
+  color: inherit;
+  opacity: 0.6;
+}

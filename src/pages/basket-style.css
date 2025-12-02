@@ -130,10 +130,36 @@
   justify-self: end; /* второй элемент прижат к правому краю */
 }
 
-.delivery-wrapper_agree_square {
-  height: 50px;
+.square-agreement {
   width: 50px;
+  height: 50px;
   border: 5px solid #000000;
+  background-color: #ffffff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  transition: border-color 0.2s ease;
+}
+
+.square-agreement::after {
+  content: '';
+  width: 60%;
+  height: 60%;
+  background-color: #000000;
+  transform: scale(0);
+  transition: transform 0.15s ease;
+}
+
+.square-agreement:checked::after {
+  transform: scale(1);
+}
+
+.square-agreement:focus-visible {
+  outline: 3px solid #e97721;
+  outline-offset: 4px;
 }
 
 .delivery-wrapper_price {
@@ -145,6 +171,25 @@
 .delivery-wrapper_price_data {
   border-bottom: 3px solid #000000;
   padding-left: 40px;
+}
+
+.delivery-wrapper_price_data:focus-within {
+  border-bottom-color: #e97721;
+}
+
+.data-text-input {
+  width: 100%;
+  border: none;
+  background-color: transparent;
+  font: inherit;
+  color: inherit;
+  padding: 10px 0;
+  outline: none;
+}
+
+.data-text-input::placeholder {
+  color: inherit;
+  opacity: 0.6;
 }
 
 .total-wrapper {

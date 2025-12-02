@@ -39,10 +39,18 @@ export const DesignPage = () => {
             <div className="design-constructor_content-wrapper_text">
               <div className="design-constructor_content-wrapper_text_double">
                 <div className="design-constructor_content-wrapper_text_single">
-                  <h2 className="anonymous-pro-bold home-text-block__md_grey">Ширина (мм)</h2>
+                  <input
+                    type="text"
+                    className="anonymous-pro-bold home-text-block__md__left data-text-input"
+                    placeholder={'Ширина (мм)'}
+                  />
                 </div>
                 <div className="design-constructor_content-wrapper_text_single">
-                  <h2 className="anonymous-pro-bold home-text-block__md_grey ">Высота (см)</h2>
+                  <input
+                    type="text"
+                    className="anonymous-pro-bold home-text-block__md__left data-text-input"
+                    placeholder={'Высота (см)'}
+                  />
                 </div>
               </div>
               <div className="design-constructor_content-wrapper_text_single">

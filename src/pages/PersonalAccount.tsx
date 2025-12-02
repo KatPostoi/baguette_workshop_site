@@ -3,9 +3,7 @@ import { Footer } from '../components/common/Footer';
 import './personalaccount-style.css';
 import { MainWrapper } from '../components/common/MainWrapper';
 import { TopicSection } from '../components/common/TopicSection';
-import { LinkAsButton } from '../components/ui-kit/LinkAsButton';
-// import { MaterialsSection } from '../features/materials/MaterialsSection';
-// import { materialsSectionContent } from '../features/materials/materialsData';
+import { Button } from '../components/ui-kit/Button';
 
 export const PersonalAccountPage = () => {
   return (
@@ -22,7 +20,11 @@ export const PersonalAccountPage = () => {
           <div className="personal-data-wrapper">
             <div className="design-constructor_content-wrapper_text_double">
               <div className="design-constructor_content-wrapper_text_single">
-                <h2 className="anonymous-pro-bold home-text-block__md_grey  ">ФИО</h2>
+                <input
+                  type="text"
+                  className="anonymous-pro-bold home-text-block__md__left data-text-input"
+                  placeholder={'ФИО'}
+                />
               </div>
               <div className="design-constructor_content-wrapper_text_single">
                 <h2 className="anonymous-pro-bold home-text-block__md_grey ">Пол</h2>
@@ -30,20 +32,28 @@ export const PersonalAccountPage = () => {
               </div>
             </div>
             <div className="design-constructor_content-wrapper_text_single">
-              <h2 className="anonymous-pro-bold home-text-block__md_grey ">Телефон</h2>
+              <input
+                type="text"
+                className="anonymous-pro-bold home-text-block__md__left data-text-input"
+                placeholder={'Телефон'}
+              />
             </div>
             <div className="design-constructor_content-wrapper_text_single">
-              <h2 className="anonymous-pro-bold home-text-block__md_grey ">Email</h2>
+              <input
+                type="text"
+                className="anonymous-pro-bold home-text-block__md__left data-text-input"
+                placeholder={'Email'}
+              />
             </div>
             <div className="agreement-block">
-              <div className="square-agreement"></div>
+              <input type="checkbox" className="square-agreement" />
               <h2 className="anonymous-pro-bold home-text-block__vsm ">
                 Нажимая на кнопку, Вы даете согласие на обработку персональных данных. Подробную информацию об условиях
                 обработки Ваших данных и Ваших правах можно найти в Политике конфиденциальности.
               </h2>
             </div>
 
-            <LinkAsButton href="#">Сохранить</LinkAsButton>
+            <Button>Сохранить</Button>
           </div>
         </TopicSection>
 
