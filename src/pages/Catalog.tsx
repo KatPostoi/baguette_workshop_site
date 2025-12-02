@@ -18,19 +18,239 @@ export const CatalogPage = () => {
         <TopicSection title="Каталог" className="catalog-section">
           <div className="filter-wrapper">
             <div className="filter-wrapper_button">
-              <h2 className="anonymous-pro-bold home-text-block__xl ">Избранное</h2>
+              <h2 className="anonymous-pro-bold home-text-block__md__left">Избранное</h2>
+              <div className="filter-container_arrow"></div>
             </div>
             <div className="filter-wrapper_button">
-              <h2 className="anonymous-pro-bold home-text-block__xl ">Материал</h2>
+              <h2 className="anonymous-pro-bold home-text-block__md__left">Материал</h2>
+              <div className="filter-container_arrow"></div>
             </div>
             <div className="filter-wrapper_button">
-              <h2 className="anonymous-pro-bold home-text-block__xl ">Стиль</h2>
+              <h2 className="anonymous-pro-bold home-text-block__md__left">Стиль</h2>
+              <div className="filter-container_arrow"></div>
             </div>
             <div className="filter-wrapper_button">
-              <h2 className="anonymous-pro-bold home-text-block__xl ">Форма</h2>
+              <h2 className="anonymous-pro-bold home-text-block__md__left">Форма</h2>
+              <div className="filter-container_arrow"></div>
             </div>
           </div>
-          <div className="catalog-wrapper"></div>
+
+          <div className="catalog-wrapper">
+            <div className="catalog-wrapper_card">
+              <div className="icon-image">
+                <img src="../src/assets/images/favorites.svg" alt="IconFavorites" />
+              </div>
+              <div className="catalog-wrapper_card_goods-image">
+                <img src="../src/assets/images/catalog/2.1.png" alt="IconFavorites" />
+              </div>
+              <div className="catalog-wrapper_card_description">
+                <div className="catalog-wrapper_card_description_text">
+                  <h2 className="anonymous-pro-bold home-text-block__sm">Деревянный багет</h2>
+                  <h2 className="anonymous-pro-bold home-text-block__vsm_white">6144 руб./м.п</h2>
+                </div>
+                <div className="icon-image">
+                  <img src="../src/assets/images/basket.svg" alt="IconBasket" />
+                </div>
+              </div>
+            </div>
+
+            <div className="catalog-wrapper_card">
+              <div className="icon-image">
+                <img src="../src/assets/images/favorites.svg" alt="IconFavorites" />
+              </div>
+              <div className="catalog-wrapper_card_goods-image">
+                <img src="../src/assets/images/catalog/2.2.png" alt="IconFavorites" />
+              </div>
+              <div className="catalog-wrapper_card_description">
+                <div className="catalog-wrapper_card_description_text">
+                  <h2 className="anonymous-pro-bold home-text-block__sm">Деревянный багет</h2>
+                  <h2 className="anonymous-pro-bold home-text-block__vsm_white">6144 руб./м.п</h2>
+                </div>
+                <div className="icon-image">
+                  <img src="../src/assets/images/basket.svg" alt="IconBasket" />
+                </div>
+              </div>
+            </div>
+
+            <div className="catalog-wrapper_card">
+              <div className="icon-image">
+                <img src="../src/assets/images/favorites.svg" alt="IconFavorites" />
+              </div>
+              <div className="catalog-wrapper_card_goods-image">
+                <img src="../src/assets/images/catalog/2.3.png" alt="IconFavorites" />
+              </div>
+              <div className="catalog-wrapper_card_description">
+                <div className="catalog-wrapper_card_description_text">
+                  <h2 className="anonymous-pro-bold home-text-block__sm">Деревянный багет</h2>
+                  <h2 className="anonymous-pro-bold home-text-block__vsm_white">6144 руб./м.п</h2>
+                </div>
+                <div className="icon-image">
+                  <img src="../src/assets/images/basket.svg" alt="IconBasket" />
+                </div>
+              </div>
+            </div>
+
+            <div className="catalog-wrapper_card">
+              <div className="icon-image">
+                <img src="../src/assets/images/favorites.svg" alt="IconFavorites" />
+              </div>
+              <div className="catalog-wrapper_card_goods-image">
+                <img src="../src/assets/images/catalog/2.4.png" alt="IconFavorites" />
+              </div>
+              <div className="catalog-wrapper_card_description">
+                <div className="catalog-wrapper_card_description_text">
+                  <h2 className="anonymous-pro-bold home-text-block__sm">Деревянный багет</h2>
+                  <h2 className="anonymous-pro-bold home-text-block__vsm_white">6144 руб./м.п</h2>
+                </div>
+                <div className="icon-image">
+                  <img src="../src/assets/images/basket.svg" alt="IconBasket" />
+                </div>
+              </div>
+            </div>
+
+            <div className="catalog-wrapper_card">
+              <div className="icon-image">
+                <img src="../src/assets/images/favorites.svg" alt="IconFavorites" />
+              </div>
+              <div className="catalog-wrapper_card_goods-image">
+                <img src="../src/assets/images/catalog/2.5.png" alt="IconFavorites" />
+              </div>
+              <div className="catalog-wrapper_card_description">
+                <div className="catalog-wrapper_card_description_text">
+                  <h2 className="anonymous-pro-bold home-text-block__sm">Деревянный багет</h2>
+                  <h2 className="anonymous-pro-bold home-text-block__vsm_white">6144 руб./м.п</h2>
+                </div>
+                <div className="icon-image">
+                  <img src="../src/assets/images/basket.svg" alt="IconBasket" />
+                </div>
+              </div>
+            </div>
+            <div className="catalog-wrapper_card">
+              <div className="icon-image">
+                <img src="../src/assets/images/favorites.svg" alt="IconFavorites" />
+              </div>
+              <div className="catalog-wrapper_card_goods-image">
+                <img src="../src/assets/images/catalog/2.6.png" alt="IconFavorites" />
+              </div>
+              <div className="catalog-wrapper_card_description">
+                <div className="catalog-wrapper_card_description_text">
+                  <h2 className="anonymous-pro-bold home-text-block__sm">Деревянный багет</h2>
+                  <h2 className="anonymous-pro-bold home-text-block__vsm_white">6144 руб./м.п</h2>
+                </div>
+                <div className="icon-image">
+                  <img src="../src/assets/images/basket.svg" alt="IconBasket" />
+                </div>
+              </div>
+            </div>
+
+            <div className="catalog-wrapper_card">
+              <div className="icon-image">
+                <img src="../src/assets/images/favorites.svg" alt="IconFavorites" />
+              </div>
+              <div className="catalog-wrapper_card_goods-image">
+                <img src="../src/assets/images/catalog/2.7.png" alt="IconFavorites" />
+              </div>
+              <div className="catalog-wrapper_card_description">
+                <div className="catalog-wrapper_card_description_text">
+                  <h2 className="anonymous-pro-bold home-text-block__sm">Деревянный багет</h2>
+                  <h2 className="anonymous-pro-bold home-text-block__vsm_white">6144 руб./м.п</h2>
+                </div>
+                <div className="icon-image">
+                  <img src="../src/assets/images/basket.svg" alt="IconBasket" />
+                </div>
+              </div>
+            </div>
+
+            <div className="catalog-wrapper_card">
+              <div className="icon-image">
+                <img src="../src/assets/images/favorites.svg" alt="IconFavorites" />
+              </div>
+              <div className="catalog-wrapper_card_goods-image">
+                <img src="../src/assets/images/catalog/2.8.png" alt="IconFavorites" />
+              </div>
+              <div className="catalog-wrapper_card_description">
+                <div className="catalog-wrapper_card_description_text">
+                  <h2 className="anonymous-pro-bold home-text-block__sm">Деревянный багет</h2>
+                  <h2 className="anonymous-pro-bold home-text-block__vsm_white">6144 руб./м.п</h2>
+                </div>
+                <div className="icon-image">
+                  <img src="../src/assets/images/basket.svg" alt="IconBasket" />
+                </div>
+              </div>
+            </div>
+
+            <div className="catalog-wrapper_card">
+              <div className="icon-image">
+                <img src="../src/assets/images/favorites.svg" alt="IconFavorites" />
+              </div>
+              <div className="catalog-wrapper_card_goods-image">
+                <img src="../src/assets/images/catalog/2.9.png" alt="IconFavorites" />
+              </div>
+              <div className="catalog-wrapper_card_description">
+                <div className="catalog-wrapper_card_description_text">
+                  <h2 className="anonymous-pro-bold home-text-block__sm">Деревянный багет</h2>
+                  <h2 className="anonymous-pro-bold home-text-block__vsm_white">6144 руб./м.п</h2>
+                </div>
+                <div className="icon-image">
+                  <img src="../src/assets/images/basket.svg" alt="IconBasket" />
+                </div>
+              </div>
+            </div>
+
+            <div className="catalog-wrapper_card">
+              <div className="icon-image">
+                <img src="../src/assets/images/favorites.svg" alt="IconFavorites" />
+              </div>
+              <div className="catalog-wrapper_card_goods-image">
+                <img src="../src/assets/images/catalog/2.10.png" alt="IconFavorites" />
+              </div>
+              <div className="catalog-wrapper_card_description">
+                <div className="catalog-wrapper_card_description_text">
+                  <h2 className="anonymous-pro-bold home-text-block__sm">Деревянный багет</h2>
+                  <h2 className="anonymous-pro-bold home-text-block__vsm_white">6144 руб./м.п</h2>
+                </div>
+                <div className="icon-image">
+                  <img src="../src/assets/images/basket.svg" alt="IconBasket" />
+                </div>
+              </div>
+            </div>
+
+            <div className="catalog-wrapper_card">
+              <div className="icon-image">
+                <img src="../src/assets/images/favorites.svg" alt="IconFavorites" />
+              </div>
+              <div className="catalog-wrapper_card_goods-image">
+                <img src="../src/assets/images/catalog/2.11.png" alt="IconFavorites" />
+              </div>
+              <div className="catalog-wrapper_card_description">
+                <div className="catalog-wrapper_card_description_text">
+                  <h2 className="anonymous-pro-bold home-text-block__sm">Деревянный багет</h2>
+                  <h2 className="anonymous-pro-bold home-text-block__vsm_white">6144 руб./м.п</h2>
+                </div>
+                <div className="icon-image">
+                  <img src="../src/assets/images/basket.svg" alt="IconBasket" />
+                </div>
+              </div>
+            </div>
+
+            <div className="catalog-wrapper_card">
+              <div className="icon-image">
+                <img src="../src/assets/images/favorites.svg" alt="IconFavorites" />
+              </div>
+              <div className="catalog-wrapper_card_goods-image">
+                <img src="../src/assets/images/catalog/2.12.png" alt="IconFavorites" />
+              </div>
+              <div className="catalog-wrapper_card_description">
+                <div className="catalog-wrapper_card_description_text">
+                  <h2 className="anonymous-pro-bold home-text-block__sm">Деревянный багет</h2>
+                  <h2 className="anonymous-pro-bold home-text-block__vsm_white">6144 руб./м.п</h2>
+                </div>
+                <div className="icon-image">
+                  <img src="../src/assets/images/basket.svg" alt="IconBasket" />
+                </div>
+              </div>
+            </div>
+          </div>
         </TopicSection>
       </MainWrapper>
       <Footer />
