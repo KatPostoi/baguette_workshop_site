@@ -3,17 +3,16 @@ import { Menu } from '../components/common/Menu';
 import { Footer } from '../components/common/Footer';
 import './design-style.css';
 import { MainWrapper } from '../components/common/MainWrapper';
-// import { TopicSection } from '../components/common/TopicSection';
-// import { MaterialsSection } from '../features/materials/MaterialsSection';
-// import { materialsSectionContent } from '../features/materials/materialsData';
+import { ButtonFavourites } from '../components/ui-kit/ButtonFavourites';
+import { useIsFavoriteActive } from '../hooks/useIsFavoriteActive';
+import { useSessionId } from '../hooks/useSessionId';
 
 export const DesignPage = () => {
-  const [isFavoriteActive, setIsFavoriteActive] = useState(false);
-  const [isBasketActive, setIsBasketActive] = useState(false);
+  const sessionId = useSessionId();
 
-  const handleFavoriteToggle = () => {
-    setIsFavoriteActive((prev) => !prev);
-  };
+  const [isFavoriteActive, handleFavoriteToggle] = useIsFavoriteActive(sessionId || 'default');
+
+  const [isBasketActive, setIsBasketActive] = useState(false);
 
   const handleBasketToggle = () => {
     setIsBasketActive((prev) => !prev);
@@ -40,23 +39,8 @@ export const DesignPage = () => {
               <h2 className="anonymous-pro-bold home-text-block__xl ">Дизайн-</h2>
               <h2 className="anonymous-pro-bold home-text-block__xl_white ">конструктор</h2>
             </div>
-            <button
-              type="button"
-              className="icon-image-container"
-              onClick={handleFavoriteToggle}
-              aria-pressed={isFavoriteActive}
-            >
-              <div className="icon-image">
-                <img
-                  src={
-                    isFavoriteActive
-                      ? '../src/assets/images/favorites-active.svg'
-                      : '../src/assets/images/favorites.svg'
-                  }
-                  alt="IconFavorites"
-                />
-              </div>
-            </button>
+
+            <ButtonFavourites isActive={isFavoriteActive} onClick={handleFavoriteToggle} />
           </div>
 
           <div className="design-constructor_block-wrapper">

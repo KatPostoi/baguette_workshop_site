@@ -1,7 +1,7 @@
-﻿import frameWoodImg from '../../assets/images/frame_wood.png';
-import framePlasticImg from '../../assets/images/frame_plastic.png';
-import frameMdfImg from '../../assets/images/frame_mdf.png';
-import frameAluminumImg from '../../assets/images/frame_aluminum.png';
+﻿import frameWoodImg from '../../../assets/images/frame_wood.png';
+import framePlasticImg from '../../../assets/images/frame_plastic.png';
+import frameMdfImg from '../../../assets/images/frame_mdf.png';
+import frameAluminumImg from '../../../assets/images/frame_aluminum.png';
 import type { MaterialCardContent } from './types';
 
 

@@ -3,8 +3,8 @@ import { Footer } from '../components/common/Footer';
 import './process-style.css';
 import { MainWrapper } from '../components/common/MainWrapper';
 import { TopicSection } from '../components/common/TopicSection';
-import { MaterialsSection } from '../features/materials/MaterialsSection';
-import { materialsSectionContent } from '../features/materials/materialsData';
+import { MaterialsSection } from '../components/common/Materials/MaterialsSection';
+import { materialsSectionContent } from '../components/common/Materials/materialsData.ts';
 
 export const ProcessPage = () => {
   return (

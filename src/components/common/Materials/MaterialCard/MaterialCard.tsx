@@ -1,6 +1,6 @@
 ﻿import classNames from 'classnames';
 import type { MaterialCardContent } from '../types';
-import { LinkAsButton } from '../../../components/ui-kit/LinkAsButton';
+import { LinkAsButton } from '../../../ui-kit/LinkAsButton';
 
 export const MaterialCard = ({ title, text, image, cta }: MaterialCardContent) => {
   return (

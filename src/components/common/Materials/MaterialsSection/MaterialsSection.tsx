@@ -1,4 +1,4 @@
-﻿import { TopicSection } from '../../../components/common/TopicSection';
+﻿import { TopicSection } from '../../../common/TopicSection';
 import { MaterialCard } from '../MaterialCard';
 import type { MaterialCardContent } from '../types';
 import './style.css';
