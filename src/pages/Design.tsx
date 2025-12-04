@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Menu } from '../components/common/Menu';
 import { Footer } from '../components/common/Footer';
 import './design-style.css';
@@ -7,6 +8,17 @@ import { MainWrapper } from '../components/common/MainWrapper';
 // import { materialsSectionContent } from '../features/materials/materialsData';
 
 export const DesignPage = () => {
+  const [isFavoriteActive, setIsFavoriteActive] = useState(false);
+  const [isBasketActive, setIsBasketActive] = useState(false);
+
+  const handleFavoriteToggle = () => {
+    setIsFavoriteActive((prev) => !prev);
+  };
+
+  const handleBasketToggle = () => {
+    setIsBasketActive((prev) => !prev);
+  };
+
   return (
     <div className="DesignPage">
       <Menu />
@@ -28,11 +40,23 @@ export const DesignPage = () => {
               <h2 className="anonymous-pro-bold home-text-block__xl ">Дизайн-</h2>
               <h2 className="anonymous-pro-bold home-text-block__xl_white ">конструктор</h2>
             </div>
-            <div className="icon-image-container">
+            <button
+              type="button"
+              className="icon-image-container"
+              onClick={handleFavoriteToggle}
+              aria-pressed={isFavoriteActive}
+            >
               <div className="icon-image">
-                <img src="../src/assets/images/favorites.svg" alt="IconFavorites" />
+                <img
+                  src={
+                    isFavoriteActive
+                      ? '../src/assets/images/favorites-active.svg'
+                      : '../src/assets/images/favorites.svg'
+                  }
+                  alt="IconFavorites"
+                />
               </div>
-            </div>
+            </button>
           </div>
 
           <div className="design-constructor_block-wrapper">
@@ -62,9 +86,19 @@ export const DesignPage = () => {
                 <div className="filter-container_arrow"></div>
               </div>
             </div>
-            <div className="icon-image">
-              <img src="../src/assets/images/basket.svg" alt="IconBasket" />
-            </div>
+            <button
+              type="button"
+              className="icon-image-container"
+              onClick={handleBasketToggle}
+              aria-pressed={isBasketActive}
+            >
+              <div className="icon-image">
+                <img
+                  src={isBasketActive ? '../src/assets/images/basket-active.svg' : '../src/assets/images/basket.svg'}
+                  alt="IconBasket"
+                />
+              </div>
+            </button>
           </div>
 
           <div className="design-constructor_block-wrapper">

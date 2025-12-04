@@ -62,14 +62,36 @@ const DATA_FROM_DB: Array<FrameData | UslugaData> = [
 
 const FrameItem = (props: { data: FrameData }) => {
   const { data } = props;
+
+  const [isFavoriteActive, setIsFavoriteActive] = useState(false);
+
+  const handleFavoriteToggle = () => {
+    setIsFavoriteActive((prev) => !prev);
+  };
+
   return (
     <div className="goods-in-basket_wrapper">
       <div className="goods-in-basket_wrapper_image"></div>
       <div className="goods-in-basket_wrapper_content">
         <div className="goods-in-basket_wrapper_content_description">
-          <div className="icon-image">
+          {/* <div className="icon-image">
             <img src="../src/assets/images/favorites.svg" alt="IconFavorites" />
-          </div>
+          </div> */}
+          <button
+            type="button"
+            className="icon-image-container"
+            onClick={handleFavoriteToggle}
+            aria-pressed={isFavoriteActive}
+          >
+            <div className="icon-image">
+              <img
+                src={
+                  isFavoriteActive ? '../src/assets/images/favorites-active.svg' : '../src/assets/images/favorites.svg'
+                }
+                alt="IconFavorites"
+              />
+            </div>
+          </button>
           <div className="goods-in-basket_wrapper_content_description_text">
             <h2 className="anonymous-pro-bold home-text-block__sm">{data.title}</h2>
             <div>

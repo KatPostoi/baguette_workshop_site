@@ -3,8 +3,20 @@ import { Footer } from '../components/common/Footer';
 import './catalog-style.css';
 import { MainWrapper } from '../components/common/MainWrapper';
 import { TopicSection } from '../components/common/TopicSection';
+import { useState } from 'react';
 
 export const CatalogPage = () => {
+  const [isFavoriteActive, setIsFavoriteActive] = useState(false);
+  const [isBasketActive, setIsBasketActive] = useState(false);
+
+  const handleFavoriteToggle = () => {
+    setIsFavoriteActive((prev) => !prev);
+  };
+
+  const handleBasketToggle = () => {
+    setIsBasketActive((prev) => !prev);
+  };
+
   return (
     <div className="CatalogPage">
       <Menu />
@@ -37,9 +49,23 @@ export const CatalogPage = () => {
 
           <div className="catalog-wrapper">
             <div className="catalog-wrapper_card">
-              <div className="icon-image">
-                <img src="../src/assets/images/favorites.svg" alt="IconFavorites" />
-              </div>
+              <button
+                type="button"
+                className="icon-image-container"
+                onClick={handleFavoriteToggle}
+                aria-pressed={isFavoriteActive}
+              >
+                <div className="icon-image">
+                  <img
+                    src={
+                      isFavoriteActive
+                        ? '../src/assets/images/favorites-active.svg'
+                        : '../src/assets/images/favorites.svg'
+                    }
+                    alt="IconFavorites"
+                  />
+                </div>
+              </button>
               <div className="catalog-wrapper_card_goods-image">
                 <img src="../src/assets/images/catalog/2.1.png" alt="IconFavorites" />
               </div>
@@ -48,16 +74,42 @@ export const CatalogPage = () => {
                   <h2 className="anonymous-pro-bold home-text-block__sm">Деревянный багет</h2>
                   <h2 className="anonymous-pro-bold home-text-block__vsm_white">6144 руб./м.п</h2>
                 </div>
-                <div className="icon-image">
-                  <img src="../src/assets/images/basket.svg" alt="IconBasket" />
-                </div>
+                <button
+                  type="button"
+                  className="icon-image-container"
+                  onClick={handleBasketToggle}
+                  aria-pressed={isBasketActive}
+                >
+                  <div className="icon-image">
+                    <img
+                      src={
+                        isBasketActive ? '../src/assets/images/basket-active.svg' : '../src/assets/images/basket.svg'
+                      }
+                      alt="IconBasket"
+                    />
+                  </div>
+                </button>
               </div>
             </div>
 
             <div className="catalog-wrapper_card">
-              <div className="icon-image">
-                <img src="../src/assets/images/favorites.svg" alt="IconFavorites" />
-              </div>
+              <button
+                type="button"
+                className="icon-image-container"
+                onClick={handleFavoriteToggle}
+                aria-pressed={isFavoriteActive}
+              >
+                <div className="icon-image">
+                  <img
+                    src={
+                      isFavoriteActive
+                        ? '../src/assets/images/favorites-active.svg'
+                        : '../src/assets/images/favorites.svg'
+                    }
+                    alt="IconFavorites"
+                  />
+                </div>
+              </button>
               <div className="catalog-wrapper_card_goods-image">
                 <img src="../src/assets/images/catalog/2.2.png" alt="IconFavorites" />
               </div>
@@ -66,16 +118,42 @@ export const CatalogPage = () => {
                   <h2 className="anonymous-pro-bold home-text-block__sm">Деревянный багет</h2>
                   <h2 className="anonymous-pro-bold home-text-block__vsm_white">6144 руб./м.п</h2>
                 </div>
-                <div className="icon-image">
-                  <img src="../src/assets/images/basket.svg" alt="IconBasket" />
-                </div>
+                <button
+                  type="button"
+                  className="icon-image-container"
+                  onClick={handleBasketToggle}
+                  aria-pressed={isBasketActive}
+                >
+                  <div className="icon-image">
+                    <img
+                      src={
+                        isBasketActive ? '../src/assets/images/basket-active.svg' : '../src/assets/images/basket.svg'
+                      }
+                      alt="IconBasket"
+                    />
+                  </div>
+                </button>
               </div>
             </div>
 
             <div className="catalog-wrapper_card">
-              <div className="icon-image">
-                <img src="../src/assets/images/favorites.svg" alt="IconFavorites" />
-              </div>
+              <button
+                type="button"
+                className="icon-image-container"
+                onClick={handleFavoriteToggle}
+                aria-pressed={isFavoriteActive}
+              >
+                <div className="icon-image">
+                  <img
+                    src={
+                      isFavoriteActive
+                        ? '../src/assets/images/favorites-active.svg'
+                        : '../src/assets/images/favorites.svg'
+                    }
+                    alt="IconFavorites"
+                  />
+                </div>
+              </button>
               <div className="catalog-wrapper_card_goods-image">
                 <img src="../src/assets/images/catalog/2.3.png" alt="IconFavorites" />
               </div>
@@ -84,16 +162,42 @@ export const CatalogPage = () => {
                   <h2 className="anonymous-pro-bold home-text-block__sm">Деревянный багет</h2>
                   <h2 className="anonymous-pro-bold home-text-block__vsm_white">6144 руб./м.п</h2>
                 </div>
-                <div className="icon-image">
-                  <img src="../src/assets/images/basket.svg" alt="IconBasket" />
-                </div>
+                <button
+                  type="button"
+                  className="icon-image-container"
+                  onClick={handleBasketToggle}
+                  aria-pressed={isBasketActive}
+                >
+                  <div className="icon-image">
+                    <img
+                      src={
+                        isBasketActive ? '../src/assets/images/basket-active.svg' : '../src/assets/images/basket.svg'
+                      }
+                      alt="IconBasket"
+                    />
+                  </div>
+                </button>
               </div>
             </div>
 
             <div className="catalog-wrapper_card">
-              <div className="icon-image">
-                <img src="../src/assets/images/favorites.svg" alt="IconFavorites" />
-              </div>
+              <button
+                type="button"
+                className="icon-image-container"
+                onClick={handleFavoriteToggle}
+                aria-pressed={isFavoriteActive}
+              >
+                <div className="icon-image">
+                  <img
+                    src={
+                      isFavoriteActive
+                        ? '../src/assets/images/favorites-active.svg'
+                        : '../src/assets/images/favorites.svg'
+                    }
+                    alt="IconFavorites"
+                  />
+                </div>
+              </button>
               <div className="catalog-wrapper_card_goods-image">
                 <img src="../src/assets/images/catalog/2.4.png" alt="IconFavorites" />
               </div>
@@ -102,16 +206,42 @@ export const CatalogPage = () => {
                   <h2 className="anonymous-pro-bold home-text-block__sm">Деревянный багет</h2>
                   <h2 className="anonymous-pro-bold home-text-block__vsm_white">6144 руб./м.п</h2>
                 </div>
-                <div className="icon-image">
-                  <img src="../src/assets/images/basket.svg" alt="IconBasket" />
-                </div>
+                <button
+                  type="button"
+                  className="icon-image-container"
+                  onClick={handleBasketToggle}
+                  aria-pressed={isBasketActive}
+                >
+                  <div className="icon-image">
+                    <img
+                      src={
+                        isBasketActive ? '../src/assets/images/basket-active.svg' : '../src/assets/images/basket.svg'
+                      }
+                      alt="IconBasket"
+                    />
+                  </div>
+                </button>
               </div>
             </div>
 
             <div className="catalog-wrapper_card">
-              <div className="icon-image">
-                <img src="../src/assets/images/favorites.svg" alt="IconFavorites" />
-              </div>
+              <button
+                type="button"
+                className="icon-image-container"
+                onClick={handleFavoriteToggle}
+                aria-pressed={isFavoriteActive}
+              >
+                <div className="icon-image">
+                  <img
+                    src={
+                      isFavoriteActive
+                        ? '../src/assets/images/favorites-active.svg'
+                        : '../src/assets/images/favorites.svg'
+                    }
+                    alt="IconFavorites"
+                  />
+                </div>
+              </button>
               <div className="catalog-wrapper_card_goods-image">
                 <img src="../src/assets/images/catalog/2.5.png" alt="IconFavorites" />
               </div>
@@ -120,15 +250,41 @@ export const CatalogPage = () => {
                   <h2 className="anonymous-pro-bold home-text-block__sm">Деревянный багет</h2>
                   <h2 className="anonymous-pro-bold home-text-block__vsm_white">6144 руб./м.п</h2>
                 </div>
-                <div className="icon-image">
-                  <img src="../src/assets/images/basket.svg" alt="IconBasket" />
-                </div>
+                <button
+                  type="button"
+                  className="icon-image-container"
+                  onClick={handleBasketToggle}
+                  aria-pressed={isBasketActive}
+                >
+                  <div className="icon-image">
+                    <img
+                      src={
+                        isBasketActive ? '../src/assets/images/basket-active.svg' : '../src/assets/images/basket.svg'
+                      }
+                      alt="IconBasket"
+                    />
+                  </div>
+                </button>
               </div>
             </div>
             <div className="catalog-wrapper_card">
-              <div className="icon-image">
-                <img src="../src/assets/images/favorites.svg" alt="IconFavorites" />
-              </div>
+              <button
+                type="button"
+                className="icon-image-container"
+                onClick={handleFavoriteToggle}
+                aria-pressed={isFavoriteActive}
+              >
+                <div className="icon-image">
+                  <img
+                    src={
+                      isFavoriteActive
+                        ? '../src/assets/images/favorites-active.svg'
+                        : '../src/assets/images/favorites.svg'
+                    }
+                    alt="IconFavorites"
+                  />
+                </div>
+              </button>
               <div className="catalog-wrapper_card_goods-image">
                 <img src="../src/assets/images/catalog/2.6.png" alt="IconFavorites" />
               </div>
@@ -137,16 +293,42 @@ export const CatalogPage = () => {
                   <h2 className="anonymous-pro-bold home-text-block__sm">Деревянный багет</h2>
                   <h2 className="anonymous-pro-bold home-text-block__vsm_white">6144 руб./м.п</h2>
                 </div>
-                <div className="icon-image">
-                  <img src="../src/assets/images/basket.svg" alt="IconBasket" />
-                </div>
+                <button
+                  type="button"
+                  className="icon-image-container"
+                  onClick={handleBasketToggle}
+                  aria-pressed={isBasketActive}
+                >
+                  <div className="icon-image">
+                    <img
+                      src={
+                        isBasketActive ? '../src/assets/images/basket-active.svg' : '../src/assets/images/basket.svg'
+                      }
+                      alt="IconBasket"
+                    />
+                  </div>
+                </button>
               </div>
             </div>
 
             <div className="catalog-wrapper_card">
-              <div className="icon-image">
-                <img src="../src/assets/images/favorites.svg" alt="IconFavorites" />
-              </div>
+              <button
+                type="button"
+                className="icon-image-container"
+                onClick={handleFavoriteToggle}
+                aria-pressed={isFavoriteActive}
+              >
+                <div className="icon-image">
+                  <img
+                    src={
+                      isFavoriteActive
+                        ? '../src/assets/images/favorites-active.svg'
+                        : '../src/assets/images/favorites.svg'
+                    }
+                    alt="IconFavorites"
+                  />
+                </div>
+              </button>
               <div className="catalog-wrapper_card_goods-image">
                 <img src="../src/assets/images/catalog/2.7.png" alt="IconFavorites" />
               </div>
@@ -155,16 +337,42 @@ export const CatalogPage = () => {
                   <h2 className="anonymous-pro-bold home-text-block__sm">Деревянный багет</h2>
                   <h2 className="anonymous-pro-bold home-text-block__vsm_white">6144 руб./м.п</h2>
                 </div>
-                <div className="icon-image">
-                  <img src="../src/assets/images/basket.svg" alt="IconBasket" />
-                </div>
+                <button
+                  type="button"
+                  className="icon-image-container"
+                  onClick={handleBasketToggle}
+                  aria-pressed={isBasketActive}
+                >
+                  <div className="icon-image">
+                    <img
+                      src={
+                        isBasketActive ? '../src/assets/images/basket-active.svg' : '../src/assets/images/basket.svg'
+                      }
+                      alt="IconBasket"
+                    />
+                  </div>
+                </button>
               </div>
             </div>
 
             <div className="catalog-wrapper_card">
-              <div className="icon-image">
-                <img src="../src/assets/images/favorites.svg" alt="IconFavorites" />
-              </div>
+              <button
+                type="button"
+                className="icon-image-container"
+                onClick={handleFavoriteToggle}
+                aria-pressed={isFavoriteActive}
+              >
+                <div className="icon-image">
+                  <img
+                    src={
+                      isFavoriteActive
+                        ? '../src/assets/images/favorites-active.svg'
+                        : '../src/assets/images/favorites.svg'
+                    }
+                    alt="IconFavorites"
+                  />
+                </div>
+              </button>
               <div className="catalog-wrapper_card_goods-image">
                 <img src="../src/assets/images/catalog/2.8.png" alt="IconFavorites" />
               </div>
@@ -173,16 +381,42 @@ export const CatalogPage = () => {
                   <h2 className="anonymous-pro-bold home-text-block__sm">Деревянный багет</h2>
                   <h2 className="anonymous-pro-bold home-text-block__vsm_white">6144 руб./м.п</h2>
                 </div>
-                <div className="icon-image">
-                  <img src="../src/assets/images/basket.svg" alt="IconBasket" />
-                </div>
+                <button
+                  type="button"
+                  className="icon-image-container"
+                  onClick={handleBasketToggle}
+                  aria-pressed={isBasketActive}
+                >
+                  <div className="icon-image">
+                    <img
+                      src={
+                        isBasketActive ? '../src/assets/images/basket-active.svg' : '../src/assets/images/basket.svg'
+                      }
+                      alt="IconBasket"
+                    />
+                  </div>
+                </button>
               </div>
             </div>
 
             <div className="catalog-wrapper_card">
-              <div className="icon-image">
-                <img src="../src/assets/images/favorites.svg" alt="IconFavorites" />
-              </div>
+              <button
+                type="button"
+                className="icon-image-container"
+                onClick={handleFavoriteToggle}
+                aria-pressed={isFavoriteActive}
+              >
+                <div className="icon-image">
+                  <img
+                    src={
+                      isFavoriteActive
+                        ? '../src/assets/images/favorites-active.svg'
+                        : '../src/assets/images/favorites.svg'
+                    }
+                    alt="IconFavorites"
+                  />
+                </div>
+              </button>
               <div className="catalog-wrapper_card_goods-image">
                 <img src="../src/assets/images/catalog/2.9.png" alt="IconFavorites" />
               </div>
@@ -191,16 +425,42 @@ export const CatalogPage = () => {
                   <h2 className="anonymous-pro-bold home-text-block__sm">Деревянный багет</h2>
                   <h2 className="anonymous-pro-bold home-text-block__vsm_white">6144 руб./м.п</h2>
                 </div>
-                <div className="icon-image">
-                  <img src="../src/assets/images/basket.svg" alt="IconBasket" />
-                </div>
+                <button
+                  type="button"
+                  className="icon-image-container"
+                  onClick={handleBasketToggle}
+                  aria-pressed={isBasketActive}
+                >
+                  <div className="icon-image">
+                    <img
+                      src={
+                        isBasketActive ? '../src/assets/images/basket-active.svg' : '../src/assets/images/basket.svg'
+                      }
+                      alt="IconBasket"
+                    />
+                  </div>
+                </button>
               </div>
             </div>
 
             <div className="catalog-wrapper_card">
-              <div className="icon-image">
-                <img src="../src/assets/images/favorites.svg" alt="IconFavorites" />
-              </div>
+              <button
+                type="button"
+                className="icon-image-container"
+                onClick={handleFavoriteToggle}
+                aria-pressed={isFavoriteActive}
+              >
+                <div className="icon-image">
+                  <img
+                    src={
+                      isFavoriteActive
+                        ? '../src/assets/images/favorites-active.svg'
+                        : '../src/assets/images/favorites.svg'
+                    }
+                    alt="IconFavorites"
+                  />
+                </div>
+              </button>
               <div className="catalog-wrapper_card_goods-image">
                 <img src="../src/assets/images/catalog/2.10.png" alt="IconFavorites" />
               </div>
@@ -209,16 +469,42 @@ export const CatalogPage = () => {
                   <h2 className="anonymous-pro-bold home-text-block__sm">Деревянный багет</h2>
                   <h2 className="anonymous-pro-bold home-text-block__vsm_white">6144 руб./м.п</h2>
                 </div>
-                <div className="icon-image">
-                  <img src="../src/assets/images/basket.svg" alt="IconBasket" />
-                </div>
+                <button
+                  type="button"
+                  className="icon-image-container"
+                  onClick={handleBasketToggle}
+                  aria-pressed={isBasketActive}
+                >
+                  <div className="icon-image">
+                    <img
+                      src={
+                        isBasketActive ? '../src/assets/images/basket-active.svg' : '../src/assets/images/basket.svg'
+                      }
+                      alt="IconBasket"
+                    />
+                  </div>
+                </button>
               </div>
             </div>
 
             <div className="catalog-wrapper_card">
-              <div className="icon-image">
-                <img src="../src/assets/images/favorites.svg" alt="IconFavorites" />
-              </div>
+              <button
+                type="button"
+                className="icon-image-container"
+                onClick={handleFavoriteToggle}
+                aria-pressed={isFavoriteActive}
+              >
+                <div className="icon-image">
+                  <img
+                    src={
+                      isFavoriteActive
+                        ? '../src/assets/images/favorites-active.svg'
+                        : '../src/assets/images/favorites.svg'
+                    }
+                    alt="IconFavorites"
+                  />
+                </div>
+              </button>
               <div className="catalog-wrapper_card_goods-image">
                 <img src="../src/assets/images/catalog/2.11.png" alt="IconFavorites" />
               </div>
@@ -227,16 +513,42 @@ export const CatalogPage = () => {
                   <h2 className="anonymous-pro-bold home-text-block__sm">Деревянный багет</h2>
                   <h2 className="anonymous-pro-bold home-text-block__vsm_white">6144 руб./м.п</h2>
                 </div>
-                <div className="icon-image">
-                  <img src="../src/assets/images/basket.svg" alt="IconBasket" />
-                </div>
+                <button
+                  type="button"
+                  className="icon-image-container"
+                  onClick={handleBasketToggle}
+                  aria-pressed={isBasketActive}
+                >
+                  <div className="icon-image">
+                    <img
+                      src={
+                        isBasketActive ? '../src/assets/images/basket-active.svg' : '../src/assets/images/basket.svg'
+                      }
+                      alt="IconBasket"
+                    />
+                  </div>
+                </button>
               </div>
             </div>
 
             <div className="catalog-wrapper_card">
-              <div className="icon-image">
-                <img src="../src/assets/images/favorites.svg" alt="IconFavorites" />
-              </div>
+              <button
+                type="button"
+                className="icon-image-container"
+                onClick={handleFavoriteToggle}
+                aria-pressed={isFavoriteActive}
+              >
+                <div className="icon-image">
+                  <img
+                    src={
+                      isFavoriteActive
+                        ? '../src/assets/images/favorites-active.svg'
+                        : '../src/assets/images/favorites.svg'
+                    }
+                    alt="IconFavorites"
+                  />
+                </div>
+              </button>
               <div className="catalog-wrapper_card_goods-image">
                 <img src="../src/assets/images/catalog/2.12.png" alt="IconFavorites" />
               </div>
@@ -245,9 +557,21 @@ export const CatalogPage = () => {
                   <h2 className="anonymous-pro-bold home-text-block__sm">Деревянный багет</h2>
                   <h2 className="anonymous-pro-bold home-text-block__vsm_white">6144 руб./м.п</h2>
                 </div>
-                <div className="icon-image">
-                  <img src="../src/assets/images/basket.svg" alt="IconBasket" />
-                </div>
+                <button
+                  type="button"
+                  className="icon-image-container"
+                  onClick={handleBasketToggle}
+                  aria-pressed={isBasketActive}
+                >
+                  <div className="icon-image">
+                    <img
+                      src={
+                        isBasketActive ? '../src/assets/images/basket-active.svg' : '../src/assets/images/basket.svg'
+                      }
+                      alt="IconBasket"
+                    />
+                  </div>
+                </button>
               </div>
             </div>
           </div>

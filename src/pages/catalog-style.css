@@ -62,6 +62,16 @@
   object-fit: contain;
 }
 
+.icon-image-container {
+  display: flex;
+  align-self: end;
+  border: none;
+  background: none;
+  padding: 0;
+  outline: none;
+  cursor: pointer;
+}
+
 .icon-image {
   display: flex;
   align-items: flex-end;

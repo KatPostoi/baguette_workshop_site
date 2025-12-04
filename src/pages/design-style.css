@@ -22,13 +22,26 @@
 
 .icon-image-container {
   display: flex;
-  align-self: start;
+  align-self: end;
+  border: none;
+  background: none;
+  padding: 0;
+  outline: none;
+  cursor: pointer;
 }
 
 .icon-image {
   display: flex;
   align-items: flex-end;
   justify-content: right;
+}
+
+.icon-image_button {
+  border: none;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+  outline: none;
 }
 
 .design-constructor_content-wrapper_text {
