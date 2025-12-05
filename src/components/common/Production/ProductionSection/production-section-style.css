@@ -1,0 +1,12 @@
+.process-section_cards-wrapper {
+  width: 100%;
+  min-height: 400px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  column-gap: 253px;
+}
+
+.process-section_card {
+  background-color: #e97721;
+  height: auto;
+}

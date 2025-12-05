@@ -1,7 +1,7 @@
 ﻿import { TopicSection } from '../../../common/TopicSection';
 import { MaterialCard } from '../MaterialCard';
 import type { MaterialCardContent } from '../types';
-import './style.css';
+import './material-section-style.css';
 
 type MaterialsSectionProps = {
   title: string;

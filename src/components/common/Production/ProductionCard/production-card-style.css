@@ -1,0 +1,35 @@
+.process-section_card-facts {
+  width: 807px;
+  height: auto;
+  background-color: #000000;
+  border-radius: 20px;
+  padding: 40px;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: 67px;
+  align-items: end;
+  border: 5px solid #ffffff;
+}
+
+.process-section_card-facts_text {
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
+}
+
+.process-section_card-number {
+  width: 60px;
+  height: 60px;
+  background-color: #ffffff;
+  border-radius: 20px;
+  display: flex;
+  justify-content: center; /* горизонтальное центрирование */
+  align-items: center; /* вертикальное центрирование */
+}
+
+.process-section_image {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+}

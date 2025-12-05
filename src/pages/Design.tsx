@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Menu } from '../components/common/Menu';
+import { Header } from '../components/common/Header';
 import { Footer } from '../components/common/Footer';
 import './design-style.css';
 import { MainWrapper } from '../components/common/MainWrapper';
@@ -22,9 +23,7 @@ export const DesignPage = () => {
     <div className="DesignPage">
       <Menu />
       <MainWrapper>
-        <div className="process-header">
-          <img className="process-header_image" src="../src/assets/images/block_header.png" alt="HeaderWallpaper" />
-        </div>
+        <Header />
 
         <div className="design-constructor-text">
           <h2 className="anonymous-pro-bold home-text-block__md ">

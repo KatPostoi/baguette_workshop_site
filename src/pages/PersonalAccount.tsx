@@ -1,4 +1,5 @@
 import { Menu } from '../components/common/Menu';
+import { Header } from '../components/common/Header';
 import { Footer } from '../components/common/Footer';
 import './personalaccount-style.css';
 import { MainWrapper } from '../components/common/MainWrapper';
@@ -10,9 +11,7 @@ export const PersonalAccountPage = () => {
     <div className="PersonalAccountPage">
       <Menu />
       <MainWrapper>
-        <div className="process-header">
-          <img className="process-header_image" src="../src/assets/images/block_header.png" alt="HeaderWallpaper" />
-        </div>
+        <Header />
 
         {/* <ProcessSection {...processSectionData}/> */}
 

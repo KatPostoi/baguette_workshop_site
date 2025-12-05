@@ -1,0 +1,33 @@
+.materials-card {
+  background-color: #e97721;
+  border-radius: 65px;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+.materials-card__image {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+.materials-card__cta {
+  width: 100%;
+}
+
+.materials-card__content {
+  display: grid;
+  grid-template-columns: 1fr 1.6fr;
+  gap: 40px;
+  margin-bottom: 92px;
+}
+
+.button-position-wrapper {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  margin-top: auto;
+}
