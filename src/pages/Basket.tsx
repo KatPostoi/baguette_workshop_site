@@ -6,131 +6,75 @@ import { MainWrapper } from '../components/common/MainWrapper';
 import { TopicSection } from '../components/common/TopicSection';
 import { useEffect, useState } from 'react';
 import { Button } from '../components/ui-kit/Button';
+import { ButtonFavorites } from '../components/ui-kit/ButtonFavorites';
+import type { FrameData, UslugaData } from './basket.types';
+import { useDefaultFramesAndDostavka } from '../hooks/useDefaultFramesAndDostavka';
 
-type FrameData = {
-  id: number;
-  type: string;
-  title: string;
-  color: string;
-  style: string;
-  width: string;
-  height: string;
-  price: number;
-  count: number;
-  isLiked: boolean;
-  image: string;
-};
-
-type UslugaData = {
-  id: number;
-  type: string;
-  price: number;
-};
-
-const DATA_FROM_DB: Array<FrameData | UslugaData> = [
-  {
-    id: 1,
-    type: 'rama',
-    title: 'Пластиковый багет',
-    color: 'бежевый',
-    style: 'классика',
-    width: '6,5',
-    height: '3,5',
-    price: 2675,
-    count: 1,
-    isLiked: false,
-    image: '',
-  },
-  {
-    id: 2,
-    type: 'rama',
-    title: 'Дубовая багет',
-    color: 'коричневый',
-    style: 'классика',
-    width: '6,5',
-    height: '3,5',
-    price: 7775,
-    count: 1,
-    isLiked: false,
-    image: '',
-  },
-  {
-    id: 3,
-    type: 'dostavka',
-    price: 300,
-  },
-];
-
-const FrameItem = (props: { data: FrameData }) => {
-  const { data } = props;
-
-  const [isFavoriteActive, setIsFavoriteActive] = useState(false);
-
-  const handleFavoriteToggle = () => {
-    setIsFavoriteActive((prev) => !prev);
-  };
-
-  return (
-    <div className="goods-in-basket_wrapper">
-      <div className="goods-in-basket_wrapper_image"></div>
-      <div className="goods-in-basket_wrapper_content">
-        <div className="goods-in-basket_wrapper_content_description">
-          {/* <div className="icon-image">
-            <img src="../src/assets/images/favorites.svg" alt="IconFavorites" />
-          </div> */}
-          <button
-            type="button"
-            className="icon-image-container"
-            onClick={handleFavoriteToggle}
-            aria-pressed={isFavoriteActive}
-          >
-            <div className="icon-image">
-              <img
-                src={
-                  isFavoriteActive ? '../src/assets/images/favorites-active.svg' : '../src/assets/images/favorites.svg'
-                }
-                alt="IconFavorites"
-              />
-            </div>
-          </button>
-          <div className="goods-in-basket_wrapper_content_description_text">
-            <h2 className="anonymous-pro-bold home-text-block__sm">{data.title}</h2>
-            <div>
-              <h2 className="anonymous-pro-bold home-text-block__vsm_grey">
-                Цвет: {data.color}; Стиль:{data.style};
-              </h2>
-              <h2 className="anonymous-pro-bold home-text-block__vsm_grey">
-                Ширина: {data.width} см; Высота: {data.height} см
-              </h2>
-            </div>
+const FrameItem = ({
+  data,
+  isSelected,
+  setSelectedItem,
+}: {
+  data: FrameData;
+  isSelected: boolean;
+  setSelectedItem: (item: FrameData, checked: boolean) => void;
+}) => (
+  <div className="goods-in-basket_wrapper">
+    <div className="goods-in-basket_wrapper_image-container">
+      <img className="goods-in-basket_wrapper_image" src={data.image.src} alt={data.image.alt} />
+    </div>
+    <div className="goods-in-basket_wrapper_content">
+      <div className="goods-in-basket_wrapper_content_description">
+        <ButtonFavorites frameData={data} />
+        <div className="goods-in-basket_wrapper_content_description_text">
+          <h2 className="anonymous-pro-bold home-text-block__sm">{data.title}</h2>
+          <div>
+            <h2 className="anonymous-pro-bold home-text-block__vsm_grey">
+              Цвет: {data.color}; Стиль:{data.style};
+            </h2>
+            <h2 className="anonymous-pro-bold home-text-block__vsm_grey">
+              Ширина: {data.width} см; Высота: {data.height} см
+            </h2>
           </div>
-          <input type="checkbox" className="square-agreement" />
         </div>
-        <div className="goods-in-basket_wrapper_content_counting">
-          <div className="goods-in-basket_wrapper_content_counting_box">
-            <h2 className="anonymous-pro-bold home-text-block__md">-</h2>
-            <h2 className="anonymous-pro-bold home-text-block__md">1</h2>
-            <h2 className="anonymous-pro-bold home-text-block__md">+</h2>
-          </div>
-          <h2 className="anonymous-pro-bold home-text-block__md">{data.price} Р</h2>
+        <input
+          type="checkbox"
+          className="square-agreement"
+          checked={isSelected}
+          onChange={(e) => setSelectedItem(data, e.target.checked)}
+        />
+      </div>
+      <div className="goods-in-basket_wrapper_content_counting">
+        <div className="goods-in-basket_wrapper_content_counting_box">
+          <h2 className="anonymous-pro-bold home-text-block__md">-</h2>
+          <h2 className="anonymous-pro-bold home-text-block__md">1</h2>
+          <h2 className="anonymous-pro-bold home-text-block__md">+</h2>
         </div>
+        <h2 className="anonymous-pro-bold home-text-block__md">{data.price} Р</h2>
       </div>
     </div>
-  );
-};
+  </div>
+);
 
 const DostavkaItem = (props: {
   data: UslugaData;
   setAddressText: (newAddressText: string) => void;
   addressText: string;
+  isSelected: boolean;
+  setSelectedItem: (item: UslugaData, checked: boolean) => void;
 }) => {
-  const { data, addressText, setAddressText } = props;
+  const { data, addressText, setAddressText, isSelected, setSelectedItem } = props;
 
   return (
     <div className="delivery-wrapper">
       <div className="delivery-wrapper_agree">
         <h2 className="anonymous-pro-bold home-text-block__md__left  ">Доставка по адресу:</h2>
-        <input type="checkbox" className="square-agreement" />
+        <input
+          type="checkbox"
+          className="square-agreement"
+          checked={isSelected}
+          onChange={(e) => setSelectedItem(data, e.target.checked)}
+        />
       </div>
       <div className="delivery-wrapper_price">
         <div className="delivery-wrapper_price_data">
@@ -179,26 +123,56 @@ const TotalPrice = (props: {
   );
 };
 
+const getItemKey = (item: FrameData | UslugaData) => `${item.type}-${item.id}`;
+
 export const BasketPage = () => {
-  // DATA_FROM_DB
-  const [selectedItems, setSelectedItems] = useState([]);
-
+  const [selectedItems, setSelectedItems] = useState<Array<FrameData | UslugaData>>([]);
   const [addressText, setAddressText] = useState('');
-
   const [summ, setSumm] = useState(0);
 
-  const dostavkaData = DATA_FROM_DB.filter((item) => item.type === 'dostavka')[0] as UslugaData;
+  const [frames, dostavkas] = useDefaultFramesAndDostavka();
 
-  const frames = DATA_FROM_DB.filter((item) => item.type === 'rama') as Array<FrameData>;
+  const toggleSelectedItem = (item: FrameData | UslugaData, isSelected: boolean) => {
+    setSelectedItems((prev) => {
+      const filtered = prev.filter((prevItem) => getItemKey(prevItem) !== getItemKey(item));
+      if (isSelected) {
+        return [...filtered, item];
+      }
+      return filtered;
+    });
+  };
 
-  const frameItems = frames.map((frameData) => {
-    return <FrameItem key={frameData.id} data={frameData} />;
-  });
+  const isItemSelected = (item: FrameData | UslugaData) =>
+    selectedItems.some((selected) => getItemKey(selected) === getItemKey(item));
 
   const onPay = () => {
     console.log(addressText);
     console.log(summ);
   };
+
+  const frameItems = frames.map((frameData) => {
+    return (
+      <FrameItem
+        key={`frame-${frameData.id}`}
+        data={frameData}
+        isSelected={isItemSelected(frameData)}
+        setSelectedItem={toggleSelectedItem}
+      />
+    );
+  });
+
+  const dostavkaItems = dostavkas.map((dostavkaData) => {
+    return (
+      <DostavkaItem
+        key={`dostavka-${dostavkaData.id}`}
+        data={dostavkaData}
+        addressText={addressText}
+        setAddressText={setAddressText}
+        isSelected={isItemSelected(dostavkaData)}
+        setSelectedItem={toggleSelectedItem}
+      />
+    );
+  });
 
   return (
     <div className="BasketPage">
@@ -220,10 +194,7 @@ export const BasketPage = () => {
             </div>
 
             {frameItems}
-
-            {!!dostavkaData && (
-              <DostavkaItem data={dostavkaData} addressText={addressText} setAddressText={setAddressText} />
-            )}
+            {dostavkaItems}
 
             <TotalPrice selectedItems={selectedItems} summ={summ} setSumm={setSumm} />
             <div className="basket-wrapper_button">

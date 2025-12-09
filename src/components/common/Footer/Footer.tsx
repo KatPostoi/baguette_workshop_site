@@ -1,11 +1,11 @@
 import classNames from 'classnames';
 import './footer.css';
 
-interface FooterItem {
+type FooterItem = {
   id: string;
   label: string;
   href: string;
-}
+};
 
 const items: FooterItem[] = [
   { id: 'home', label: 'О нас', href: '/home' },

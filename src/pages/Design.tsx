@@ -1,23 +1,15 @@
-import { useState } from 'react';
 import { Menu } from '../components/common/Menu';
 import { Header } from '../components/common/Header';
 import { Footer } from '../components/common/Footer';
-import './design-style.css';
 import { MainWrapper } from '../components/common/MainWrapper';
-import { ButtonFavourites } from '../components/ui-kit/ButtonFavourites';
-import { useIsFavoriteActive } from '../hooks/useIsFavoriteActive';
-import { useSessionId } from '../hooks/useSessionId';
+// import { ButtonFavorites } from '../components/ui-kit/ButtonFavorites';
+// import { ButtonBasket } from '../components/ui-kit/ButtonBasket';
+// import { useSessionId } from '../hooks/useSessionId';
+
+import './design-style.css';
 
 export const DesignPage = () => {
-  const sessionId = useSessionId();
-
-  const [isFavoriteActive, handleFavoriteToggle] = useIsFavoriteActive(sessionId || 'default');
-
-  const [isBasketActive, setIsBasketActive] = useState(false);
-
-  const handleBasketToggle = () => {
-    setIsBasketActive((prev) => !prev);
-  };
+  // const sessionId = useSessionId();
 
   return (
     <div className="DesignPage">
@@ -39,7 +31,7 @@ export const DesignPage = () => {
               <h2 className="anonymous-pro-bold home-text-block__xl_white ">конструктор</h2>
             </div>
 
-            <ButtonFavourites isActive={isFavoriteActive} onClick={handleFavoriteToggle} />
+            {/* <ButtonFavorites frameData={frameData} /> */}
           </div>
 
           <div className="design-constructor_block-wrapper">
@@ -69,19 +61,7 @@ export const DesignPage = () => {
                 <div className="filter-container_arrow"></div>
               </div>
             </div>
-            <button
-              type="button"
-              className="icon-image-container"
-              onClick={handleBasketToggle}
-              aria-pressed={isBasketActive}
-            >
-              <div className="icon-image">
-                <img
-                  src={isBasketActive ? '../src/assets/images/basket-active.svg' : '../src/assets/images/basket.svg'}
-                  alt="IconBasket"
-                />
-              </div>
-            </button>
+            {/* <ButtonBasket frameData={frameData}  /> */}
           </div>
 
           <div className="design-constructor_block-wrapper">

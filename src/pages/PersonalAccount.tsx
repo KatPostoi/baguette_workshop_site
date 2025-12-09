@@ -5,8 +5,28 @@ import './personalaccount-style.css';
 import { MainWrapper } from '../components/common/MainWrapper';
 import { TopicSection } from '../components/common/TopicSection';
 import { Button } from '../components/ui-kit/Button';
+import { CatalogCard } from '../components/common/Catalog/CatalogCard';
+import { useEffect, useState } from 'react';
+import { STORE } from '../DB';
+import type { FrameData } from './basket.types';
+
+const useLikedFrames = () => {
+  const [likedFrames, setLikedFrames] = useState<FrameData[]>([]);
+
+  const loadData = async () => {
+    const data = await STORE.loadLikedFrames();
+    setLikedFrames(data);
+  };
+
+  useEffect(() => {
+    loadData();
+  }, []);
+
+  return likedFrames;
+};
 
 export const PersonalAccountPage = () => {
+  const likedFrames = useLikedFrames();
   return (
     <div className="PersonalAccountPage">
       <Menu />
@@ -59,7 +79,11 @@ export const PersonalAccountPage = () => {
         {/* <ProcessSection {...processSectionData}/> */}
 
         <TopicSection title="Избранное" className="favorites-section">
-          <div className="favorites-wrapper"></div>
+          <div className="favorites-wrapper">
+            {likedFrames.map((item) => (
+              <CatalogCard key={item.id} frameData={item} />
+            ))}
+          </div>
         </TopicSection>
       </MainWrapper>
       <Footer />

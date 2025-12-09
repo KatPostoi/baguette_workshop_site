@@ -1,27 +1,28 @@
 import { useLayoutEffect, useState } from "react";
 import { STORE } from "../DB";
+import type { FrameData } from "../pages/basket.types";
 
-export const useIsFavoriteActive = (itemId: string) => {
+export const useIsFavoriteActive = (frameData: FrameData) => {
   const [isFavoriteActive, setIsFavoriteActive] = useState(false);
 
   const handleFavoriteToggle = async () => {
     const newValue = !isFavoriteActive;
     setIsFavoriteActive(newValue);
-    await STORE.setIsFavoriteActive(itemId, newValue);
-  };
-
-  const loadValueFromStore = async (id: string) => {
-    return await STORE.getIsFavoriteActive(id);
+    const isExistItem = await STORE.isExistConstructorItemInCatalog(frameData.id)
+    if (!isExistItem) {
+      await STORE.saveConstructorItemInCatalog(frameData)
+    }
+    await STORE.setIsFavoriteActive(frameData.id, newValue);
   };
 
   const reloadValue = async () => {
-    const itemValue = await loadValueFromStore(itemId);
+    const itemValue = await STORE.getIsFavoriteActive(frameData.id);
     setIsFavoriteActive(itemValue);
   };
 
   useLayoutEffect(() => {
     reloadValue();
-  }, [itemId]);
+  }, [frameData]);
 
   return [isFavoriteActive, handleFavoriteToggle] as const;
 };

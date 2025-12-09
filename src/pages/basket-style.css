@@ -43,11 +43,24 @@
   align-items: center;
 }
 
-.goods-in-basket_wrapper_image {
+.goods-in-basket_wrapper_image-container {
   width: 172px;
   height: 172px;
   background-color: #e97721;
   border-radius: 20px;
+
+  position: relative; /* контекст для абсолютного позиционирования */
+  overflow: visible;
+}
+
+.goods-in-basket_wrapper_image {
+  width: 222px;
+  height: 172px;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 .goods-in-basket_wrapper_content {
