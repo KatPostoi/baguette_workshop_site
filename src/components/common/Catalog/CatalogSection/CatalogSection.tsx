@@ -1,19 +1,18 @@
-import type { FrameData } from '../../../../pages/basket.types';
+import type { FrameData } from '../../../../DB/types';
 import { TopicSection } from '../../../common/TopicSection';
+import { TopicSectionTitle } from '../../TopicSection/TopicSectionTitle';
 import { CatalogCard } from '../CatalogCard';
 
 import './catalog-section-style.css';
 
 type CatalogSectionProps = {
-  title: string;
   items: FrameData[];
 };
 
-export const CatalogSection = ({ title, items }: CatalogSectionProps) => {
-  // const likedIds = ['3', '4', '1'];
-
+export const CatalogSection = ({ items }: CatalogSectionProps) => {
   return (
-    <TopicSection title={title} className="catalog-section">
+    <TopicSection className="catalog-section">
+      <TopicSectionTitle>Каталог</TopicSectionTitle>
       <div className="filter-wrapper">
         <div className="filter-wrapper_button">
           <h2 className="anonymous-pro-bold home-text-block__md__left">Избранное</h2>

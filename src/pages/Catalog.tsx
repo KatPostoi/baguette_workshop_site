@@ -3,28 +3,17 @@ import { Header } from '../components/common/Header';
 import { Footer } from '../components/common/Footer';
 import { MainWrapper } from '../components/common/MainWrapper';
 import { CatalogSection } from '../components/common/Catalog/CatalogSection';
-import { сatalogSectionContent } from '../DB/catalog.data.ts';
-// import { TopicSection } from '../components/common/TopicSection';
-// import { useState } from 'react';
+import { useFramesCatalogData } from '../hooks/useFramesCatalogData';
 
 export const CatalogPage = () => {
-  // const [isFavoriteActive, setIsFavoriteActive] = useState(false);
-  // const [isBasketActive, setIsBasketActive] = useState(false);
-
-  // const handleFavoriteToggle = () => {
-  //   setIsFavoriteActive((prev) => !prev);
-  // };
-
-  // const handleBasketToggle = () => {
-  //   setIsBasketActive((prev) => !prev);
-  // };
+  const [frames] = useFramesCatalogData();
 
   return (
     <div className="CatalogPage">
       <Menu />
       <MainWrapper>
         <Header />
-        <CatalogSection {...сatalogSectionContent} />
+        <CatalogSection items={frames} />
       </MainWrapper>
       <Footer />
     </div>

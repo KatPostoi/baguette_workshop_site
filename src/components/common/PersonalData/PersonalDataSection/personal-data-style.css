@@ -65,12 +65,6 @@
   outline-offset: 4px;
 }
 
-.favorites-wrapper {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 40px;
-}
-
 .data-text-input {
   width: 100%;
   border: none;

@@ -6,10 +6,8 @@ import type { MaterialCardContent } from './types';
 
 
 export const materialsSectionContent: {
-  title: string;
   items: MaterialCardContent[];
 } = {
-  title: 'Материалы',
   items: [
     {
       id: 'wood',

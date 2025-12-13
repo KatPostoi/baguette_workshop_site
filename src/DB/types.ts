@@ -1,5 +1,4 @@
-
-export type ImgData = {
+type ImgData = {
   alt: string;
   src: string;
 };
@@ -19,7 +18,7 @@ export type FrameData = {
   image: ImgData;
 };
 
-export type UslugaData = {
+export type ServiceData = {
   id: number;
   type: string;
   price: number;

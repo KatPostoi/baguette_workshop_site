@@ -7,8 +7,11 @@ import { TopicSection } from '../components/common/TopicSection';
 import { useEffect, useState } from 'react';
 import { Button } from '../components/ui-kit/Button';
 import { ButtonFavorites } from '../components/ui-kit/ButtonFavorites';
-import type { FrameData, UslugaData } from './basket.types';
-import { useDefaultFramesAndDostavka } from '../hooks/useDefaultFramesAndDostavka';
+import type { FrameData, ServiceData } from '../DB/types';
+import { useServicesData } from '../hooks/useServicesData';
+import { useBasketFrames } from '../hooks/useBasketFrames';
+import { TopicSectionTitle } from '../components/common/TopicSection/TopicSectionTitle';
+import { TEXT_POSITION } from '../components/common/TopicSection/types';
 
 const FrameItem = ({
   data,
@@ -56,12 +59,12 @@ const FrameItem = ({
   </div>
 );
 
-const DostavkaItem = (props: {
-  data: UslugaData;
+const DeliveryItem = (props: {
+  data: ServiceData;
   setAddressText: (newAddressText: string) => void;
   addressText: string;
   isSelected: boolean;
-  setSelectedItem: (item: UslugaData, checked: boolean) => void;
+  setSelectedItem: (item: ServiceData, checked: boolean) => void;
 }) => {
   const { data, addressText, setAddressText, isSelected, setSelectedItem } = props;
 
@@ -94,7 +97,7 @@ const DostavkaItem = (props: {
   );
 };
 
-const calculateSum = (items: Array<FrameData | UslugaData>) => {
+const calculateSum = (items: Array<FrameData | ServiceData>) => {
   const s = items.reduce((totalPrice, val) => {
     totalPrice += val.price;
     return totalPrice;
@@ -104,7 +107,7 @@ const calculateSum = (items: Array<FrameData | UslugaData>) => {
 };
 
 const TotalPrice = (props: {
-  selectedItems: Array<FrameData | UslugaData>;
+  selectedItems: Array<FrameData | ServiceData>;
   summ: number;
   setSumm: (newSum: number) => void;
 }) => {
@@ -123,16 +126,17 @@ const TotalPrice = (props: {
   );
 };
 
-const getItemKey = (item: FrameData | UslugaData) => `${item.type}-${item.id}`;
+const getItemKey = (item: FrameData | ServiceData) => `${item.type}-${item.id}`;
 
 export const BasketPage = () => {
-  const [selectedItems, setSelectedItems] = useState<Array<FrameData | UslugaData>>([]);
+  const [selectedItems, setSelectedItems] = useState<Array<FrameData | ServiceData>>([]);
   const [addressText, setAddressText] = useState('');
   const [summ, setSumm] = useState(0);
 
-  const [frames, dostavkas] = useDefaultFramesAndDostavka();
+  const [frames] = useBasketFrames();
+  const [services] = useServicesData();
 
-  const toggleSelectedItem = (item: FrameData | UslugaData, isSelected: boolean) => {
+  const toggleSelectedItem = (item: FrameData | ServiceData, isSelected: boolean) => {
     setSelectedItems((prev) => {
       const filtered = prev.filter((prevItem) => getItemKey(prevItem) !== getItemKey(item));
       if (isSelected) {
@@ -142,7 +146,7 @@ export const BasketPage = () => {
     });
   };
 
-  const isItemSelected = (item: FrameData | UslugaData) =>
+  const isItemSelected = (item: FrameData | ServiceData) =>
     selectedItems.some((selected) => getItemKey(selected) === getItemKey(item));
 
   const onPay = () => {
@@ -161,14 +165,14 @@ export const BasketPage = () => {
     );
   });
 
-  const dostavkaItems = dostavkas.map((dostavkaData) => {
+  const servicesItems = services.map((deliveryData) => {
     return (
-      <DostavkaItem
-        key={`dostavka-${dostavkaData.id}`}
-        data={dostavkaData}
+      <DeliveryItem
+        key={`delivery-${deliveryData.id}`}
+        data={deliveryData}
         addressText={addressText}
         setAddressText={setAddressText}
-        isSelected={isItemSelected(dostavkaData)}
+        isSelected={isItemSelected(deliveryData)}
         setSelectedItem={toggleSelectedItem}
       />
     );
@@ -182,7 +186,8 @@ export const BasketPage = () => {
 
         {/* <ProcessSection {...processSectionData}/> */}
 
-        <TopicSection title="Корзина" className="basket-section">
+        <TopicSection className="basket-section">
+          <TopicSectionTitle textPosition={TEXT_POSITION.LEFT}>Корзина</TopicSectionTitle>
           <div className="basket-wrapper">
             <div className="change-selection">
               <div className="change-selection_button">
@@ -194,7 +199,7 @@ export const BasketPage = () => {
             </div>
 
             {frameItems}
-            {dostavkaItems}
+            {servicesItems}
 
             <TotalPrice selectedItems={selectedItems} summ={summ} setSumm={setSumm} />
             <div className="basket-wrapper_button">

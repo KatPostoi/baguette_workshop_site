@@ -2,7 +2,7 @@ import classNames from 'classnames';
 import type { ButtonHTMLAttributes } from 'react';
 import './button-basket.css';
 import { useIsBasketActive } from '../../../hooks/useIsBasketActive';
-import type { FrameData } from '../../../pages/basket.types';
+import type { FrameData } from '../../../DB/types';
 
 type ButtonBasketProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'children'> & {
   frameData: FrameData;

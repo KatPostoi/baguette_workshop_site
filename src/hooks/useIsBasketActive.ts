@@ -1,6 +1,6 @@
 import { useLayoutEffect, useState } from "react";
 import { STORE } from "../DB";
-import type { FrameData } from "../pages/basket.types";
+import type { FrameData } from "../DB/types";
 
 export const useIsBasketActive = (frameData: FrameData) => {
   const [isBasketActive, setIsBasketActive] = useState(false);

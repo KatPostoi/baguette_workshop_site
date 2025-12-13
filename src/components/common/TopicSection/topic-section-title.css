@@ -1,0 +1,5 @@
+﻿.topic-section__title {
+  margin: 0;
+  display: grid;
+  justify-items: center;
+}

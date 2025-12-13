@@ -2,10 +2,8 @@ import type { ProductionCardContent } from './types';
 
 
 export const productionSectionContent: {
-  title: string;
   items: ProductionCardContent[];
 } = {
-  title: 'Процесс изготовления',
   items: [
     {
       id: 'fact1',

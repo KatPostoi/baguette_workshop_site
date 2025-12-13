@@ -78,3 +78,17 @@
   text-align: left;
   color: #8b8273;
 }
+
+.text-position-title-left {
+  width: 100%;
+  display: flex;
+  justify-content: start;
+  text-align: left;
+}
+
+.text-position-title-center {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  text-align: center;
+}

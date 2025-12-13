@@ -1,9 +1,9 @@
 import classNames from 'classnames';
 import { ButtonFavorites } from '../../../ui-kit/ButtonFavorites';
-import type { FrameData } from '../../../../pages/basket.types';
 
 import './catalog-card-style.css';
 import { ButtonBasket } from '../../../ui-kit/ButtonBasket';
+import type { FrameData } from '../../../../DB/types';
 
 export const CatalogCard = ({ frameData }: { frameData: FrameData }) => {
   return (

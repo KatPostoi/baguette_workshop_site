@@ -1,16 +1,17 @@
 import { TopicSection } from '../../../common/TopicSection';
+import { TopicSectionTitle } from '../../TopicSection/TopicSectionTitle';
 import { ProductionCard } from '../ProductionCard';
 import type { ProductionCardContent } from '../types';
 import './production-section-style.css';
 
 type ProductionSectionProps = {
-  title: string;
   items: ProductionCardContent[];
 };
 
-export const ProductionSection = ({ title, items }: ProductionSectionProps) => {
+export const ProductionSection = ({ items }: ProductionSectionProps) => {
   return (
-    <TopicSection title={title} className="process-section">
+    <TopicSection title-text-po className="process-section">
+      <TopicSectionTitle>Процесс изготовления</TopicSectionTitle>
       <div className="process-section_cards-wrapper">
         <div className="process-section_card">
           {items.map((item) => (

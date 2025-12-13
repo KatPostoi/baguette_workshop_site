@@ -10,7 +10,7 @@ interface NavItem {
 }
 
 const items: NavItem[] = [
-  { id: 'home', label: 'О нас', href: '/home' },
+  { id: 'home', label: 'О нас', href: '/' },
   { id: 'catalog', label: 'Каталог', href: '/catalog' },
   { id: 'process', label: 'Процесс изготовления', href: '/process' },
   { id: 'contacts', label: 'Контакты', href: '/contacts' },
@@ -47,7 +47,6 @@ export const Menu = () => {
     return getActiveIdFromPath(window.location.pathname);
   });
 
-  //TODO отрефакторить на тан роутер
   useEffect(() => {
     if (typeof window === 'undefined') {
       return;

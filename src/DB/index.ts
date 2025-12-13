@@ -1,5 +1,6 @@
-import type { FrameData } from "../pages/basket.types";
-import { DATA_FROM_DB } from "./basket.data";
+import { FRAMES_DATA } from "./catalog.data";
+import { SERVICE_DATA } from "./service.data";
+import type { FrameData } from "./types";
 
 class Store {
   #generateIsFavoriteStoreKey = (id: string) => `is_favorite_active:${id}`;
@@ -10,20 +11,30 @@ class Store {
     const key = this.#generateIsFavoriteStoreKey(id);
     localStorage.setItem(key, String(value));
   }
-  async getIsFavoriteActive(id: string): Promise<boolean> {
+
+  __getIsFavoriteActive(id: string): boolean {
     const key = this.#generateIsFavoriteStoreKey(id);
     const value = localStorage.getItem(key);
     return value === 'true';
+  }
+
+  async getIsFavoriteActive(id: string): Promise<boolean> {
+    return this.__getIsFavoriteActive(id)
   }
 
   async setIsBasketActive(id: string, value: boolean) {
     const key = this.#generateIsBasketStoreKey(id);
     localStorage.setItem(key, String(value));
   }
-  async getIsBasketActive(id: string): Promise<boolean> {
+
+  __getIsBasketActive(id: string): boolean {
     const key = this.#generateIsBasketStoreKey(id);
     const value = localStorage.getItem(key);
     return value === 'true';
+  }
+
+  async getIsBasketActive(id: string): Promise<boolean> {
+    return this.__getIsBasketActive(id);
   }
 
   async saveConstructorItemInCatalog(
@@ -47,16 +58,26 @@ class Store {
     return !!value;
   }
 
-  async loadDefaultFramesAndDostavka() {
-    return DATA_FROM_DB;
+  async loadDefaultFramesData() {
+    return FRAMES_DATA;
   }
 
 
-  async loadLikedFrames(): Promise<(FrameData)[]> {
-    return [DATA_FROM_DB[0] as FrameData, DATA_FROM_DB[1] as FrameData];
+  async loadServicesData() {
+    return SERVICE_DATA;
   }
 
+  async loadLikedFrames(): Promise<Array<FrameData>> {
+    const allData = await this.loadDefaultFramesData();
+    const isLiked = (item: FrameData) => this.__getIsFavoriteActive(item.id);
+    return allData.filter(isLiked);
+  }
+
+  async loadBasketFrames(): Promise<Array<FrameData>> {
+    const allData = await this.loadDefaultFramesData();
+    const isBasket = (item: FrameData) => this.__getIsBasketActive(item.id);
+    return allData.filter(isBasket);
+  }
 }
 
 export const STORE = new Store();
-

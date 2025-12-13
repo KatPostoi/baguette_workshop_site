@@ -6,9 +6,3 @@
   gap: 40px;
   width: 100%;
 }
-
-.topic-section__title {
-  margin: 0;
-  display: grid;
-  justify-items: center;
-}
