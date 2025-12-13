@@ -1,27 +1,25 @@
-﻿import classNames from 'classnames';
-import type { MaterialCardContent } from '../types';
+﻿import type { MaterialItem } from '../types';
 import { LinkAsButton } from '../../../ui-kit/LinkAsButton';
 import './material-card-style.css';
 
-export const MaterialCard = ({ title, text, image, cta }: MaterialCardContent) => {
+type MaterialCardProps = {
+  item: MaterialItem;
+};
+
+export const MaterialCard = (props: MaterialCardProps) => {
+  const { item } = props;
   return (
     <article className="materials-card">
-      <h2 className="anonymous-pro-bold home-text-block__md__left">{title}</h2>
+      <h2 className="anonymous-pro-bold home-text-block__md__left">{item.title}</h2>
       <div className="materials-card__content">
-        <div className="anonymous-pro-bold home-text-block__sm_white">{text}</div>
+        <div className="anonymous-pro-bold home-text-block__sm_white">{item.description}</div>
         <div>
-          <img className={classNames('materials-card__image', image.className)} src={image.src} alt={image.alt} />
+          <img className="materials-card__image" src={item.image.src} alt={item.image.alt} />
         </div>
       </div>
       <div className="button-position-wrapper">
-        <LinkAsButton
-          variant="secondary"
-          className="materials-card__cta"
-          href={cta.href}
-          target={cta.target}
-          rel={cta.rel}
-        >
-          {cta.label}
+        <LinkAsButton variant="secondary" className="materials-card__cta" href={`/design?materialId=${item.id}`}>
+          Создать свой дизайн
         </LinkAsButton>
       </div>
     </article>

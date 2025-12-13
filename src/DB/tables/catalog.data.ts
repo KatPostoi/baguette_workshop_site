@@ -1,16 +1,16 @@
-import goodsFrameImg21 from '../assets/images/catalog/2.1.png';
-import goodsFrameImg22 from '../assets/images/catalog/2.2.png';
-import goodsFrameImg23 from '../assets/images/catalog/2.3.png';
-import goodsFrameImg24 from '../assets/images/catalog/2.4.png';
-import goodsFrameImg25 from '../assets/images/catalog/2.5.png';
-import goodsFrameImg26 from '../assets/images/catalog/2.6.png';
-import goodsFrameImg27 from '../assets/images/catalog/2.7.png';
-import goodsFrameImg28 from '../assets/images/catalog/2.8.png';
-import goodsFrameImg29 from '../assets/images/catalog/2.9.png';
-import goodsFrameImg210 from '../assets/images/catalog/2.10.png';
-import goodsFrameImg211 from '../assets/images/catalog/2.11.png';
-import goodsFrameImg212 from '../assets/images/catalog/2.12.png';
-import type { FrameData } from './types';
+import goodsFrameImg21 from '../../assets/images/catalog/2.1.png';
+import goodsFrameImg22 from '../../assets/images/catalog/2.2.png';
+import goodsFrameImg23 from '../../assets/images/catalog/2.3.png';
+import goodsFrameImg24 from '../../assets/images/catalog/2.4.png';
+import goodsFrameImg25 from '../../assets/images/catalog/2.5.png';
+import goodsFrameImg26 from '../../assets/images/catalog/2.6.png';
+import goodsFrameImg27 from '../../assets/images/catalog/2.7.png';
+import goodsFrameImg28 from '../../assets/images/catalog/2.8.png';
+import goodsFrameImg29 from '../../assets/images/catalog/2.9.png';
+import goodsFrameImg210 from '../../assets/images/catalog/2.10.png';
+import goodsFrameImg211 from '../../assets/images/catalog/2.11.png';
+import goodsFrameImg212 from '../../assets/images/catalog/2.12.png';
+import type { FrameData } from '../types';
 
 export enum CatalogItemType {
   DEFAULT = 'default',

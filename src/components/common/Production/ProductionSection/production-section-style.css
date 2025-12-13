@@ -7,6 +7,16 @@
 }
 
 .process-section_card {
-  background-color: #e97721;
   height: auto;
+}
+
+.process-section_card-image {
+  display: flex;
+}
+
+.process-section_image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: left center;
 }

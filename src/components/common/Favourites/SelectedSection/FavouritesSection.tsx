@@ -14,7 +14,6 @@ export const SelectedSection = ({ likedFrames }: SelectedSectionProps) => {
     <TopicSection className="favorites-section">
       <TopicSectionTitle textPosition={TEXT_POSITION.LEFT}>Избранное</TopicSectionTitle>
       <div className="favorites-wrapper">
-        {/* TODO */}
         {likedFrames.map((item) => (
           <CatalogCard key={item.id} frameData={item} />
         ))}

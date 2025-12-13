@@ -1,11 +1,11 @@
 ﻿import { TopicSection } from '../../../common/TopicSection';
 import { TopicSectionTitle } from '../../TopicSection/TopicSectionTitle';
 import { MaterialCard } from '../MaterialCard';
-import type { MaterialCardContent } from '../types';
+import type { MaterialItem } from '../types';
 import './material-section-style.css';
 
 type MaterialsSectionProps = {
-  items: MaterialCardContent[];
+  items: MaterialItem[];
 };
 
 export const MaterialsSection = ({ items }: MaterialsSectionProps) => {
@@ -14,7 +14,7 @@ export const MaterialsSection = ({ items }: MaterialsSectionProps) => {
       <TopicSectionTitle>Материалы</TopicSectionTitle>
       <div className="materials-section__cards-wrapper">
         {items.map((item) => (
-          <MaterialCard key={item.id} {...item} />
+          <MaterialCard key={item.id} item={item} />
         ))}
       </div>
     </TopicSection>

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { STORE } from "../DB";
+import { SERVICES_STORE } from "../DB";
 import type { ServiceData } from "../DB/types";
 
 export const useServicesData = () => {
@@ -10,7 +10,7 @@ export const useServicesData = () => {
   }, []);
 
   const loadData = async () => {
-    const data = await STORE.loadServicesData();
+    const data = await SERVICES_STORE.loadServicesData();
     setServicesData(data);
   };
 

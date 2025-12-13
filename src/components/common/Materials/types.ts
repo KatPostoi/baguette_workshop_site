@@ -1,18 +1,15 @@
-﻿import type { HTMLAttributeAnchorTarget } from 'react';
-
-export type MaterialCardContent = {
+﻿export type MaterialItem = {
   id: string;
   title: string;
-  text: string;
+  material: string;
+  description: string;
   image: {
     src: string;
     alt: string;
-    className?: string;
   };
-  cta: {
-    label: string;
-    href: string;
-    target?: HTMLAttributeAnchorTarget;
-    rel?: string;
-  };
+};
+
+export type StylelItem = {
+  id: string;
+  style: string;
 };

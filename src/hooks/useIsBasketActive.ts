@@ -1,5 +1,5 @@
 import { useLayoutEffect, useState } from "react";
-import { STORE } from "../DB";
+import { CONSTRUCTOR_STORE, BASKET_STORE } from "../DB";
 import type { FrameData } from "../DB/types";
 
 export const useIsBasketActive = (frameData: FrameData) => {
@@ -8,15 +8,15 @@ export const useIsBasketActive = (frameData: FrameData) => {
   const handleBasketToggle = async () => {
     const newValue = !isBasketActive;
     setIsBasketActive(newValue);
-    const isExistItem = await STORE.isExistConstructorItemInCatalog(frameData.id)
+    const isExistItem = await CONSTRUCTOR_STORE.isExistConstructorItemInCatalog(frameData.id)
     if (!isExistItem) {
-      await STORE.saveConstructorItemInCatalog(frameData)
+      await CONSTRUCTOR_STORE.saveConstructorItemInCatalog(frameData)
     }
-    await STORE.setIsBasketActive(frameData.id, newValue);
+    await BASKET_STORE.setIsBasketActive(frameData.id, newValue);
   };
 
   const loadValueFromStore = async (id: string) => {
-    return await STORE.getIsBasketActive(id);
+    return await BASKET_STORE.getIsBasketActive(id);
   };
 
   const reloadValue = async () => {

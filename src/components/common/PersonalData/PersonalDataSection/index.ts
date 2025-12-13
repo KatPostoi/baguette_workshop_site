@@ -1,1 +1,1 @@
-export { PersonalDataSection } from './personalDataSection';
+export { PersonalDataSection } from './PersonalDataSection';

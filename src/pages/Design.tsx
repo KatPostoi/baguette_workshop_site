@@ -1,15 +1,23 @@
+import { useState } from 'react';
+
 import { Menu } from '../components/common/Menu';
 import { Header } from '../components/common/Header';
 import { Footer } from '../components/common/Footer';
 import { MainWrapper } from '../components/common/MainWrapper';
+import { Dropdown } from '../components/ui-kit/Dropdown';
 // import { ButtonFavorites } from '../components/ui-kit/ButtonFavorites';
 // import { ButtonBasket } from '../components/ui-kit/ButtonBasket';
 // import { useSessionId } from '../hooks/useSessionId';
 
 import './design-style.css';
 
+const MATERIAL_OPTIONS = ['Дерево', 'Металл', 'Пластик'];
+const STYLE_OPTIONS = ['Классика', 'Минимализм', 'Модерн'];
+
 export const DesignPage = () => {
   // const sessionId = useSessionId();
+  const [selectedMaterial, setSelectedMaterial] = useState<string | null>(null);
+  const [selectedStyle, setSelectedStyle] = useState<string | null>(null);
 
   return (
     <div className="DesignPage">
@@ -52,14 +60,24 @@ export const DesignPage = () => {
                   />
                 </div>
               </div>
-              <div className="design-constructor_content-wrapper_text_single">
-                <h2 className="anonymous-pro-bold home-text-block__md_white ">Материал</h2>
-                <div className="filter-container_arrow"></div>
-              </div>
-              <div className="design-constructor_content-wrapper_text_single">
-                <h2 className="anonymous-pro-bold home-text-block__md_white ">Стиль</h2>
-                <div className="filter-container_arrow"></div>
-              </div>
+
+              <Dropdown
+                className="design-constructor_content-wrapper_text_single"
+                labelClassName="anonymous-pro-bold home-text-block__md_white "
+                title="Материал"
+                options={MATERIAL_OPTIONS}
+                selectedItem={selectedMaterial}
+                setSelectedItem={setSelectedMaterial}
+              />
+
+              <Dropdown
+                className="design-constructor_content-wrapper_text_single"
+                labelClassName="anonymous-pro-bold home-text-block__md_white "
+                title="Стиль"
+                options={STYLE_OPTIONS}
+                selectedItem={selectedStyle}
+                setSelectedItem={setSelectedStyle}
+              />
             </div>
             {/* <ButtonBasket frameData={frameData}  /> */}
           </div>

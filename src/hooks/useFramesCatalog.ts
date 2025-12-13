@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import { STORE } from "../DB";
+import { CATALOG_STORE } from "../DB";
 import type { FrameData, } from "../DB/types";
 
-export const useFramesCatalogData = () => {
+export const useFramesCatalog = () => {
   const [framesCatalogData, setFramesCatalogData] = useState<Array<FrameData>>([]);
 
   useEffect(() => {
@@ -10,7 +10,7 @@ export const useFramesCatalogData = () => {
   }, []);
 
   const loadData = async () => {
-    const data = await STORE.loadDefaultFramesData();
+    const data = await CATALOG_STORE.loadDefaultFramesData();
     setFramesCatalogData(data);
   };
 

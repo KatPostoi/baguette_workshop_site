@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
-import { STORE } from "../DB";
+import { BASKET_STORE } from "../DB";
 import type { FrameData } from "../DB/types";
 
 export const useBasketFrames = () => {
   const [basketFrames, setBasketFrames] = useState<Array<FrameData>>([]);
 
   const loadData = async () => {
-    const data = await STORE.loadBasketFrames();
+    const data = await BASKET_STORE.loadBasketFrames();
     setBasketFrames(data);
   };
 

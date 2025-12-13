@@ -3,10 +3,10 @@ import { Header } from '../components/common/Header';
 import { Footer } from '../components/common/Footer';
 import { MainWrapper } from '../components/common/MainWrapper';
 import { CatalogSection } from '../components/common/Catalog/CatalogSection';
-import { useFramesCatalogData } from '../hooks/useFramesCatalogData';
+import { useFramesCatalog } from '../hooks/useFramesCatalog';
 
 export const CatalogPage = () => {
-  const [frames] = useFramesCatalogData();
+  const [frames] = useFramesCatalog();
 
   return (
     <div className="CatalogPage">
