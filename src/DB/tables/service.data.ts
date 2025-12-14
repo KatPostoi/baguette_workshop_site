@@ -1,6 +1,6 @@
-import type { ServiceData } from '../types';
+import type { ServiceItem } from '../types';
 
-export const SERVICE_DATA: Array<ServiceData> = [
+export const SERVICE_DATA: Array<ServiceItem> = [
   {
     id: 1,
     type: 'dostavka',

@@ -3,9 +3,9 @@ import { ButtonFavorites } from '../../../ui-kit/ButtonFavorites';
 
 import './catalog-card-style.css';
 import { ButtonBasket } from '../../../ui-kit/ButtonBasket';
-import type { FrameData } from '../../../../DB/types';
+import type { FrameItem } from '../../../../DB/types';
 
-export const CatalogCard = ({ frameData }: { frameData: FrameData }) => {
+export const CatalogCard = ({ frameData }: { frameData: FrameItem }) => {
   return (
     <div className="catalog-wrapper_card">
       <ButtonFavorites frameData={frameData} />

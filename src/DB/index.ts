@@ -5,4 +5,5 @@ export { STORE as FAVORITES_STORE } from "./services/favorites";
 export { STORE as SERVICES_STORE } from "./services/services";
 export { STORE as AUTH_STORE } from "./services/auth";
 export { STORE as USER_STORE } from "./services/user";
-export { STORE as MATERIALS_STORE } from "./services/materials";
+export { STORE as MATERIALS_STORE } from "./services/frameMaterials";
+export { STORE as STYLES_STORE } from "./services/frameStyles";

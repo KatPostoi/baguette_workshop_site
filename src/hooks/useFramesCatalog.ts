@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { CATALOG_STORE } from "../DB";
-import type { FrameData, } from "../DB/types";
+import type { FrameItem, } from "../DB/types";
 
 export const useFramesCatalog = () => {
-  const [framesCatalogData, setFramesCatalogData] = useState<Array<FrameData>>([]);
+  const [framesCatalogData, setFramesCatalogData] = useState<Array<FrameItem>>([]);
 
   useEffect(() => {
     loadData();

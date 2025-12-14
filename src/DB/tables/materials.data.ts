@@ -2,7 +2,7 @@
 import framePlasticImg from '../../assets/images/frame_plastic.png';
 import frameMdfImg from '../../assets/images/frame_mdf.png';
 import frameAluminumImg from '../../assets/images/frame_aluminum.png';
-import type { MaterialItem } from '../../components/common/Materials/types';
+import type { MaterialItem } from '../types';
 
 export const MATERIALS_DATA: Array<MaterialItem> = [
   {
@@ -14,6 +14,7 @@ export const MATERIALS_DATA: Array<MaterialItem> = [
       src: frameWoodImg,
       alt: 'FrameWood',
     },
+    pricePerCm: 20,
   },
   {
     id: 'plastic',
@@ -24,6 +25,7 @@ export const MATERIALS_DATA: Array<MaterialItem> = [
       src: framePlasticImg,
       alt: 'PlasticWood',
     },
+    pricePerCm: 10,
   },
   {
     id: 'mdf',
@@ -34,6 +36,7 @@ export const MATERIALS_DATA: Array<MaterialItem> = [
       src: frameMdfImg,
       alt: 'MDFWood',
     },
+    pricePerCm: 12,
   },
   {
     id: 'aluminum',
@@ -44,5 +47,6 @@ export const MATERIALS_DATA: Array<MaterialItem> = [
       src: frameAluminumImg,
       alt: 'AluminiumWood',
     },
+    pricePerCm: 18,
   },
 ];

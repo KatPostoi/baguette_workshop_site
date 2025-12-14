@@ -59,6 +59,13 @@
   color: white;
 }
 
+.home-text-block__sm_orange {
+  margin: 0;
+  font-size: 24px;
+  text-align: left;
+  color: #e97721;
+}
+
 .home-text-block__vsm {
   margin: 0;
   font-size: 18px;

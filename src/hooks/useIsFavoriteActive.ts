@@ -1,8 +1,8 @@
 import { useLayoutEffect, useState } from "react";
 import { FAVORITES_STORE, CONSTRUCTOR_STORE } from "../DB";
-import type { FrameData } from "../DB/types";
+import type { FrameItem } from "../DB/types";
 
-export const useIsFavoriteActive = (frameData: FrameData) => {
+export const useIsFavoriteActive = (frameData: FrameItem) => {
   const [isFavoriteActive, setIsFavoriteActive] = useState(false);
 
   const handleFavoriteToggle = async () => {

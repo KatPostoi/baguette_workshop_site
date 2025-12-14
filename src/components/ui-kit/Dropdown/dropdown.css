@@ -22,6 +22,7 @@
 
 .ui-dropdown__label {
   text-align: left;
+  padding: 10px 0;
 }
 
 .ui-dropdown__chevron {
@@ -40,7 +41,7 @@
 
 .ui-dropdown__list {
   position: absolute;
-  top: calc(100% + 12px);
+  top: calc(100% - 30px);
   left: 0;
   right: 0;
   background: #ffffff;

@@ -10,7 +10,7 @@ import goodsFrameImg29 from '../../assets/images/catalog/2.9.png';
 import goodsFrameImg210 from '../../assets/images/catalog/2.10.png';
 import goodsFrameImg211 from '../../assets/images/catalog/2.11.png';
 import goodsFrameImg212 from '../../assets/images/catalog/2.12.png';
-import type { FrameData } from '../types';
+import type { FrameItem } from '../types';
 
 export enum CatalogItemType {
   DEFAULT = 'default',
@@ -18,7 +18,7 @@ export enum CatalogItemType {
 }
 
 
-export const FRAMES_DATA: FrameData[] = [
+export const FRAMES_DATA: FrameItem[] = [
   {
     id: '1',
     title: 'Деревянный багет',

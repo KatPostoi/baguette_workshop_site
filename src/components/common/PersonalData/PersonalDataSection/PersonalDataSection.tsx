@@ -1,11 +1,26 @@
+import { useState } from 'react';
 import { TopicSection } from '../../../common/TopicSection';
 import { Button } from '../../../ui-kit/Button';
+import { Dropdown } from '../../../ui-kit/Dropdown';
+import type { DropdownOption } from '../../../ui-kit/Dropdown/Dropdown';
 import { TopicSectionTitle } from '../../TopicSection/TopicSectionTitle';
 import { TEXT_POSITION } from '../../TopicSection/types';
 
 import './personal-data-style.css';
 
+const POL_OPTIONS: Array<DropdownOption> = [
+  {
+    id: '1',
+    label: 'М',
+  },
+  {
+    id: '2',
+    label: 'Ж',
+  },
+];
+
 export const PersonalDataSection = () => {
+  const [selectedPol, setSelectedPol] = useState<DropdownOption>();
   return (
     <TopicSection className="personal-account-section">
       <TopicSectionTitle textPosition={TEXT_POSITION.LEFT}>Личный кабинет</TopicSectionTitle>
@@ -18,10 +33,18 @@ export const PersonalDataSection = () => {
               placeholder={'ФИО'}
             />
           </div>
-          <div className="design-constructor_content-wrapper_text_single">
+          {/* <div className="design-constructor_content-wrapper_text_single">
             <h2 className="anonymous-pro-bold home-text-block__md_grey ">Пол</h2>
             <div className="filter-container_arrow"></div>
-          </div>
+          </div> */}
+          <Dropdown
+            className="anonymous-pro-bold"
+            labelClassName="anonymous-pro-bold home-text-block__md_grey"
+            title="Пол"
+            options={POL_OPTIONS}
+            selectedItem={selectedPol}
+            setSelectedItem={setSelectedPol}
+          />
         </div>
         <div className="design-constructor_content-wrapper_text_single">
           <input

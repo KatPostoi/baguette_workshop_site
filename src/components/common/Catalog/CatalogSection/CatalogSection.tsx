@@ -1,4 +1,4 @@
-import type { FrameData } from '../../../../DB/types';
+import type { FrameItem } from '../../../../DB/types';
 import { TopicSection } from '../../../common/TopicSection';
 import { TopicSectionTitle } from '../../TopicSection/TopicSectionTitle';
 import { CatalogCard } from '../CatalogCard';
@@ -6,7 +6,7 @@ import { CatalogCard } from '../CatalogCard';
 import './catalog-section-style.css';
 
 type CatalogSectionProps = {
-  items: FrameData[];
+  items: FrameItem[];
 };
 
 export const CatalogSection = ({ items }: CatalogSectionProps) => {

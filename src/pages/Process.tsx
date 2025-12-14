@@ -5,10 +5,10 @@ import { MainWrapper } from '../components/common/MainWrapper';
 import { MaterialsSection } from '../components/common/Materials/MaterialsSection';
 import { ProductionSection } from '../components/common/Production/ProductionSection';
 import { productionSectionContent } from '../components/common/Production/productionData.ts';
-import { useMaterials } from '../hooks/useMaterials.ts';
+import { useFrameMaterials } from '../hooks/useFrameMaterials.ts';
 
 export const ProcessPage = () => {
-  const [materials] = useMaterials();
+  const [materials] = useFrameMaterials();
   return (
     <div className="ProcessPage">
       <Menu />

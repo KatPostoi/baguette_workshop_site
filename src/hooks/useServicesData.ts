@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { SERVICES_STORE } from "../DB";
-import type { ServiceData } from "../DB/types";
+import type { ServiceItem } from "../DB/types";
 
 export const useServicesData = () => {
-  const [servicesData, setServicesData] = useState<Array<ServiceData>>([]);
+  const [servicesData, setServicesData] = useState<Array<ServiceItem>>([]);
 
   useEffect(() => {
     loadData();

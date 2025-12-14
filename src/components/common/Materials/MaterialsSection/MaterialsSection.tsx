@@ -1,7 +1,7 @@
-﻿import { TopicSection } from '../../../common/TopicSection';
+﻿import type { MaterialItem } from '../../../../DB/types';
+import { TopicSection } from '../../../common/TopicSection';
 import { TopicSectionTitle } from '../../TopicSection/TopicSectionTitle';
 import { MaterialCard } from '../MaterialCard';
-import type { MaterialItem } from '../types';
 import './material-section-style.css';
 
 type MaterialsSectionProps = {

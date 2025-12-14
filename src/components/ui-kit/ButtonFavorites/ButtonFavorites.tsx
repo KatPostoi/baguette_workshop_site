@@ -2,10 +2,10 @@ import classNames from 'classnames';
 import type { ButtonHTMLAttributes } from 'react';
 import './button-favorites.css';
 import { useIsFavoriteActive } from '../../../hooks/useIsFavoriteActive';
-import type { FrameData } from '../../../DB/types';
+import type { FrameItem } from '../../../DB/types';
 
 type ButtonFavoritesProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'children'> & {
-  frameData: FrameData;
+  frameData: FrameItem;
   className?: string;
 };
 

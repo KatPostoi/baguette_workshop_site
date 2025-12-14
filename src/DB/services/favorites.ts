@@ -1,5 +1,5 @@
 
-import type { FrameData } from '../types';
+import type { FrameItem } from '../types';
 import { STORE as CATALOG_STORE } from './catalog';
 
 class Store {
@@ -19,9 +19,9 @@ class Store {
   async getIsFavoriteActive(id: string): Promise<boolean> {
     return this.__getIsFavoriteActive(id)
   }
-  async loadLikedFrames(): Promise<Array<FrameData>> {
+  async loadLikedFrames(): Promise<Array<FrameItem>> {
     const allData = await CATALOG_STORE.loadDefaultFramesData();
-    const isLiked = (item: FrameData) => this.__getIsFavoriteActive(item.id);
+    const isLiked = (item: FrameItem) => this.__getIsFavoriteActive(item.id);
     return allData.filter(isLiked);
   }
 }

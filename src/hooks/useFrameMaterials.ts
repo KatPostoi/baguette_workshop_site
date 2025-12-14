@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { MATERIALS_STORE } from "../DB";
-import type { MaterialItem } from "../components/common/Materials/types";
+import type { MaterialItem } from "../DB/types";
 
-export const useMaterials = () => {
+export const useFrameMaterials = () => {
   const [materials, setMaterials] = useState<Array<MaterialItem>>([]);
 
   const loadData = async () => {

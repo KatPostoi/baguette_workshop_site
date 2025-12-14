@@ -1,4 +1,4 @@
-﻿import type { MaterialItem } from '../types';
+﻿import type { MaterialItem } from '../../../../DB/types';
 import { LinkAsButton } from '../../../ui-kit/LinkAsButton';
 import './material-card-style.css';
 

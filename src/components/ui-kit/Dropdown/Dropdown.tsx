@@ -1,25 +1,55 @@
 import classNames from 'classnames';
 import { useCallback, useEffect, useRef, useState } from 'react';
-
 import './dropdown.css';
 
-type DropdownProps = {
+type DropdownOptionObject = {
+  id: string;
+  label: string;
+};
+
+export type DropdownOption = string | DropdownOptionObject;
+
+type DropdownProps<TOption extends DropdownOption> = {
   title: string;
-  options: string[];
-  selectedItem?: string | null;
-  setSelectedItem: (value: string) => void;
+  options: Array<TOption>;
+  selectedItem?: TOption | null;
+  setSelectedItem: (value: TOption) => void;
   className?: string;
   labelClassName?: string;
 };
 
-export const Dropdown = ({
+const isDropdownOptionObject = (option: DropdownOption): option is DropdownOptionObject => {
+  return typeof option === 'object' && option !== null;
+};
+
+const getOptionLabel = (option: DropdownOption) => (isDropdownOptionObject(option) ? option.label : option);
+
+const getOptionKey = (option: DropdownOption) => (isDropdownOptionObject(option) ? option.id : option);
+
+const isOptionSelected = (option: DropdownOption, selected?: DropdownOption | null) => {
+  if (!selected) {
+    return false;
+  }
+
+  if (typeof option === 'string' && typeof selected === 'string') {
+    return option === selected;
+  }
+
+  if (isDropdownOptionObject(option) && isDropdownOptionObject(selected)) {
+    return option.id === selected.id;
+  }
+
+  return false;
+};
+
+export const Dropdown = <TOption extends DropdownOption>({
   title,
   options,
   selectedItem,
   setSelectedItem,
   className,
   labelClassName,
-}: DropdownProps) => {
+}: DropdownProps<TOption>) => {
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -46,14 +76,14 @@ export const Dropdown = ({
   }, []);
 
   const handleSelect = useCallback(
-    (value: string) => {
+    (value: TOption) => {
       setSelectedItem(value);
       setIsOpen(false);
     },
-    [setSelectedItem],
+    [setSelectedItem]
   );
 
-  const label = selectedItem ?? title;
+  const label = selectedItem != null ? getOptionLabel(selectedItem) : title;
 
   return (
     <div className={classNames('ui-dropdown', className)} ref={containerRef}>
@@ -74,15 +104,15 @@ export const Dropdown = ({
       {isOpen && options.length > 0 && (
         <ul className="ui-dropdown__list" role="listbox">
           {options.map((option) => (
-            <li key={option}>
+            <li key={getOptionKey(option)}>
               <button
                 type="button"
                 className={classNames('ui-dropdown__option', {
-                  'ui-dropdown__option_selected': option === selectedItem,
+                  'ui-dropdown__option_selected': isOptionSelected(option, selectedItem),
                 })}
                 onClick={() => handleSelect(option)}
               >
-                {option}
+                {getOptionLabel(option)}
               </button>
             </li>
           ))}

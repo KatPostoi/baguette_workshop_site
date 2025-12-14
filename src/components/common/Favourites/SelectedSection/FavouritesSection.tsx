@@ -1,15 +1,12 @@
 import { TopicSection } from '../../TopicSection';
 import { CatalogCard } from '../../Catalog/CatalogCard';
 import './selected-section-style.css';
-import type { FrameData } from '../../../../DB/types';
 import { TopicSectionTitle } from '../../TopicSection/TopicSectionTitle';
 import { TEXT_POSITION } from '../../TopicSection/types';
+import { useLikedFrames } from '../../../../hooks/useLikedFrames';
 
-type SelectedSectionProps = {
-  likedFrames: FrameData[];
-};
-
-export const SelectedSection = ({ likedFrames }: SelectedSectionProps) => {
+export const SelectedSection = () => {
+  const likedFrames = useLikedFrames();
   return (
     <TopicSection className="favorites-section">
       <TopicSectionTitle textPosition={TEXT_POSITION.LEFT}>Избранное</TopicSectionTitle>

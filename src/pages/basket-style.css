@@ -22,6 +22,10 @@
   display: grid;
   justify-items: center; /* горизонтальное центрирование */
   align-items: center; /* вертикальное центрирование */
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  font: inherit;
 }
 
 .change-selection_button:hover {
@@ -31,6 +35,11 @@
 
 .change-selection_button_active {
   border: 3px solid #e97721;
+}
+
+.change-selection_button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .goods-in-basket_wrapper {
@@ -71,7 +80,7 @@
 
 .goods-in-basket_wrapper_content_description {
   display: grid;
-  grid-template-columns: auto 1fr auto;
+  grid-template-columns: auto 1fr auto auto;
   gap: 40px;
   align-items: start;
 }
@@ -189,6 +198,7 @@
   display: grid;
   grid-template-columns: 1fr auto;
   gap: 100px;
+  align-items: end;
 }
 
 .delivery-wrapper_price_data {
@@ -198,6 +208,10 @@
 
 .delivery-wrapper_price_data:focus-within {
   border-bottom-color: #e97721;
+}
+
+.delivery-wrapper_price_value {
+  align-self: end;
 }
 
 .data-text-input {
@@ -234,4 +248,65 @@
 .basket-wrapper_button {
   display: grid;
   justify-items: center;
+}
+
+.basket-item__quantity-button {
+  border: none;
+  background: transparent;
+  font: inherit;
+  font-size: 52px;
+  color: inherit;
+  cursor: pointer;
+  padding: 0;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  outline: none;
+}
+
+.basket-item__quantity-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.basket-item__remove-button {
+  border: none;
+  background: transparent;
+  color: #e97721;
+  font: inherit;
+  cursor: pointer;
+  padding: 0;
+  justify-self: end;
+}
+
+.basket-item__remove-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.basket-item__select-control {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.basket-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.total-wrapper_final h2:last-child {
+  color: #e97721;
+}
+
+.basket-empty-state {
+  border-top: 3px solid #8b8273;
+  padding: 60px 20px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }

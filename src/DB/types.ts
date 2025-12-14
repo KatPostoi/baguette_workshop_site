@@ -3,7 +3,7 @@ type ImgData = {
   src: string;
 };
 
-export type FrameData = {
+export type FrameItem = {
   id: string;
   material: string;
   type: string;
@@ -18,8 +18,38 @@ export type FrameData = {
   image: ImgData;
 };
 
-export type ServiceData = {
+export type BasketStoredItem = {
+  frameId: string;
+  quantity: number;
+};
+
+export type BasketItem = {
+  frame: FrameItem;
+  quantity: number;
+};
+
+export type ServiceItem = {
   id: number;
   type: string;
   price: number;
+};
+
+
+export type MaterialItem = {
+  id: string;
+  title: string;
+  material: string;
+  description: string;
+  image: {
+    src: string;
+    alt: string;
+  };
+  pricePerCm: number;
+};
+
+
+export type StyleItem = {
+  id: string;
+  style: string;
+  coefficient: number;
 };

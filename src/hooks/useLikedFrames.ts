@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { FAVORITES_STORE } from "../DB";
-import type { FrameData } from "../DB/types";
+import type { FrameItem } from "../DB/types";
 
 export const useLikedFrames = () => {
-  const [likedFrames, setLikedFrames] = useState<FrameData[]>([]);
+  const [likedFrames, setLikedFrames] = useState<FrameItem[]>([]);
 
   const loadData = async () => {
     const data = await FAVORITES_STORE.loadLikedFrames();

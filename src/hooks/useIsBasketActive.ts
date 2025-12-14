@@ -1,8 +1,8 @@
 import { useLayoutEffect, useState } from "react";
 import { CONSTRUCTOR_STORE, BASKET_STORE } from "../DB";
-import type { FrameData } from "../DB/types";
+import type { FrameItem } from "../DB/types";
 
-export const useIsBasketActive = (frameData: FrameData) => {
+export const useIsBasketActive = (frameData: FrameItem) => {
   const [isBasketActive, setIsBasketActive] = useState(false);
 
   const handleBasketToggle = async () => {
