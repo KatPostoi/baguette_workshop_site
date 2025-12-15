@@ -1,6 +1,6 @@
 # Baguette Workshop Dev Stack
 
-Pet project stack that mirrors the `goose-game` layout: NestJS API, Vite SPA, PostgreSQL, pgAdmin and a lightweight nginx gateway that proxies everything through a single entry point.
+Pet project stack layout: NestJS API, Vite SPA, PostgreSQL, pgAdmin and a lightweight nginx gateway that proxies everything through a single entry point.
 
 ## Quick start
 ```bash

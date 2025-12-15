@@ -1,6 +1,6 @@
 # Baguette Workshop Website
 
-React + TypeScript + Vite SPA that mirrors the workshop UI from the `goose-game` project. The frontend now reads and mutates data exclusively through the NestJS backend (`/api/*`) using a small API layer plus React context stores for the basket and favorites.
+React + TypeScript + Vite SPA. The frontend now reads and mutates data exclusively through the NestJS backend (`/api/*`) using a small API layer plus React context stores for the basket and favorites.
 
 ## Local development
 ```bash

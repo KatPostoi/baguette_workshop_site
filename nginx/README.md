@@ -1,6 +1,6 @@
 # Nginx Gateway
 
-Reverse proxy that exposes every service through a single entry point. This mirrors the structure in `goose-game` but keeps everything HTTP-only and minimal.
+Reverse proxy that exposes every service through a single entry point.
 
 ## How to run
 ```bash
