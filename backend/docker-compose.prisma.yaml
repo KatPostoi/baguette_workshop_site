@@ -1,0 +1,19 @@
+services:
+  prisma:
+    build:
+      context: .
+      dockerfile: ./docker/dev/Dockerfile
+    env_file:
+      - ./.env.backend
+    volumes:
+      - ./app:/usr/src/app
+    working_dir: /usr/src/app
+    command: >
+      sh -c "set -euo pipefail && yarn install && yarn prisma:sync && yarn prisma:seed"
+    restart: "no"
+    networks:
+      - backend-network
+
+networks:
+  backend-network:
+    external: true

@@ -1,0 +1,28 @@
+.catalog-section {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.catalog-wrapper {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 40px;
+}
+
+@media (min-width: 1024px) {
+  .catalog-wrapper {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .catalog-wrapper {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.catalog-section__empty-message {
+  padding: 60px 20px;
+  text-align: center;
+}

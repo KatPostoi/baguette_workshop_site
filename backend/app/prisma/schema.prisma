@@ -1,0 +1,178 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum CatalogItemType {
+  DEFAULT
+  CUSTOM
+}
+
+enum UserRole {
+  CUSTOMER
+  ADMIN
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  SHIPPED
+  COMPLETED
+  CANCELLED
+}
+
+model FrameMaterial {
+  id           String         @id
+  title        String
+  material     String
+  description  String
+  imageUrl     String
+  imageAlt     String
+  pricePerCm   Int
+  catalogItems CatalogItem[]
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+}
+
+model FrameStyle {
+  id           String         @id
+  name         String
+  coefficient  Float
+  catalogItems CatalogItem[]
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+}
+
+model CatalogItem {
+  id            String           @id
+  slug          String           @unique
+  title         String
+  description   String
+  imageUrl      String
+  imageAlt      String
+  materialId    String
+  styleId       String?
+  color         String
+  type          CatalogItemType  @default(DEFAULT)
+  widthCm       Int
+  heightCm      Int
+  price         Int
+  stock         Int              @default(0)
+  material      FrameMaterial    @relation(fields: [materialId], references: [id])
+  style         FrameStyle?      @relation(fields: [styleId], references: [id])
+  favorites     Favorite[]
+  basketItems   BasketItem[]
+  orderItems    OrderItem[]
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+
+  @@index([materialId])
+  @@index([styleId])
+}
+
+model ServiceItem {
+  id        Int      @id
+  type      String   @unique
+  title     String
+  price     Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model User {
+  id           String        @id @default(uuid())
+  email        String        @unique
+  phone        String?       @unique
+  passwordHash String
+  fullName     String
+  role         UserRole      @default(CUSTOMER)
+  favorites    Favorite[]
+  basketItems  BasketItem[]
+  presets      ConstructorPreset[]
+  orders       Order[]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+}
+
+model Favorite {
+  id            String      @id @default(uuid())
+  userId        String
+  catalogItemId String
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  catalogItem   CatalogItem @relation(fields: [catalogItemId], references: [id], onDelete: Cascade)
+  createdAt     DateTime    @default(now())
+
+  @@unique([userId, catalogItemId])
+}
+
+model BasketItem {
+  id            String      @id @default(uuid())
+  userId        String
+  catalogItemId String
+  quantity      Int         @default(1)
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  catalogItem   CatalogItem @relation(fields: [catalogItemId], references: [id], onDelete: Cascade)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  @@unique([userId, catalogItemId])
+}
+
+model ConstructorPreset {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  thumbnail   String?
+  config      Json
+  userId      String?
+  user        User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Order {
+  id              String       @id @default(uuid())
+  userId          String?
+  user            User?        @relation(fields: [userId], references: [id], onDelete: SetNull)
+  customerName    String
+  customerEmail   String
+  customerPhone   String?
+  deliveryAddress String?
+  status          OrderStatus  @default(PENDING)
+  total           Int
+  items           OrderItem[]
+  notifications   Notification[]
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+
+  @@index([userId])
+}
+
+model OrderItem {
+  id            String      @id @default(uuid())
+  orderId       String
+  catalogItemId String
+  title         String
+  slug          String
+  price         Int
+  quantity      Int
+  imageUrl      String
+  imageAlt      String
+  order         Order       @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  catalogItem   CatalogItem @relation(fields: [catalogItemId], references: [id])
+}
+
+model Notification {
+  id        String     @id @default(uuid())
+  orderId   String
+  type      String
+  message   String
+  createdAt DateTime   @default(now())
+  order     Order      @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([orderId])
+}

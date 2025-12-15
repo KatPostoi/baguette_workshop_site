@@ -1,0 +1,17 @@
+services:
+  backend:
+    container_name: baguette-backend-prod
+    build:
+      context: .
+      dockerfile: ./docker/prod/Dockerfile
+    env_file:
+      - ./.env.backend
+    ports:
+      - "${BACKEND_PROD_PORT:-4000}:3000"
+    restart: unless-stopped
+    networks:
+      - backend-network
+
+networks:
+  backend-network:
+    external: true

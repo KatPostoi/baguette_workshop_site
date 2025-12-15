@@ -1,0 +1,21 @@
+services:
+  nginx:
+    container_name: baguette-nginx-dev
+    build:
+      context: .
+      dockerfile: ./docker/dev/Dockerfile
+    env_file:
+      - ./.env.nginx
+    ports:
+      - "${NGINX_PORT:-8080}:80"
+    volumes:
+      - ./logs:/var/log/nginx
+      - ./files/nginx.dev.conf:/etc/nginx/nginx.conf:ro
+      - ./files/html:/usr/share/nginx/html:ro
+    restart: unless-stopped
+    networks:
+      - backend-network
+
+networks:
+  backend-network:
+    external: true

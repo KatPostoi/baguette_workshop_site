@@ -1,0 +1,15 @@
+services:
+  website:
+    container_name: baguette-website
+    build:
+      context: .
+      dockerfile: ./docker/prod/Dockerfile
+    ports:
+      - "${WEBSITE_PROD_PORT:-4173}:80"
+    restart: unless-stopped
+    networks:
+      - backend-network
+
+networks:
+  backend-network:
+    external: true

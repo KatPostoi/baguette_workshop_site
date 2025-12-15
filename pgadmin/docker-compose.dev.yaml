@@ -1,0 +1,18 @@
+services:
+  pgadmin:
+    image: dpage/pgadmin4:9.7
+    container_name: baguette-pgadmin
+    env_file:
+      - ./.env.pgadmin
+    ports:
+      - "${PGADMIN_PORT:-5050}:5050"
+    volumes:
+      - ./data:/var/lib/pgadmin
+      - ./servers.json:/pgadmin4/servers.json
+    restart: unless-stopped
+    networks:
+      - backend-network
+
+networks:
+  backend-network:
+    external: true

@@ -1,69 +1,47 @@
-# React + TypeScript + Vite
+# Baguette Workshop Dev Stack
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Pet project stack that mirrors the `goose-game` layout: NestJS API, Vite SPA, PostgreSQL, pgAdmin and a lightweight nginx gateway that proxies everything through a single entry point.
 
-Currently, two official plugins are available:
+## Quick start
+```bash
+# start dev stack (Vite dev server + hot reload)
+./start-all.sh dev
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+# tear it down
+./stop-all.sh dev
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+# run the production build (both services inside optimized containers)
+./start-all.sh prod
+./stop-all.sh prod
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+The gateway exposes everything under `http://localhost:${NGINX_PORT:-8080}`:
+- `/` – frontend (proxied either to the Vite dev server or to the production website container).
+- `/api/` – NestJS backend.
+- `/pgadmin/` – pgAdmin UI (defaults: `admin@example.com` / `admin`).
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+During startup the script also runs `backend/docker-compose.prisma.yaml`, which applies the Prisma schema (`yarn prisma:sync`) and seeds the demo catalog so the API/UI immediately have data to show.
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Services
+- `website/` – React + Vite project with dedicated dev/prod Dockerfiles (`docker-compose.dev|prod.yaml`).
+- `backend/` – NestJS API with Prisma, mock payment/delivery gateways and dev/prod docker setups.
+- `postgresql/` – PostgreSQL 17 instance with tuned defaults and a committed `.env.postgres`.
+- `pgadmin/` – pgAdmin 4 UI configured against the local database.
+- `nginx/` – reverse-proxy that glues the UI, API and pgAdmin together (separate dev/prod configs).
+
+All services join the shared external network `backend-network`. The start script creates it on demand, but you can also do it manually:
+```bash
+docker network create backend-network
 ```
+
+## Manual control
+Every directory contains its own compose files so you can start services individually:
+```bash
+cd postgresql && docker compose -f docker-compose.dev.yaml up -d
+cd pgadmin && docker compose -f docker-compose.dev.yaml up -d
+cd backend && docker compose -f docker-compose.dev.yaml up -d --build      # or docker-compose.prod.yaml
+cd website && docker compose -f docker-compose.dev.yaml up -d --build      # or docker-compose.prod.yaml
+cd nginx && docker compose -f docker-compose.dev.yaml up -d --build        # or docker-compose.prod.yaml
+```
+
+All `.env.*` files stay in git on purpose so the demo can be launched on any machine without extra secret management.
