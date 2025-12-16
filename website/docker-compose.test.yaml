@@ -1,0 +1,18 @@
+services:
+  website-build:
+    container_name: baguette-website-test-build
+    build:
+      context: .
+      dockerfile: ./docker/test/Dockerfile
+    volumes:
+      - ./dist:/app/dist
+    environment:
+      VITE_API_BASE_URL: ${VITE_API_BASE_URL:-/api}
+      VITE_DEMO_USER_ID: ${VITE_DEMO_USER_ID:-32c9b77a-5fe8-4efc-9d62-9ce5c6290321}
+    restart: "no"
+    networks:
+      - backend-network
+
+networks:
+  backend-network:
+    external: true

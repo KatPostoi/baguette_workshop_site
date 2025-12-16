@@ -3,8 +3,8 @@ set -Eeuo pipefail
 
 MODE="${1:-dev}"
 
-if [[ "${MODE}" != "dev" && "${MODE}" != "prod" ]]; then
-  echo "Usage: ./stop-all.sh [dev|prod]"
+if [[ "${MODE}" != "dev" && "${MODE}" != "test" ]]; then
+  echo "Usage: ./stop-all.sh [dev|test]"
   exit 1
 fi
 

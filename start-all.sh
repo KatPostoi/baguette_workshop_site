@@ -3,8 +3,8 @@ set -Eeuo pipefail
 
 MODE="${1:-dev}"
 
-if [[ "${MODE}" != "dev" && "${MODE}" != "prod" ]]; then
-  echo "Usage: ./start-all.sh [dev|prod]"
+if [[ "${MODE}" != "dev" && "${MODE}" != "test" ]]; then
+  echo "Usage: ./start-all.sh [dev|test]"
   exit 1
 fi
 
@@ -24,12 +24,12 @@ PGADMIN_COMPOSE="./pgadmin/docker-compose.dev.yaml"
 PRISMA_COMPOSE="./backend/docker-compose.prisma.yaml"
 
 BACKEND_CONTAINER="baguette-backend-${MODE}"
-if [[ "${MODE}" == "prod" ]]; then
-  WEBSITE_CONTAINER="baguette-website"
-  NGINX_CONTAINER="baguette-nginx"
-else
+if [[ "${MODE}" == "dev" ]]; then
   WEBSITE_CONTAINER="baguette-website-dev"
   NGINX_CONTAINER="baguette-nginx-dev"
+else
+  WEBSITE_CONTAINER="baguette-website-test-build"
+  NGINX_CONTAINER="baguette-nginx-test"
 fi
 
 GATEWAY_PORT="${NGINX_PORT:-8080}"
@@ -83,6 +83,30 @@ wait_for_healthy() {
   echo "Container ${container} is ready."
 }
 
+wait_for_container_exit() {
+  local container="$1"
+
+  if ! docker inspect "${container}" >/dev/null 2>&1; then
+    echo "Container ${container} is not available."
+    exit 1
+  fi
+
+  echo "Waiting for ${container} to finish..."
+  docker logs -f "${container}" &
+  local log_pid=$!
+
+  docker wait "${container}" >/dev/null
+  kill "${log_pid}" >/dev/null 2>&1 || true
+
+  local exit_code
+  exit_code="$(docker inspect "${container}" --format='{{.State.ExitCode}}')"
+  if [[ "${exit_code}" != "0" ]]; then
+    echo "Container ${container} exited with code ${exit_code}"
+    exit "${exit_code}"
+  fi
+  echo "Container ${container} finished successfully."
+}
+
 compose_up() {
   local file="$1"
   if [[ ! -f "${file}" ]]; then
@@ -114,7 +138,18 @@ compose_up "${BACKEND_COMPOSE}"
 wait_for_healthy "${BACKEND_CONTAINER}"
 
 compose_up "${WEBSITE_COMPOSE}"
-wait_for_healthy "${WEBSITE_CONTAINER}"
+
+if [[ "${MODE}" == "dev" ]]; then
+  wait_for_healthy "${WEBSITE_CONTAINER}"
+else
+  wait_for_container_exit "${WEBSITE_CONTAINER}"
+  docker compose -f "${WEBSITE_COMPOSE}" down --remove-orphans >/dev/null 2>&1 || true
+
+  if [[ ! -d "./website/dist" || -z "$(ls -A "./website/dist" 2>/dev/null)" ]]; then
+    echo "Frontend build artifacts not found under ./website/dist"
+    exit 1
+  fi
+fi
 
 compose_up "${NGINX_COMPOSE}"
 wait_for_healthy "${NGINX_CONTAINER}"

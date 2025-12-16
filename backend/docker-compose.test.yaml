@@ -1,13 +1,15 @@
 services:
   backend:
-    container_name: baguette-backend-prod
+    container_name: baguette-backend-test
     build:
       context: .
-      dockerfile: ./docker/prod/Dockerfile
+      dockerfile: ./docker/test/Dockerfile
     env_file:
       - ./.env.backend
+    environment:
+      NODE_ENV: production
     ports:
-      - "${BACKEND_PROD_PORT:-4000}:3000"
+      - "${BACKEND_TEST_PORT:-3000}:3000"
     restart: unless-stopped
     networks:
       - backend-network

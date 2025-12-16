@@ -1,47 +1,46 @@
-# Baguette Workshop Dev Stack
+# Демо-стек Baguette Workshop
 
-Pet project stack layout: NestJS API, Vite SPA, PostgreSQL, pgAdmin and a lightweight nginx gateway that proxies everything through a single entry point.
+Минимальный демонстрационный стек: NestJS API, Vite SPA, PostgreSQL, pgAdmin и nginx-гейтвей с единым входом.
 
-## Quick start
+## Быстрый старт
 ```bash
-# start dev stack (Vite dev server + hot reload)
+# dev: горячая перезагрузка фронта/бека
 ./start-all.sh dev
 
-# tear it down
-./stop-all.sh dev
+# test: собираем SPA один раз, отдаём статику через nginx
+./start-all.sh test
 
-# run the production build (both services inside optimized containers)
-./start-all.sh prod
-./stop-all.sh prod
+# остановить
+./stop-all.sh dev
+./stop-all.sh test
 ```
 
-The gateway exposes everything under `http://localhost:${NGINX_PORT:-8080}`:
-- `/` – frontend (proxied either to the Vite dev server or to the production website container).
-- `/api/` – NestJS backend.
-- `/pgadmin/` – pgAdmin UI (defaults: `admin@example.com` / `admin`).
+Гейтвей слушает `http://localhost:${NGINX_PORT:-8080}`:
+- `/` — фронтенд (dev: прокси на Vite, test: статика из `website/dist`).
+- `/api/` — NestJS backend.
+- `/pgadmin/` — pgAdmin UI (`admin@example.com` / `admin` по умолчанию).
 
-During startup the script also runs `backend/docker-compose.prisma.yaml`, which applies the Prisma schema (`yarn prisma:sync`) and seeds the demo catalog so the API/UI immediately have data to show.
+При старте автоматически выполняется `backend/docker-compose.prisma.yaml` (синхронизация Prisma + сиды демо-данных).
 
-## Services
-- `website/` – React + Vite project with dedicated dev/prod Dockerfiles (`docker-compose.dev|prod.yaml`).
-- `backend/` – NestJS API with Prisma, mock payment/delivery gateways and dev/prod docker setups.
-- `postgresql/` – PostgreSQL 17 instance with tuned defaults and a committed `.env.postgres`.
-- `pgadmin/` – pgAdmin 4 UI configured against the local database.
-- `nginx/` – reverse-proxy that glues the UI, API and pgAdmin together (separate dev/prod configs).
+## Сервисы
+- `website/` — React + Vite: `docker-compose.dev.yaml` (HMR) и `docker-compose.test.yaml` (одноразовая сборка SPA).
+- `backend/` — NestJS API: `docker-compose.dev.yaml` (HMR) и `docker-compose.test.yaml` (единственный инстанс).
+- `postgresql/` — PostgreSQL 17 с коммитнутой `.env.postgres`.
+- `pgadmin/` — pgAdmin 4, настроенный на локальную БД.
+- `nginx/` — проксирует UI/API/pgAdmin, есть отдельные конфиги `nginx.dev.conf` и `nginx.test.conf`.
 
-All services join the shared external network `backend-network`. The start script creates it on demand, but you can also do it manually:
+Все сервисы сидят в общей внешней сети `backend-network`; `start-all.sh` создаёт её при необходимости:
 ```bash
 docker network create backend-network
 ```
 
-## Manual control
-Every directory contains its own compose files so you can start services individually:
+## Ручной запуск
 ```bash
 cd postgresql && docker compose -f docker-compose.dev.yaml up -d
-cd pgadmin && docker compose -f docker-compose.dev.yaml up -d
-cd backend && docker compose -f docker-compose.dev.yaml up -d --build      # or docker-compose.prod.yaml
-cd website && docker compose -f docker-compose.dev.yaml up -d --build      # or docker-compose.prod.yaml
-cd nginx && docker compose -f docker-compose.dev.yaml up -d --build        # or docker-compose.prod.yaml
+cd pgadmin    && docker compose -f docker-compose.dev.yaml up -d
+cd backend    && docker compose -f docker-compose.dev.yaml up -d --build    # либо docker-compose.test.yaml
+cd website    && docker compose -f docker-compose.dev.yaml up -d --build    # либо docker-compose.test.yaml
+cd nginx      && docker compose -f docker-compose.dev.yaml up -d --build    # либо docker-compose.test.yaml
 ```
 
-All `.env.*` files stay in git on purpose so the demo can be launched on any machine without extra secret management.
+`.env*` файлы намеренно хранятся в репозитории, чтобы демо поднималось на чистой машине без секрет-менеджеров.

@@ -1,63 +1,57 @@
 # Baguette Workshop Backend
 
-## Quick start
-1. Shared Docker network is created automatically by `./start-all.sh`, but you can also run `docker network create backend-network`.
-2. Review `.env.backend` (committed on purpose). Mock providers are enabled through `PAYMENTS_PROVIDER=mock` and `DELIVERY_PROVIDER=mock`.
-3. Local development (outside Docker):
+## Быстрый старт
+1. Сеть создаёт `./start-all.sh`, при необходимости: `docker network create backend-network`.
+2. Проверьте `.env.backend` (лежит в репо). Провайдеры платежей/доставки выставлены в `mock`.
+3. Локально без Docker:
    ```bash
    cd app
    yarn install
    yarn start:dev
    ```
-4. Containerized run (PostgreSQL + pgAdmin must be up first):
+4. В контейнере (PostgreSQL + pgAdmin должны быть запущены):
    ```bash
-   docker compose -f docker-compose.dev.yaml up -d --build
-   # production image used by ./start-all.sh prod
-   docker compose -f docker-compose.prod.yaml up -d --build
+   docker compose -f docker-compose.dev.yaml up -d --build   # HMR
+   docker compose -f docker-compose.test.yaml up -d --build  # продоподобный единичный инстанс
    ```
-5. Apply Prisma schema + seed demo data (automatically triggered by `./start-all.sh` but can be executed manually):
+5. Prisma схема + сиды (автоматически дергается из `./start-all.sh`, но можно вручную):
    ```bash
    docker compose -f docker-compose.prisma.yaml run --rm prisma
    ```
 
-## Structure
-- `app/src` - NestJS application (AppModule, health checks, catalog-related modules).
-- `app/tsconfig*.json`, `nest-cli.json` - TypeScript and Nest CLI configs.
-- `prisma/` - schema definition and seed scripts.
-- `docker/` - runtime Dockerfiles.
-- `.env.backend` - environment variables committed for easy demo deployments.
-- `docker-compose.prisma.yaml` - helper compose file that runs `yarn prisma:sync && yarn prisma:seed` inside a throwaway container (used by `./start-all.sh`).
+## Структура
+- `app/src` — NestJS приложение.
+- `prisma/` — схема и сиды.
+- `docker/` — Dockerfile’ы для dev/test.
+- `.env.backend` — демонстрационные переменные окружения (хранятся в git осознанно).
+- `docker-compose.prisma.yaml` — одноразовый контейнер для `prisma:sync` + сидов.
 
-## Docker targets
-- `docker/dev/Dockerfile` – hot-reload image (mounts `app/` and installs deps on the fly). Used by `docker-compose.dev.yaml` and `./start-all.sh dev`.
-- `docker/prod/Dockerfile` – multi-stage build + slim runtime. Used by `docker-compose.prod.yaml` and `./start-all.sh prod`.
+## Docker-сборки
+- `docker/dev/Dockerfile` — hot reload, монтирует `app/`. Используется `docker-compose.dev.yaml`.
+- `docker/test/Dockerfile` — multi-stage билд + slim runtime. Используется `docker-compose.test.yaml`.
 
-## Useful scripts
-- `yarn build` - compile to `dist/`.
-- `yarn start` - start without watch mode.
-- `yarn start:dev` - hot reload mode.
-- `yarn prisma:generate` - regenerate Prisma Client (loads `.env.backend`).
-- `yarn prisma:migrate` - apply dev migrations (PostgreSQL must be running).
-- `yarn prisma:seed` - reset and seed demo data.
-- `yarn prisma:sync` - apply the current schema via `prisma db push` (used in the Docker bootstrap).
+## Полезное
+- `yarn build` — сборка в `dist/`.
+- `yarn start` — запуск без watch.
+- `yarn start:dev` — hot reload.
+- `yarn prisma:generate|migrate|seed|sync` — Prisma утилиты (читают `.env.backend`).
+- Тестов пока нет; как только появятся, гоняйте их из dev-контейнера, например:  
+  `docker compose -f docker-compose.dev.yaml exec backend yarn test`
 
 ## REST API (v1)
-- `GET /catalog` - list of frames with material/style info.
-- `GET /catalog/:slug` - frame details by slug.
-- `GET /materials` / `GET /materials/:id` - materials catalog.
-- `GET /styles` / `GET /styles/:id` - framing styles.
-- `GET /services` / `GET /services/:id` - extra workshop services.
-- `GET|POST|DELETE /favorites/:userId` - manage user favorites.
-- `GET /basket/:userId/items` - list basket items.
-- `POST|PATCH|DELETE /basket/:userId/items` - add/update/remove specific items.
-- `DELETE /basket/:userId` - clear the basket.
-- `POST /auth/login` - exchange credentials for a JWT (7 day TTL).
-- `GET /orders`, `GET /orders/:id`, `POST /orders` - checkout endpoints.
-- `PATCH /orders/:id/status` - update status (with validation of transitions).
-- `POST /payments/mock` - simulate payment via mock gateway, returns receipt + updates status.
-- `POST /delivery/schedule` - mock delivery booking (status `SHIPPED` + tracking data).
-- `GET /notifications/order/:orderId` - order activity log.
-- `GET /orders/:id/timeline` - combined timeline (currently notifications) used by the order details UI.
-
-## Next steps
-Future iterations can build dashboards or hook real payment/delivery providers by replacing the existing mock gateways without changing the API. For now everything is wired to mock implementations to keep deployments simple.
+- `GET /catalog` — список рамок, материалов и стилей.
+- `GET /catalog/:slug` — детали рамки.
+- `GET /materials` / `GET /materials/:id` — каталог материалов.
+- `GET /styles` / `GET /styles/:id` — каталог стилей.
+- `GET /services` / `GET /services/:id` — доп. услуги мастерской.
+- `GET|POST|DELETE /favorites/:userId` — избранное.
+- `GET /basket/:userId/items` — содержимое корзины.
+- `POST|PATCH|DELETE /basket/:userId/items` — управление конкретными позициями.
+- `DELETE /basket/:userId` — очистка корзины.
+- `POST /auth/login` — выдача JWT (7 дней).
+- `GET /orders`, `GET /orders/:id`, `POST /orders` — заказ/оформление.
+- `PATCH /orders/:id/status` — смена статуса (валидация переходов).
+- `POST /payments/mock` — имитация оплаты + чек.
+- `POST /delivery/schedule` — имитация доставки (статус `SHIPPED` + трекинг).
+- `GET /notifications/order/:orderId` — история уведомлений.
+- `GET /orders/:id/timeline` — объединённый таймлайн заказа.

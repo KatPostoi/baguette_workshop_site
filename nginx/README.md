@@ -1,23 +1,23 @@
-# Nginx Gateway
+# Шлюз Nginx
 
-Reverse proxy that exposes every service through a single entry point.
+Единая точка входа для UI/API/pgAdmin.
 
-## How to run
+## Запуск
 ```bash
-# Dev mode – proxies to the Vite container + backend dev container
+# dev — прокси на Vite (HMR) и backend dev
 docker compose -f docker-compose.dev.yaml up -d --build
 
-# Prod mode – proxies to the production website + backend containers
-docker compose -f docker-compose.prod.yaml up -d --build
+# test — статика из website/dist + backend test
+docker compose -f docker-compose.test.yaml up -d --build
 ```
 
-Both compose files read `.env.nginx` (default `NGINX_PORT=8080`) and join the shared `backend-network`. The root `./start-all.sh` script spins up the correct variant automatically.
+Оба compose читают `.env.nginx` (`NGINX_PORT=8080` по умолчанию) и используют `backend-network`. Корневой `./start-all.sh` поднимает нужный вариант автоматически.
 
-## Config files
-- `files/nginx.dev.conf` – proxies `/` to `baguette-website-dev:5173`, `/api/` to `baguette-backend-dev:3000`, `/pgadmin/` to `baguette-pgadmin:5050`.
-- `files/nginx.conf` – same routing but targeting the production containers (`baguette-website`, `baguette-backend-prod`).
-- `files/html/` – optional static assets (copied into the image for maintenance pages).
+## Конфиги
+- `files/nginx.dev.conf` — `/` → `baguette-website-dev:5173`, `/api/` → `baguette-backend-dev:3000`, `/pgadmin/` → `baguette-pgadmin:5050`.
+- `files/nginx.test.conf` — `/` → статика из `website/dist`, `/api/` → `baguette-backend-test:3000`, `/pgadmin/` → `baguette-pgadmin:5050`.
+- `files/html/` — опциональные статические страницы.
 
-## Health checks & logs
-- Both Dockerfiles install `curl` and expose `/healthz` endpoints that Docker uses for health checks.
-- Logs live under `logs/` and are bind-mounted so they persist across restarts.
+## Health checks и логи
+- Dockerfile’ы ставят `curl` и экспонируют `/healthz` для healthcheck.
+- Логи пишутся в `logs/` (bind-mount).

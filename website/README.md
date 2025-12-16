@@ -1,29 +1,29 @@
-# Baguette Workshop Website
+# Веб-сайт Baguette Workshop
 
-React + TypeScript + Vite SPA. The frontend now reads and mutates data exclusively through the NestJS backend (`/api/*`) using a small API layer plus React context stores for the basket and favorites.
+React + TypeScript + Vite SPA. Взаимодействует с бэкендом только через `/api/*`.
 
-## Local development
+## Локально
 ```bash
 npm install
-npm run dev       # http://localhost:5173 (proxy /api via start-all.sh or your own proxy)
-npm run build     # compile & bundle to dist/
-npm run preview   # serve the production bundle locally
+npm run dev       # http://localhost:5173 (прокси /api через nginx из start-all.sh или свой)
+npm run build     # dist/ со статикой
+npm run preview   # локальный сервер собранного бандла
 ```
 
-## Docker flows
-| Mode | Compose file | Description |
+## Docker
+| Режим | Compose | Описание |
 | --- | --- | --- |
-| Dev | `docker-compose.dev.yaml` | Mounts the repo into a Node 22 container, installs deps and runs Vite with HMR on `${WEBSITE_DEV_PORT:-5173}`. `./start-all.sh dev` proxies it via nginx. |
-| Prod | `docker-compose.prod.yaml` | Builds the SPA and serves it via nginx (port `${WEBSITE_PROD_PORT:-4173}`), health-checked and proxied at `http://localhost:${NGINX_PORT:-8080}`. |
+| Dev | `docker-compose.dev.yaml` | Node 22 + Vite HMR на `${WEBSITE_DEV_PORT:-5173}`, монтируется весь проект, подхватывается `healthcheck.js`. Проксируется через `./start-all.sh dev`. |
+| Test | `docker-compose.test.yaml` | Одноразовая сборка SPA внутри контейнера с выводом артефактов в `./dist` на хосте. Используется `./start-all.sh test`, после сборки контейнер гасится, статика отдаётся центральным nginx. |
 
-Both compose files join the shared `backend-network` the root scripts create automatically.
+Оба compose-файла подключаются к `backend-network`, которую создаёт корневой скрипт.
 
-## Health check
-`healthcheck.js` performs a GET on `/` to ensure the dev/prod server is reachable. Docker uses it to keep the container marked healthy before nginx starts routing traffic.
+## Проверка состояния
+`healthcheck.js` проверяет `/` у dev-сервера и используется Docker'ом для статуса контейнера в HMR-режиме.
 
-## Environment variables
-- `VITE_DEV_SERVER_PORT` – overrides the dev server port (default `5173`).
-- `VITE_API_BASE_URL` – base URL for API calls (defaults to `/api`, which works behind nginx/start-all.sh).
-- `VITE_DEMO_USER_ID` – UUID of the demo customer used for basket/favorite mutations (defaults to the seeded demo user).
+## Переменные окружения
+- `VITE_DEV_SERVER_PORT` — порт дев-сервера (по умолчанию `5173`).
+- `VITE_API_BASE_URL` — базовый URL API (по умолчанию `/api`, подходит за nginx).
+- `VITE_DEMO_USER_ID` — демо-пользователь для корзины/избранного (по умолчанию сид).
 
-Keep `.env` files in the repo so the demo can be launched anywhere without extra secret management.
+`.env` держим в репозитории специально для простого развёртывания демо.
