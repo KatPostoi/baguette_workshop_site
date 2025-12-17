@@ -2,6 +2,7 @@ import classNames from 'classnames';
 import './menu.css';
 import { useEffect, useState } from 'react';
 import { LinkAsButton } from '../../ui-kit/LinkAsButton';
+import logoImg from '../../../assets/images/logo.png';
 
 interface NavItem {
   id: string;
@@ -83,10 +84,10 @@ export const Menu = () => {
         </nav>
 
         <div className="nav-menu__logo">
-          <img src="../src/assets/images/logo.png" alt="Logo" />
+          <img src={logoImg} alt="Logo" />
         </div>
 
-        <LinkAsButton href="http://localhost:5173/design">Создать свой дизайн</LinkAsButton>
+        <LinkAsButton href="/design">Создать свой дизайн</LinkAsButton>
       </div>
     </div>
   );

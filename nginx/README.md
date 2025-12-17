@@ -11,10 +11,10 @@ docker compose -f docker-compose.dev.yaml up -d --build
 docker compose -f docker-compose.test.yaml up -d --build
 ```
 
-Оба compose читают `.env.nginx` (`NGINX_PORT=8080` по умолчанию) и используют `backend-network`. Корневой `./start-all.sh` поднимает нужный вариант автоматически.
+Оба compose читают `.env.nginx` (`NGINX_PORT=6313` по умолчанию) и используют `backend-network`. Корневой `./start-all.sh` поднимает нужный вариант автоматически.
 
 ## Конфиги
-- `files/nginx.dev.conf` - `/` -> `baguette-website-dev:5173`, `/api/` -> `baguette-backend-dev:3000`, `/pgadmin/` -> `baguette-pgadmin:5050`.
+- `files/nginx.dev.conf` - `/` -> `baguette-website-dev:6314`, `/api/` -> `baguette-backend-dev:3000`, `/pgadmin/` -> `baguette-pgadmin:5050`.
 - `files/nginx.test.conf` - `/` -> статика из `website/dist`, `/api/` -> `baguette-backend-test:3000`, `/pgadmin/` -> `baguette-pgadmin:5050`.
 - `files/html/` - опциональные статические страницы.
 

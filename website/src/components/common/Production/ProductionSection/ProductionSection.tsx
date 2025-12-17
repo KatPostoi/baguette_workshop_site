@@ -5,6 +5,7 @@ import { TopicSectionTitle } from '../../TopicSection/TopicSectionTitle';
 import { ProductionCard } from '../ProductionCard';
 import type { ProductionCardContent } from '../types';
 import './production-section-style.css';
+import halfFrameImg from '../../../../assets/images/half_frame.png';
 
 type ProductionSectionProps = {
   items: ProductionCardContent[];
@@ -32,7 +33,7 @@ export const ProductionSection = ({ items }: ProductionSectionProps) => {
           ))}
         </div>
         <div className="process-section_card process-section_card-image">
-          <img className="process-section_image" src="../src/assets/images/half_frame.png" alt="ProcessSectionImage" />
+          <img className="process-section_image" src={halfFrameImg} alt="ProcessSectionImage" />
         </div>
       </div>
     </TopicSection>

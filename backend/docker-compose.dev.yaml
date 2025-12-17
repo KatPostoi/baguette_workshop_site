@@ -9,7 +9,7 @@ services:
     volumes:
       - ./app:/usr/src/app
     ports:
-      - "${BACKEND_DEV_PORT:-3000}:3000"
+      - "${BACKEND_DEV_PORT:-6315}:3000"
     restart: unless-stopped
     tty: true
     stdin_open: true

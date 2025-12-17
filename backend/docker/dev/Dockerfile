@@ -9,6 +9,7 @@ RUN apk add --no-cache \
 WORKDIR /usr/src/app
 
 RUN npm install -g @nestjs/cli
+RUN yarn config set network-timeout 600000
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=15s --retries=10 \
   CMD node ./healthcheck.js || exit 1

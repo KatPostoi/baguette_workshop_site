@@ -15,7 +15,7 @@
 ./stop-all.sh test
 ```
 
-Гейтвей слушает `http://localhost:${NGINX_PORT:-8080}`:
+Гейтвей слушает `http://localhost:${NGINX_PORT:-6313}`:
 - `/` - фронтенд (dev: прокси на Vite, test: статика из `website/dist`).
 - `/api/` - NestJS backend.
 - `/pgadmin/` - pgAdmin UI (`admin@example.com` / `admin` по умолчанию).

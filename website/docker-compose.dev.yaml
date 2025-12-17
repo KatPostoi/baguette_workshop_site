@@ -8,9 +8,9 @@ services:
     volumes:
       - ./:/usr/src/app
     environment:
-      VITE_DEV_SERVER_PORT: ${WEBSITE_DEV_PORT:-5173}
+      VITE_DEV_SERVER_PORT: ${WEBSITE_DEV_PORT:-6314}
     ports:
-      - "${WEBSITE_DEV_PORT:-5173}:5173"
+      - "${WEBSITE_DEV_PORT:-6314}:6314"
     restart: unless-stopped
     tty: true
     stdin_open: true

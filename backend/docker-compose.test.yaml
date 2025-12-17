@@ -9,7 +9,7 @@ services:
     environment:
       NODE_ENV: production
     ports:
-      - "${BACKEND_TEST_PORT:-3000}:3000"
+      - "${BACKEND_TEST_PORT:-6315}:3000"
     restart: unless-stopped
     networks:
       - backend-network

@@ -2,13 +2,18 @@ import { Menu } from '../components/common/Menu';
 import { Footer } from '../components/common/Footer';
 import './home-style.css';
 import { MainWrapper } from '../components/common/MainWrapper';
+import blockBaguetteImg from '../assets/images/block_baguette.png';
+import img1 from '../assets/images/1.jpg';
+import img2 from '../assets/images/2.jpg';
+import img3 from '../assets/images/3.jpg';
+import img4 from '../assets/images/4.jpg';
 
 export const HomePage = () => {
   return (
     <div className="HomePage">
       <Menu />
       <MainWrapper>
-        <img src="../src/assets/images/block_baguette.png" alt="Wallpaper" />
+        <img src={blockBaguetteImg} alt="Wallpaper" />
 
         <div className="home-text-block anonymous-pro-bold">
           <h2 className="home-text-block__md">
@@ -33,8 +38,8 @@ export const HomePage = () => {
                 Качество материалов. Только проверенные поставщики и надёжные компоненты, обеспечивающие долговечность
                 изделия.
               </h2>
-              <img src="../src/assets/images/1.jpg" alt="ImageCardFirst" />
-              <img src="../src/assets/images/2.jpg" alt="ImageCardSecond" />
+              <img src={img1} alt="ImageCardFirst" />
+              <img src={img2} alt="ImageCardSecond" />
             </div>
             <div className="our_principe_card">
               <h2 className="anonymous-pro-bold home-text-block__sm">
@@ -44,8 +49,8 @@ export const HomePage = () => {
               <h2 className="anonymous-pro-bold home-text-block__sm">
                 Гибкость решений. Готовы реализовать как типовые, так и самые нестандартные задумки.
               </h2>
-              <img src="../src/assets/images/3.jpg" alt="ImageCardThird" />
-              <img src="../src/assets/images/4.jpg" alt="ImageCardFourth" />
+              <img src={img3} alt="ImageCardThird" />
+              <img src={img4} alt="ImageCardFourth" />
             </div>
             <div className="our_principe_card">
               <h2 className="anonymous-pro-bold home-text-block__sm">

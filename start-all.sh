@@ -32,7 +32,7 @@ else
   NGINX_CONTAINER="baguette-nginx-test"
 fi
 
-GATEWAY_PORT="${NGINX_PORT:-8080}"
+GATEWAY_PORT="${NGINX_PORT:-6313}"
 NETWORK_NAME="backend-network"
 
 ensure_network() {

@@ -7,7 +7,7 @@ services:
     env_file:
       - ./.env.nginx
     ports:
-      - "${NGINX_PORT:-8080}:80"
+      - "${NGINX_PORT:-6313}:80"
     volumes:
       - ./logs:/var/log/nginx
       - ./files/nginx.dev.conf:/etc/nginx/nginx.conf:ro

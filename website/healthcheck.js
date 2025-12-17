@@ -1,6 +1,6 @@
 import http from 'node:http';
 
-const port = Number(process.env.VITE_DEV_SERVER_PORT || 5173);
+const port = Number(process.env.VITE_DEV_SERVER_PORT || 6314);
 
 const options = {
   host: 'localhost',

@@ -4,7 +4,9 @@ FROM node:22.15.1-alpine AS build
 WORKDIR /usr/src/app
 
 COPY ./app/package.json ./app/yarn.lock ./
-RUN yarn install --frozen-lockfile
+RUN --mount=type=cache,target=/usr/local/share/.cache/yarn/v6 \
+  yarn config set network-timeout 600000 \
+  && yarn install --frozen-lockfile
 
 COPY ./app .
 RUN yarn build
@@ -16,8 +18,7 @@ ENV NODE_ENV=production
 
 COPY --from=build /usr/src/app/package.json ./package.json
 COPY --from=build /usr/src/app/yarn.lock ./yarn.lock
-RUN yarn install --production --frozen-lockfile
-
+COPY --from=build /usr/src/app/node_modules ./node_modules
 COPY --from=build /usr/src/app/dist ./dist
 COPY --from=build /usr/src/app/healthcheck.js ./healthcheck.js
 

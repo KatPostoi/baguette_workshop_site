@@ -1,5 +1,5 @@
 .footer-all {
-  background-image: url('../src/assets/images/block_footer.png');
+  background-image: url('../../../assets/images/block_footer.png');
   background-repeat: no-repeat; /* чтобы картинка не повторялась */
   background-size: cover; /* чтобы картинка покрывала весь фон */
   background-position: center; /* позиционирование по центру */
@@ -53,22 +53,22 @@
   width: 100%; /* Растягивает ширину картинки под ширину контейнера */
   object-fit: cover; /* Картинка сохранит пропорции, при этом заполнит весь контейнер */
   display: block; /* Убирает лишние отступы вокруг изображения */
-  content: url('../src/assets/images/TelegramLogo.svg');
+  content: url('../../../assets/images/TelegramLogo.svg');
   transition: opacity 300ms ease;
 }
 
 .social-link-tg:hover {
-  content: url('../src/assets/images/TelegramLogo_orange.svg');
+  content: url('../../../assets/images/TelegramLogo_orange.svg');
 }
 
 .social-link-vk {
   width: 100%; /* Растягивает ширину картинки под ширину контейнера */
   object-fit: cover; /* Картинка сохранит пропорции, при этом заполнит весь контейнер */
   display: block; /* Убирает лишние отступы вокруг изображения */
-  content: url('../src/assets/images/VkLogo.svg');
+  content: url('../../../assets/images/VkLogo.svg');
   transition: opacity 300ms ease;
 }
 
 .social-link-vk:hover {
-  content: url('../src/assets/images/VkLogo_orange.svg');
+  content: url('../../../assets/images/VkLogo_orange.svg');
 }

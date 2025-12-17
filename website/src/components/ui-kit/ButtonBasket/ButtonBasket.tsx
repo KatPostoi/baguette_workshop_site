@@ -3,6 +3,8 @@ import type { ButtonHTMLAttributes } from 'react';
 import './button-basket.css';
 import { useIsBasketActive } from '../../../hooks/useIsBasketActive';
 import type { FrameItem } from '../../../api/types';
+import basketIcon from '../../../assets/images/basket.svg';
+import basketActiveIcon from '../../../assets/images/basket-active.svg';
 type ButtonBasketProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'children'> & {
   frameData: FrameItem;
   className?: string;
@@ -20,10 +22,7 @@ export const ButtonBasket = ({ frameData, className, disabled, ...rest }: Button
       {...rest}
     >
       <div className="icon-image">
-        <img
-          src={isBasketActive ? '../src/assets/images/basket-active.svg' : '../src/assets/images/basket.svg'}
-          alt="IconBasket"
-        />
+        <img src={isBasketActive ? basketActiveIcon : basketIcon} alt="IconBasket" />
       </div>
     </button>
   );
