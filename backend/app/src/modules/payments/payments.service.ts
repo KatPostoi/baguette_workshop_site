@@ -14,7 +14,9 @@ export class PaymentsService {
     private readonly paymentGateway: MockPaymentGateway,
   ) {}
 
-  async processMockPayment(dto: MockPaymentDto): Promise<PaymentReceiptResponse> {
+  async processMockPayment(
+    dto: MockPaymentDto,
+  ): Promise<PaymentReceiptResponse> {
     const order = await this.ordersService.getById(dto.orderId);
 
     if (order.status !== OrderStatus.PENDING) {

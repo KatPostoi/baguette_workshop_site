@@ -89,3 +89,12 @@ export async function request<T>(path: string, options: RequestOptions = {}): Pr
 
   return payload as T;
 }
+
+export const httpClient = {
+  get: <T>(path: string, query?: RequestOptions['query']) =>
+    request<T>(path, { method: 'GET', query }),
+  post: <T>(path: string, body?: unknown) => request<T>(path, { method: 'POST', body }),
+  patch: <T>(path: string, body?: unknown) => request<T>(path, { method: 'PATCH', body }),
+  put: <T>(path: string, body?: unknown) => request<T>(path, { method: 'PUT', body }),
+  delete: <T>(path: string, body?: unknown) => request<T>(path, { method: 'DELETE', body }),
+};

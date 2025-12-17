@@ -107,6 +107,7 @@ export const FavoritesProvider = ({ children }: { children: ReactNode }) => {
   );
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useFavoritesContext = (): FavoritesContextValue => {
   const context = useContext(FavoritesContext);
   if (!context) {

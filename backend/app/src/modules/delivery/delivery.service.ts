@@ -17,7 +17,10 @@ export class DeliveryService {
   async schedule(dto: ScheduleDeliveryDto): Promise<DeliveryBookingResponse> {
     await this.ordersService.updateStatus(dto.orderId, OrderStatus.SHIPPED);
 
-    const booking = await this.deliveryProvider.schedule(dto.orderId, dto.courierService);
+    const booking = await this.deliveryProvider.schedule(
+      dto.orderId,
+      dto.courierService,
+    );
 
     await this.notificationsService.record(
       dto.orderId,

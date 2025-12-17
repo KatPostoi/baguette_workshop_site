@@ -1,7 +1,10 @@
-import { request } from './httpClient';
-import type { FrameItem } from './types';
+import { httpClient } from './httpClient';
+import type { CatalogItem } from './types';
 
-export const fetchCatalog = (): Promise<FrameItem[]> => request('/catalog');
+export async function fetchCatalog(): Promise<CatalogItem[]> {
+  return httpClient.get<CatalogItem[]>('/catalog');
+}
 
-export const fetchCatalogItem = (slug: string): Promise<FrameItem> =>
-  request(`/catalog/${encodeURIComponent(slug)}`);
+export async function fetchCatalogItem(slug: string): Promise<CatalogItem> {
+  return httpClient.get<CatalogItem>(`/catalog/${encodeURIComponent(slug)}`);
+}

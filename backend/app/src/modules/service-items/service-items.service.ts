@@ -8,7 +8,9 @@ export class ServiceItemsService {
   constructor(private readonly prisma: PrismaService) {}
 
   async findAll(): Promise<ServiceItemResponse[]> {
-    const services = await this.prisma.serviceItem.findMany({ orderBy: { id: 'asc' } });
+    const services = await this.prisma.serviceItem.findMany({
+      orderBy: { id: 'asc' },
+    });
     return services.map((service) => this.mapToResponse(service));
   }
 

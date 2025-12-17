@@ -49,7 +49,7 @@ export const BasketItemCard = ({
             <h2 className="anonymous-pro-bold home-text-block__sm">{item.frame.title}</h2>
             <div>
               <h2 className="anonymous-pro-bold home-text-block__vsm_grey">
-                Цвет: {item.frame.color}; Стиль: {item.frame.style?.name ?? '—'}
+                Цвет: {item.frame.color}; Стиль: {item.frame.style?.name ?? '-'}
               </h2>
               <h2 className="anonymous-pro-bold home-text-block__vsm_grey">
                 Ширина: {item.frame.size.widthCm} см; Высота: {item.frame.size.heightCm} см

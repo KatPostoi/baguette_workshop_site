@@ -8,7 +8,9 @@ export class UsersService {
   constructor(private readonly prisma: PrismaService) {}
 
   async listPublicProfiles(): Promise<UserProfileResponse[]> {
-    const users = await this.prisma.user.findMany({ orderBy: { createdAt: 'asc' } });
+    const users = await this.prisma.user.findMany({
+      orderBy: { createdAt: 'asc' },
+    });
     return users.map((user) => this.toProfile(user));
   }
 

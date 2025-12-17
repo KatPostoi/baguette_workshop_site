@@ -6,7 +6,10 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "lint": "eslint .",
+    "lint": "eslint . --ext .ts,.tsx",
+    "lint:fix": "eslint . --ext .ts,.tsx --fix && npm run typecheck",
+    "lint:check": "npm run lint && npm run typecheck",
+    "typecheck": "tsc --noEmit -p tsconfig.app.json",
     "preview": "vite preview"
   },
   "dependencies": {

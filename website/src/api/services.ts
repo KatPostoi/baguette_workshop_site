@@ -1,7 +1,10 @@
-import { request } from './httpClient';
+import { httpClient } from './httpClient';
 import type { ServiceItem } from './types';
 
-export const fetchServiceItems = (): Promise<ServiceItem[]> => request('/services');
+export async function fetchServices(): Promise<ServiceItem[]> {
+  return httpClient.get<ServiceItem[]>('/services');
+}
 
-export const fetchServiceItem = (id: number): Promise<ServiceItem> =>
-  request(`/services/${id}`);
+export async function fetchService(id: number): Promise<ServiceItem> {
+  return httpClient.get<ServiceItem>(`/services/${id}`);
+}

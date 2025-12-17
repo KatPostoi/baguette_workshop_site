@@ -2,7 +2,23 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from '../../database/prisma.service';
 import { DetailedBasketItemResponse } from './dto/basket.dto';
-import { CatalogItemWithRelations, CatalogService } from '../catalog/catalog.service';
+import {
+  CatalogItemWithRelations,
+  CatalogService,
+} from '../catalog/catalog.service';
+
+const basketInclude = Prisma.validator<Prisma.BasketItemInclude>()({
+  catalogItem: {
+    include: {
+      material: true,
+      style: true,
+    },
+  },
+});
+
+type BasketWithRelations = Prisma.BasketItemGetPayload<{
+  include: typeof basketInclude;
+}>;
 
 @Injectable()
 export class BasketService {
@@ -11,17 +27,10 @@ export class BasketService {
     private readonly catalogService: CatalogService,
   ) {}
 
-  private readonly include: Prisma.BasketItemInclude = {
-    catalogItem: {
-      include: {
-        material: true,
-        style: true,
-      },
-    },
-  };
+  private readonly include = basketInclude;
 
   async listItems(userId: string): Promise<DetailedBasketItemResponse[]> {
-    const items = await this.prisma.basketItem.findMany({
+    const items: BasketWithRelations[] = await this.prisma.basketItem.findMany({
       where: { userId },
       include: this.include,
       orderBy: { createdAt: 'asc' },
@@ -30,10 +39,13 @@ export class BasketService {
     return items.map((item) => this.mapToResponse(item));
   }
 
-  async upsertItem(userId: string, catalogItemId: string): Promise<DetailedBasketItemResponse> {
+  async upsertItem(
+    userId: string,
+    catalogItemId: string,
+  ): Promise<DetailedBasketItemResponse> {
     await this.catalogService.ensureExists(catalogItemId);
 
-    const item = await this.prisma.basketItem.upsert({
+    const item: BasketWithRelations = await this.prisma.basketItem.upsert({
       where: {
         userId_catalogItemId: { userId, catalogItemId },
       },
@@ -56,7 +68,7 @@ export class BasketService {
     }
 
     try {
-      const item = await this.prisma.basketItem.update({
+      const item: BasketWithRelations = await this.prisma.basketItem.update({
         where: { userId_catalogItemId: { userId, catalogItemId } },
         data: { quantity },
         include: this.include,
@@ -80,9 +92,7 @@ export class BasketService {
     await this.prisma.basketItem.deleteMany({ where: { userId } });
   }
 
-  private mapToResponse(
-    item: Prisma.BasketItemGetPayload<{ include: typeof this.include }>,
-  ): DetailedBasketItemResponse {
+  private mapToResponse(item: BasketWithRelations): DetailedBasketItemResponse {
     return {
       id: item.id,
       quantity: item.quantity,

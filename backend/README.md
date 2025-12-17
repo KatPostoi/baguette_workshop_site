@@ -20,38 +20,38 @@
    ```
 
 ## Структура
-- `app/src` — NestJS приложение.
-- `prisma/` — схема и сиды.
-- `docker/` — Dockerfile’ы для dev/test.
-- `.env.backend` — демонстрационные переменные окружения (хранятся в git осознанно).
-- `docker-compose.prisma.yaml` — одноразовый контейнер для `prisma:sync` + сидов.
+- `app/src` - NestJS приложение.
+- `prisma/` - схема и сиды.
+- `docker/` - Dockerfile'ы для dev/test.
+- `.env.backend` - демонстрационные переменные окружения (хранятся в git осознанно).
+- `docker-compose.prisma.yaml` - одноразовый контейнер для `prisma:sync` + сидов.
 
 ## Docker-сборки
-- `docker/dev/Dockerfile` — hot reload, монтирует `app/`. Используется `docker-compose.dev.yaml`.
-- `docker/test/Dockerfile` — multi-stage билд + slim runtime. Используется `docker-compose.test.yaml`.
+- `docker/dev/Dockerfile` - hot reload, монтирует `app/`. Используется `docker-compose.dev.yaml`.
+- `docker/test/Dockerfile` - multi-stage билд + slim runtime. Используется `docker-compose.test.yaml`.
 
 ## Полезное
-- `yarn build` — сборка в `dist/`.
-- `yarn start` — запуск без watch.
-- `yarn start:dev` — hot reload.
-- `yarn prisma:generate|migrate|seed|sync` — Prisma утилиты (читают `.env.backend`).
+- `yarn build` - сборка в `dist/`.
+- `yarn start` - запуск без watch.
+- `yarn start:dev` - hot reload.
+- `yarn prisma:generate|migrate|seed|sync` - Prisma утилиты (читают `.env.backend`).
 - Тестов пока нет; как только появятся, гоняйте их из dev-контейнера, например:  
   `docker compose -f docker-compose.dev.yaml exec backend yarn test`
 
 ## REST API (v1)
-- `GET /catalog` — список рамок, материалов и стилей.
-- `GET /catalog/:slug` — детали рамки.
-- `GET /materials` / `GET /materials/:id` — каталог материалов.
-- `GET /styles` / `GET /styles/:id` — каталог стилей.
-- `GET /services` / `GET /services/:id` — доп. услуги мастерской.
-- `GET|POST|DELETE /favorites/:userId` — избранное.
-- `GET /basket/:userId/items` — содержимое корзины.
-- `POST|PATCH|DELETE /basket/:userId/items` — управление конкретными позициями.
-- `DELETE /basket/:userId` — очистка корзины.
-- `POST /auth/login` — выдача JWT (7 дней).
-- `GET /orders`, `GET /orders/:id`, `POST /orders` — заказ/оформление.
-- `PATCH /orders/:id/status` — смена статуса (валидация переходов).
-- `POST /payments/mock` — имитация оплаты + чек.
-- `POST /delivery/schedule` — имитация доставки (статус `SHIPPED` + трекинг).
-- `GET /notifications/order/:orderId` — история уведомлений.
-- `GET /orders/:id/timeline` — объединённый таймлайн заказа.
+- `GET /catalog` - список рамок, материалов и стилей.
+- `GET /catalog/:slug` - детали рамки.
+- `GET /materials` / `GET /materials/:id` - каталог материалов.
+- `GET /styles` / `GET /styles/:id` - каталог стилей.
+- `GET /services` / `GET /services/:id` - доп. услуги мастерской.
+- `GET|POST|DELETE /favorites/:userId` - избранное.
+- `GET /basket/:userId/items` - содержимое корзины.
+- `POST|PATCH|DELETE /basket/:userId/items` - управление конкретными позициями.
+- `DELETE /basket/:userId` - очистка корзины.
+- `POST /auth/login` - выдача JWT (7 дней).
+- `GET /orders`, `GET /orders/:id`, `POST /orders` - заказ/оформление.
+- `PATCH /orders/:id/status` - смена статуса (валидация переходов).
+- `POST /payments/mock` - имитация оплаты + чек.
+- `POST /delivery/schedule` - имитация доставки (статус `SHIPPED` + трекинг).
+- `GET /notifications/order/:orderId` - история уведомлений.
+- `GET /orders/:id/timeline` - объединённый таймлайн заказа.

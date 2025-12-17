@@ -63,7 +63,7 @@ export const DesignPage = () => {
     return Math.round(price);
   }, [heightValue, selectedMaterial, selectedStyle, widthValue]);
 
-  const priceLabel = totalPrice == null ? '—' : formatCurrency(totalPrice);
+  const priceLabel = totalPrice == null ? '-' : formatCurrency(totalPrice);
 
   return (
     <div className="DesignPage">

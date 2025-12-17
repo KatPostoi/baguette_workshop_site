@@ -113,6 +113,7 @@ export const BasketProvider = ({ children }: { children: ReactNode }) => {
   return <BasketContext.Provider value={contextValue}>{children}</BasketContext.Provider>;
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useBasketContext = (): BasketContextValue => {
   const context = useContext(BasketContext);
   if (!context) {

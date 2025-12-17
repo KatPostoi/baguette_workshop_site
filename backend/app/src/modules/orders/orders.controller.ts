@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Param, ParseUUIDPipe, Patch, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  ParseUUIDPipe,
+  Patch,
+  Post,
+} from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { OrderResponse } from './dto/order.response';
@@ -25,7 +33,9 @@ export class OrdersController {
   }
 
   @Get(':id/timeline')
-  timeline(@Param('id', new ParseUUIDPipe()) id: string): Promise<OrderTimelineResponse> {
+  timeline(
+    @Param('id', new ParseUUIDPipe()) id: string,
+  ): Promise<OrderTimelineResponse> {
     return this.ordersService.getTimeline(id);
   }
 

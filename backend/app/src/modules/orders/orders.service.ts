@@ -1,4 +1,8 @@
-import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  BadRequestException,
+  NotFoundException,
+} from '@nestjs/common';
 import { OrderStatus, Prisma } from '@prisma/client';
 import { PrismaService } from '../../database/prisma.service';
 import { CatalogService } from '../catalog/catalog.service';
@@ -30,7 +34,7 @@ export class OrdersService {
     });
 
     if (!order) {
-      throw new NotFoundException(Order  not found);
+      throw new NotFoundException(`Order ${id} not found`);
     }
 
     return this.mapToResponse(order);
@@ -43,7 +47,9 @@ export class OrdersService {
 
     const enrichedItems = await Promise.all(
       dto.items.map(async (item) => {
-        const summary = await this.catalogService.getSummaryByIdOrThrow(item.catalogItemId);
+        const summary = await this.catalogService.getSummaryByIdOrThrow(
+          item.catalogItemId,
+        );
         return {
           catalogItemId: summary.id,
           slug: summary.slug,
@@ -56,9 +62,12 @@ export class OrdersService {
       }),
     );
 
-    const total = enrichedItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
+    const total = enrichedItems.reduce(
+      (acc, item) => acc + item.price * item.quantity,
+      0,
+    );
 
-    const order = await this.prisma.(async (tx) => {
+    const order = await this.prisma.$transaction(async (tx) => {
       const created = await tx.order.create({
         data: {
           userId: dto.userId ?? null,
@@ -93,7 +102,10 @@ export class OrdersService {
     return response;
   }
 
-  async updateStatus(orderId: string, status: OrderStatus): Promise<OrderResponse> {
+  async updateStatus(
+    orderId: string,
+    status: OrderStatus,
+  ): Promise<OrderResponse> {
     const order = await this.prisma.order.findUnique({
       where: { id: orderId },
       include: { items: true },
@@ -104,7 +116,9 @@ export class OrdersService {
     }
 
     if (!this.isTransitionAllowed(order.status, status)) {
-      throw new BadRequestException(`Cannot change status from ${order.status} to ${status}`);
+      throw new BadRequestException(
+        `Cannot change status from ${order.status} to ${status}`,
+      );
     }
 
     const updated = await this.prisma.order.update({
@@ -113,7 +127,11 @@ export class OrdersService {
       include: { items: true },
     });
 
-    await this.notificationsService.record(orderId, 'order_status_changed', `Status -> ${status}`);
+    await this.notificationsService.record(
+      orderId,
+      'order_status_changed',
+      `Status -> ${status}`,
+    );
 
     return this.mapToResponse(updated);
   }
@@ -127,7 +145,9 @@ export class OrdersService {
     };
   }
 
-  private mapToResponse(order: Prisma.OrderGetPayload<{ include: { items: true } }>): OrderResponse {
+  private mapToResponse(
+    order: Prisma.OrderGetPayload<{ include: { items: true } }>,
+  ): OrderResponse {
     return {
       id: order.id,
       status: order.status,
@@ -152,7 +172,10 @@ export class OrdersService {
     };
   }
 
-  private isTransitionAllowed(current: OrderStatus, next: OrderStatus): boolean {
+  private isTransitionAllowed(
+    current: OrderStatus,
+    next: OrderStatus,
+  ): boolean {
     const allowedMap: Record<OrderStatus, OrderStatus[]> = {
       [OrderStatus.PENDING]: [OrderStatus.PAID, OrderStatus.CANCELLED],
       [OrderStatus.PAID]: [OrderStatus.SHIPPED, OrderStatus.CANCELLED],

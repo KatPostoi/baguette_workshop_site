@@ -1,6 +1,6 @@
 export const formatCurrency = (value: number): string => {
   if (!Number.isFinite(value)) {
-    return "—";
+    return '-';
   }
-  return `${value.toLocaleString("ru-RU")} ₽`;
+  return `${value.toLocaleString('ru-RU')} ₽`;
 };

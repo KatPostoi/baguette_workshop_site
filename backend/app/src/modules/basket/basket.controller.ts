@@ -39,7 +39,11 @@ export class BasketController {
     @Param('userId', new ParseUUIDPipe()) userId: string,
     @Body() dto: UpdateQuantityDto,
   ): Promise<DetailedBasketItemResponse> {
-    return this.basketService.updateQuantity(userId, dto.catalogItemId, dto.quantity);
+    return this.basketService.updateQuantity(
+      userId,
+      dto.catalogItemId,
+      dto.quantity,
+    );
   }
 
   @Delete(':userId/items')

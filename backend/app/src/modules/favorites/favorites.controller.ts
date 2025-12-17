@@ -17,7 +17,9 @@ export class FavoritesController {
   constructor(private readonly favoritesService: FavoritesService) {}
 
   @Get(':userId')
-  list(@Param('userId', new ParseUUIDPipe()) userId: string): Promise<FavoriteItemResponse[]> {
+  list(
+    @Param('userId', new ParseUUIDPipe()) userId: string,
+  ): Promise<FavoriteItemResponse[]> {
     return this.favoritesService.list(userId);
   }
 

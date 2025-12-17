@@ -1,9 +1,9 @@
 import { HomePage } from './pages/HomePage';
-import { CatalogPage } from './pages/Catalog';
+import CatalogPage from './pages/Catalog';
 import { ProcessPage } from './pages/Process';
 import { DesignPage } from './pages/Design';
 import { ContactsPage } from './pages/Contacts';
-import { BasketPage } from './pages/Basket';
+import BasketPage from './pages/Basket';
 import { PersonalAccountPage } from './pages/PersonalAccount';
 import { BasketProvider } from './state/BasketContext';
 import { FavoritesProvider } from './state/FavoritesContext';

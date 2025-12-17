@@ -16,7 +16,9 @@ export class MaterialsService {
   }
 
   async findOne(id: string): Promise<FrameMaterialResponse> {
-    const material = await this.prisma.frameMaterial.findUnique({ where: { id } });
+    const material = await this.prisma.frameMaterial.findUnique({
+      where: { id },
+    });
 
     if (!material) {
       throw new NotFoundException(`Material ${id} not found`);
