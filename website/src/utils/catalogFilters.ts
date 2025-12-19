@@ -2,7 +2,7 @@ import type { FrameItem } from '../api/types';
 
 export type CatalogFilters = {
   favoritesOnly: boolean;
-  materialId?: string | null;
+  materialId?: number | null;
   styleId?: string | null;
 };
 

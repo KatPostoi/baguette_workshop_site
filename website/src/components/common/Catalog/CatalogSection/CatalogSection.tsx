@@ -16,7 +16,7 @@ type CatalogSectionProps = {
 };
 
 const ALL_MATERIAL_OPTION: MaterialOption = {
-  id: '__all_materials',
+  id: 0,
   label: 'Все материалы',
   pricePerCm: 0,
 };
@@ -35,7 +35,7 @@ export const CatalogSection = ({ items }: CatalogSectionProps) => {
   const favoriteIds = useMemo(() => new Set(likedFrames.map((frame) => frame.id)), [likedFrames]);
 
   const [favoritesOnly, setFavoritesOnly] = useState(false);
-  const [materialFilterId, setMaterialFilterId] = useState<string | null>(null);
+  const [materialFilterId, setMaterialFilterId] = useState<number | null>(null);
   const [styleFilterId, setStyleFilterId] = useState<string | null>(null);
 
   const materialOptionsWithAll = useMemo(

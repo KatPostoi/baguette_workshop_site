@@ -1,4 +1,4 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, Param, ParseIntPipe } from '@nestjs/common';
 import { MaterialsService } from './materials.service';
 import { FrameMaterialResponse } from './dto/frame-material.response';
 
@@ -12,7 +12,9 @@ export class MaterialsController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string): Promise<FrameMaterialResponse> {
+  findOne(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<FrameMaterialResponse> {
     return this.materialsService.findOne(id);
   }
 }

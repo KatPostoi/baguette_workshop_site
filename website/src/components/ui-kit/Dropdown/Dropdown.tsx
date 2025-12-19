@@ -3,7 +3,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import './dropdown.css';
 
 type DropdownOptionObject = {
-  id: string;
+  id: string | number;
   label: string;
 };
 

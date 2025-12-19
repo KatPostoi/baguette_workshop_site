@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { FrameMaterial } from '@prisma/client';
+import type { FrameMaterial, Prisma } from '@prisma/client';
 import { PrismaService } from '../../database/prisma.service';
 import { FrameMaterialResponse } from './dto/frame-material.response';
 
@@ -15,7 +15,9 @@ export class MaterialsService {
     return materials.map((material) => this.mapToResponse(material));
   }
 
-  async findOne(id: string): Promise<FrameMaterialResponse> {
+  async findOne(
+    id: Prisma.FrameMaterialWhereUniqueInput['id'],
+  ): Promise<FrameMaterialResponse> {
     const material = await this.prisma.frameMaterial.findUnique({
       where: { id },
     });
@@ -29,7 +31,7 @@ export class MaterialsService {
 
   private mapToResponse(material: FrameMaterial): FrameMaterialResponse {
     return {
-      id: material.id,
+      id: Number(material.id),
       title: material.title,
       material: material.material,
       description: material.description,

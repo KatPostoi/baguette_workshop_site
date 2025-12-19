@@ -4,7 +4,7 @@ export interface CatalogImage {
 }
 
 export interface CatalogMaterial {
-  id: string;
+  id: number;
   title: string;
   material: string;
   description: string;

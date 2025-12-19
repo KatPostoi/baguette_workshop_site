@@ -86,7 +86,7 @@ export class CatalogService {
       item.type === CatalogItemType.CUSTOM ? 'custom' : 'default';
 
     const material: CatalogMaterialResponse = {
-      id: item.material.id,
+      id: Number(item.material.id),
       title: item.material.title,
       material: item.material.material,
       description: item.material.description,

@@ -26,7 +26,7 @@ enum OrderStatus {
 }
 
 model FrameMaterial {
-  id           String         @id
+  id           Int            @id @default(autoincrement())
   title        String
   material     String
   description  String
@@ -54,7 +54,7 @@ model CatalogItem {
   description   String
   imageUrl      String
   imageAlt      String
-  materialId    String
+  materialId    Int
   styleId       String?
   color         String
   type          CatalogItemType  @default(DEFAULT)

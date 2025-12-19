@@ -9,7 +9,7 @@ export interface CatalogSizeResponse {
 }
 
 export interface CatalogMaterialResponse {
-  id: string;
+  id: number;
   title: string;
   material: string;
   description: string;

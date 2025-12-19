@@ -45,7 +45,12 @@ export const DesignPage = () => {
       return;
     }
 
-    const matchedOption = materialOptions.find((option) => option.id === materialIdFromUrl);
+    const parsedMaterialId = Number(materialIdFromUrl);
+    if (Number.isNaN(parsedMaterialId)) {
+      return;
+    }
+
+    const matchedOption = materialOptions.find((option) => option.id === parsedMaterialId);
     if (matchedOption) {
       setSelectedMaterial(matchedOption);
     }

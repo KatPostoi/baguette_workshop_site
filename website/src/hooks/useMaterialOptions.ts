@@ -3,7 +3,7 @@ import type { FrameMaterial } from '../api/types';
 import { useFrameMaterials } from './useFrameMaterials';
 
 export type MaterialOption = {
-  id: string;
+  id: number;
   label: string;
   pricePerCm: number;
 };

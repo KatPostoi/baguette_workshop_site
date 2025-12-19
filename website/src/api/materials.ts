@@ -3,5 +3,5 @@ import type { FrameMaterial } from './types';
 
 export const fetchMaterials = (): Promise<FrameMaterial[]> => httpClient.get('/materials');
 
-export const fetchMaterialById = (id: string): Promise<FrameMaterial> =>
-  httpClient.get(`/materials/${encodeURIComponent(id)}`);
+export const fetchMaterialById = (id: number): Promise<FrameMaterial> =>
+  httpClient.get(`/materials/${encodeURIComponent(id.toString())}`);

@@ -3,6 +3,7 @@ import {
   OrderStatus,
   PrismaClient,
   UserRole,
+  Prisma,
 } from '@prisma/client';
 
 const prisma = new PrismaClient();
@@ -10,9 +11,19 @@ const prisma = new PrismaClient();
 const PASSWORD_HASH =
   '$2b$10$N9qo8uLOickgx2ZMRZoMyeIjZ2uVH54camzatoorktrENcGukd1m.'; // bcrypt("password")
 
-const frameMaterialsSeed = [
+type FrameMaterialSeed = Omit<
+  Prisma.FrameMaterialCreateManyInput,
+  'id' | 'createdAt' | 'updatedAt'
+> & { id: number };
+
+type CatalogItemSeed = Omit<
+  Prisma.CatalogItemCreateManyInput,
+  'materialId' | 'createdAt' | 'updatedAt'
+> & { materialId: number };
+
+const frameMaterialsSeed: FrameMaterialSeed[] = [
   {
-    id: 'wood',
+    id: 1,
     title: 'Деревянный багет',
     material: 'Дерево',
     description:
@@ -22,7 +33,7 @@ const frameMaterialsSeed = [
     pricePerCm: 20,
   },
   {
-    id: 'plastic',
+    id: 2,
     title: 'Пластиковый багет',
     material: 'Пластик',
     description:
@@ -32,7 +43,7 @@ const frameMaterialsSeed = [
     pricePerCm: 10,
   },
   {
-    id: 'mdf',
+    id: 3,
     title: 'МДФ багет',
     material: 'МДФ',
     description:
@@ -42,7 +53,7 @@ const frameMaterialsSeed = [
     pricePerCm: 12,
   },
   {
-    id: 'aluminum',
+    id: 4,
     title: 'Алюминиевый багет',
     material: 'Алюминий',
     description:
@@ -61,7 +72,7 @@ const frameStylesSeed = [
   { id: 'art-deco', name: 'Ар-деко', coefficient: 1.5 },
 ];
 
-const catalogItemsSeed = [
+const catalogItemsSeed: CatalogItemSeed[] = [
   {
     id: 'frame-1',
     slug: 'baguette-1',
@@ -69,7 +80,7 @@ const catalogItemsSeed = [
     description: '6144 руб./м.п',
     imageUrl: '/images/catalog/2.1.png',
     imageAlt: 'goodsFrame',
-    materialId: 'wood',
+    materialId: 1,
     styleId: 'minimalism',
     color: 'Коричневый',
     type: CatalogItemType.CUSTOM,
@@ -85,7 +96,7 @@ const catalogItemsSeed = [
     description: '11700 руб./м.п',
     imageUrl: '/images/catalog/2.2.png',
     imageAlt: 'goodsFrame',
-    materialId: 'wood',
+    materialId: 1,
     styleId: 'baroque',
     color: 'Золотой',
     type: CatalogItemType.CUSTOM,
@@ -101,7 +112,7 @@ const catalogItemsSeed = [
     description: '11250 руб./м.п',
     imageUrl: '/images/catalog/2.3.png',
     imageAlt: 'goodsFrame',
-    materialId: 'wood',
+    materialId: 1,
     styleId: 'rococo',
     color: 'Бронзовый',
     type: CatalogItemType.CUSTOM,
@@ -117,7 +128,7 @@ const catalogItemsSeed = [
     description: '2300 руб./м.п',
     imageUrl: '/images/catalog/2.4.png',
     imageAlt: 'goodsFrame',
-    materialId: 'wood',
+    materialId: 1,
     styleId: 'classicism',
     color: 'Коричневый',
     type: CatalogItemType.CUSTOM,
@@ -133,7 +144,7 @@ const catalogItemsSeed = [
     description: '2865 руб./м.п',
     imageUrl: '/images/catalog/2.5.png',
     imageAlt: 'goodsFrame',
-    materialId: 'plastic',
+    materialId: 2,
     styleId: 'minimalism',
     color: 'Черный',
     type: CatalogItemType.CUSTOM,
@@ -149,7 +160,7 @@ const catalogItemsSeed = [
     description: '1350 руб./м.п',
     imageUrl: '/images/catalog/2.6.png',
     imageAlt: 'goodsFrame',
-    materialId: 'plastic',
+    materialId: 2,
     styleId: 'art-deco',
     color: 'Черно-золотой',
     type: CatalogItemType.CUSTOM,
@@ -165,7 +176,7 @@ const catalogItemsSeed = [
     description: '2675 руб./м.п',
     imageUrl: '/images/catalog/2.7.png',
     imageAlt: 'goodsFrame',
-    materialId: 'plastic',
+    materialId: 2,
     styleId: 'minimalism',
     color: 'Молочный',
     type: CatalogItemType.CUSTOM,
@@ -181,7 +192,7 @@ const catalogItemsSeed = [
     description: '2675 руб./м.п',
     imageUrl: '/images/catalog/2.8.png',
     imageAlt: 'goodsFrame',
-    materialId: 'plastic',
+    materialId: 2,
     styleId: 'minimalism',
     color: 'Коричневый',
     type: CatalogItemType.CUSTOM,
@@ -197,7 +208,7 @@ const catalogItemsSeed = [
     description: '2800 руб./м.п',
     imageUrl: '/images/catalog/2.9.png',
     imageAlt: 'goodsFrame',
-    materialId: 'wood',
+    materialId: 1,
     styleId: 'minimalism',
     color: 'Розовый',
     type: CatalogItemType.CUSTOM,
@@ -213,7 +224,7 @@ const catalogItemsSeed = [
     description: '2800 руб./м.п',
     imageUrl: '/images/catalog/2.10.png',
     imageAlt: 'goodsFrame',
-    materialId: 'aluminum',
+    materialId: 4,
     styleId: 'minimalism',
     color: 'Белый',
     type: CatalogItemType.CUSTOM,
@@ -229,7 +240,7 @@ const catalogItemsSeed = [
     description: '1200 руб./м.п',
     imageUrl: '/images/catalog/2.11.png',
     imageAlt: 'goodsFrame',
-    materialId: 'aluminum',
+    materialId: 4,
     styleId: 'minimalism',
     color: 'Коричневый',
     type: CatalogItemType.CUSTOM,
@@ -245,7 +256,7 @@ const catalogItemsSeed = [
     description: '2600 руб./м.п',
     imageUrl: '/images/catalog/2.12.png',
     imageAlt: 'goodsFrame',
-    materialId: 'aluminum',
+    materialId: 4,
     styleId: 'minimalism',
     color: 'Золотой',
     type: CatalogItemType.CUSTOM,
@@ -288,7 +299,7 @@ const constructorPresetsSeed = [
     config: {
       widthCm: 30,
       heightCm: 40,
-      materialId: 'wood',
+      materialId: 1,
       styleId: 'classicism',
       color: 'Орех',
       extras: { glass: 'museum' },
@@ -303,7 +314,7 @@ const constructorPresetsSeed = [
     config: {
       widthCm: 50,
       heightCm: 70,
-      materialId: 'aluminum',
+      materialId: 4,
       styleId: 'minimalism',
       color: 'Серебро',
       extras: { spacer: true },
@@ -388,9 +399,20 @@ async function resetDatabase() {
 async function main() {
   await resetDatabase();
 
-  await prisma.frameMaterial.createMany({ data: frameMaterialsSeed });
+  await prisma.frameMaterial.createMany({
+    data: frameMaterialsSeed.map((material) => ({
+      ...material,
+      id: material.id as unknown as Prisma.FrameMaterialCreateManyInput['id'],
+    })),
+  });
   await prisma.frameStyle.createMany({ data: frameStylesSeed });
-  await prisma.catalogItem.createMany({ data: catalogItemsSeed });
+  await prisma.catalogItem.createMany({
+    data: catalogItemsSeed.map((item) => ({
+      ...item,
+      materialId:
+        item.materialId as unknown as Prisma.CatalogItemCreateManyInput['materialId'],
+    })),
+  });
   await prisma.serviceItem.createMany({ data: serviceItemsSeed });
 
   for (const user of usersSeed) {

@@ -1,7 +1,7 @@
 import { CatalogImageResponse } from '../../catalog/dto/catalog-item.response';
 
 export interface FrameMaterialResponse {
-  id: string;
+  id: number;
   title: string;
   material: string;
   description: string;
