@@ -33,7 +33,9 @@ const getActiveIdFromPath = (pathname: string) => {
   }
 
   const prefixMatch = items.find((item) =>
-    normalizedPath.startsWith(item.href.endsWith('/') ? item.href : `${item.href}/`)
+    normalizedPath.startsWith(
+      item.href.endsWith('/') ? item.href : `${item.href}/`
+    )
   );
 
   return prefixMatch?.id ?? null;
@@ -78,13 +80,13 @@ export const Menu = () => {
                 'nav-menu__item_active': item.id === activeId,
               })}
             >
-              <p>{item.label}</p>
+              {item.label}
             </a>
           ))}
         </nav>
 
-        <div className="nav-menu__logo">
-          <img src={logoImg} alt="Logo" />
+        <div className="nav-menu__logo-wrapper ">
+          <img className="nav-menu__logo" src={logoImg} alt="Logo" />
         </div>
 
         <LinkAsButton href="/design">Создать свой дизайн</LinkAsButton>

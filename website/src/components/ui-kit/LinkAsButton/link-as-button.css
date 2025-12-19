@@ -3,8 +3,9 @@
   justify-content: center;
   align-items: center;
   border-radius: 65px;
-  height: 65px;
-  width: 380px;
+  padding: 1rem;
+  text-align: center;
+  width: 100%;
   font-family: 'Anonymous Pro', monospace;
   font-weight: 700;
   font-style: normal;
