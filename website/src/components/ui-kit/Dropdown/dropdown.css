@@ -14,11 +14,13 @@
   gap: 40px;
   background: transparent;
   cursor: pointer;
+  align-items: center;
+  padding: 1rem;
 }
 
 .ui-dropdown__control_line {
   width: 100%;
-  padding: 0 10px 0 20px;
+  padding: 1rem;
   border: none;
   border-bottom: 5px solid #000000;
 }
@@ -26,10 +28,9 @@
 .ui-dropdown__control_circle {
   width: auto;
   display: inline-grid;
-  padding: 0 40px;
+  padding: 1rem 3rem;
   border: 3px solid #000000;
   border-radius: 65px;
-  height: 65px;
   align-items: center;
 }
 
@@ -48,7 +49,7 @@
 
 .ui-dropdown__label {
   text-align: left;
-  padding: 10px 0;
+  padding: 0;
 }
 
 .ui-dropdown__control_circle .ui-dropdown__label {

@@ -4,8 +4,7 @@
   align-items: center;
   border-radius: 65px;
   border: 3px solid black;
-  /* height: 65px; */
-  /* width: 380px; */
+  padding: 1rem;
   width: 100%;
   max-width: 25rem;
   font-family: 'Anonymous Pro', monospace;
@@ -15,7 +14,6 @@
   font-size: 32px;
   background-color: black;
   color: white;
-  padding: 1rem;
 }
 
 .ui-button:hover {
