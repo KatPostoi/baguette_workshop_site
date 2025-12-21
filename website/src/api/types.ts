@@ -1,3 +1,79 @@
+export type AuthTokenProvider = () => string | null;
+
+export type UserRole = 'CUSTOMER' | 'ADMIN';
+
+export interface UserProfile {
+  id: string;
+  email: string;
+  phone?: string | null;
+  fullName: string;
+  role: UserRole;
+}
+
+export interface AuthResponse {
+  token: string;
+  refreshToken?: string;
+  user: UserProfile;
+}
+
+export type OrderStatus =
+  | 'PENDING'
+  | 'PAID'
+  | 'ASSEMBLY'
+  | 'READY_FOR_PICKUP'
+  | 'IN_TRANSIT'
+  | 'RECEIVED'
+  | 'COMPLETED'
+  | 'CANCELLED';
+
+export interface Team {
+  id: string;
+  name: string;
+  active: boolean;
+}
+
+export interface OrderStatusHistory {
+  id: string;
+  status: OrderStatus;
+  comment?: string | null;
+  createdAt: string;
+  changedBy?: {
+    id: string;
+    fullName: string;
+    role: UserRole;
+  } | null;
+}
+
+export interface OrderItem {
+  id: string;
+  catalogItemId: string;
+  title: string;
+  slug: string;
+  quantity: number;
+  price: number;
+  image: {
+    src: string;
+    alt: string;
+  };
+}
+
+export interface Order {
+  id: string;
+  status: OrderStatus;
+  total: number;
+  customerName: string;
+  customerEmail: string;
+  customerPhone?: string | null;
+  deliveryAddress?: string | null;
+  createdAt: string;
+  team?: {
+    id: string;
+    name: string;
+  } | null;
+  history?: OrderStatusHistory[];
+  items: OrderItem[];
+}
+
 export interface CatalogImage {
   src: string;
   alt: string;

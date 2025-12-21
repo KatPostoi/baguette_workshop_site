@@ -1,10 +1,10 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
-import { OrderStatus } from '@prisma/client';
 import { OrdersService } from '../orders/orders.service';
 import { NotificationsService } from '../notifications/notifications.service';
 import { MockPaymentGateway } from './providers/mock-payment.gateway';
 import { MockPaymentDto } from './dto/mock-payment.dto';
 import { PaymentReceiptResponse } from './dto/payment-response.dto';
+import { ORDER_STATUS } from '../orders/order-status';
 
 @Injectable()
 export class PaymentsService {
@@ -17,9 +17,13 @@ export class PaymentsService {
   async processMockPayment(
     dto: MockPaymentDto,
   ): Promise<PaymentReceiptResponse> {
-    const order = await this.ordersService.getById(dto.orderId);
+    const order = await this.ordersService.getById({
+      id: dto.orderId,
+      userId: null,
+      allowAll: true,
+    });
 
-    if (order.status !== OrderStatus.PENDING) {
+    if (order.status !== ORDER_STATUS.PENDING) {
       throw new BadRequestException('Order cannot be paid in current status');
     }
 
@@ -28,7 +32,12 @@ export class PaymentsService {
     }
 
     const receipt = await this.paymentGateway.charge(dto.orderId, dto.amount);
-    await this.ordersService.updateStatus(dto.orderId, OrderStatus.PAID);
+    await this.ordersService.updateStatus({
+      orderId: dto.orderId,
+      status: ORDER_STATUS.PAID,
+      userId: null,
+      allowAll: true,
+    });
 
     await this.notificationsService.record(
       dto.orderId,

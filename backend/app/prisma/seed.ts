@@ -1,15 +1,15 @@
 import {
   CatalogItemType,
-  OrderStatus,
   PrismaClient,
   UserRole,
   Prisma,
+  OrderStatus,
 } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
 const PASSWORD_HASH =
-  '$2b$10$N9qo8uLOickgx2ZMRZoMyeIjZ2uVH54camzatoorktrENcGukd1m.'; // bcrypt("password")
+  '$2b$10$uHp25QSrO4ZfHCQp6VZMw.TOGmVgszBBeFIwjQAjtj/M/r55UqDmC'; // bcrypt("password")
 
 type FrameMaterialSeed = Omit<
   Prisma.FrameMaterialCreateManyInput,
@@ -274,17 +274,41 @@ const serviceItemsSeed = [
 const usersSeed = [
   {
     id: '017e0d6a-2d9d-45e2-989c-f2f04fc3a1c0',
-    email: 'admin@baguette.local',
+    email: 'admin1@baguette.local',
     phone: '+79990000001',
-    fullName: 'Администратор мастерской',
+    fullName: 'Администратор 1',
+    passwordHash: PASSWORD_HASH,
+    role: UserRole.ADMIN,
+  },
+  {
+    id: '1c2d3e4f-1111-2222-3333-444455556666',
+    email: 'admin2@baguette.local',
+    phone: '+79990000002',
+    fullName: 'Администратор 2',
     passwordHash: PASSWORD_HASH,
     role: UserRole.ADMIN,
   },
   {
     id: '32c9b77a-5fe8-4efc-9d62-9ce5c6290321',
-    email: 'customer@baguette.local',
-    phone: '+79990000002',
-    fullName: 'Демо клиент',
+    email: 'customer1@baguette.local',
+    phone: '+79990000003',
+    fullName: 'Покупатель 1',
+    passwordHash: PASSWORD_HASH,
+    role: UserRole.CUSTOMER,
+  },
+  {
+    id: '7a7b7c7d-aaaa-bbbb-cccc-ddddeeeeffff',
+    email: 'customer2@baguette.local',
+    phone: '+79990000004',
+    fullName: 'Покупатель 2',
+    passwordHash: PASSWORD_HASH,
+    role: UserRole.CUSTOMER,
+  },
+  {
+    id: '88888888-9999-0000-aaaa-bbbbbbbbbbbb',
+    email: 'customer3@baguette.local',
+    phone: '+79990000005',
+    fullName: 'Покупатель 3',
     passwordHash: PASSWORD_HASH,
     role: UserRole.CUSTOMER,
   },
@@ -340,6 +364,29 @@ const basketItemsSeed = [
   },
 ];
 
+const teamsSeed = [
+  {
+    id: 'aaa11111-1111-1111-1111-111111111111',
+    name: 'Команда сборки #1',
+    active: true,
+  },
+  {
+    id: 'bbb22222-2222-2222-2222-222222222222',
+    name: 'Команда сборки #2',
+    active: true,
+  },
+  {
+    id: 'ccc33333-3333-3333-3333-333333333333',
+    name: 'Команда сборки #3',
+    active: true,
+  },
+  {
+    id: 'ddd44444-4444-4444-4444-444444444444',
+    name: 'Команда доставки #1',
+    active: true,
+  },
+];
+
 const ordersSeed = [
   {
     id: 'b06d7a6c-6e62-4a9d-a4f5-7adfd67551c5',
@@ -370,6 +417,94 @@ const ordersSeed = [
         imageAlt: 'goodsFrame',
       },
     ],
+    history: [
+      {
+        status: OrderStatus.PENDING,
+        comment: 'Заказ создан и ожидает оплаты',
+        changedBy: null,
+      },
+    ],
+  },
+  {
+    id: '8e3cc3d0-0c39-4a87-9c5d-6eac5d1a0002',
+    userId: '32c9b77a-5fe8-4efc-9d62-9ce5c6290321',
+    customerName: 'Демо клиент',
+    customerEmail: 'customer@baguette.local',
+    customerPhone: '+79990000002',
+    deliveryAddress: 'г. Москва, ул. Курьерская, д. 77',
+    teamId: 'bbb22222-2222-2222-2222-222222222222',
+    status: OrderStatus.IN_TRANSIT,
+    total: 6200,
+    items: [
+      {
+        catalogItemId: 'frame-4',
+        title: 'Деревянный багет',
+        slug: 'baguette-4',
+        price: 2300,
+        quantity: 1,
+        imageUrl: '/images/catalog/2.4.png',
+        imageAlt: 'goodsFrame',
+      },
+      {
+        catalogItemId: 'frame-10',
+        title: 'Алюминиевый багет',
+        slug: 'baguette-10',
+        price: 2800,
+        quantity: 1,
+        imageUrl: '/images/catalog/2.10.png',
+        imageAlt: 'goodsFrame',
+      },
+    ],
+    history: [
+      { status: OrderStatus.PENDING, comment: 'Создан', changedBy: null },
+      { status: OrderStatus.PAID, comment: 'Оплачен картой', changedBy: null },
+      {
+        status: OrderStatus.ASSEMBLY,
+        comment: 'Передан в сборку',
+        changedBy: null,
+      },
+      {
+        status: OrderStatus.IN_TRANSIT,
+        comment: 'Передан в доставку',
+        changedBy: null,
+      },
+    ],
+  },
+  {
+    id: '9f4dd4e1-1d49-4b98-8d6e-7fbd6e2b0003',
+    userId: '32c9b77a-5fe8-4efc-9d62-9ce5c6290321',
+    customerName: 'Демо клиент',
+    customerEmail: 'customer@baguette.local',
+    customerPhone: '+79990000002',
+    deliveryAddress: null,
+    teamId: 'aaa11111-1111-1111-1111-111111111111',
+    status: OrderStatus.READY_FOR_PICKUP,
+    total: 1350,
+    items: [
+      {
+        catalogItemId: 'frame-6',
+        title: 'Пластиковый багет',
+        slug: 'baguette-6',
+        price: 1350,
+        quantity: 1,
+        imageUrl: '/images/catalog/2.6.png',
+        imageAlt: 'goodsFrame',
+      },
+    ],
+    history: [
+      { status: OrderStatus.PENDING, comment: 'Создан', changedBy: null },
+      { status: OrderStatus.PAID, comment: 'Оплачен картой', changedBy: null },
+      {
+        status: OrderStatus.ASSEMBLY,
+        comment: 'Передан в сборку',
+        changedBy: null,
+      },
+      {
+        status: OrderStatus.READY_FOR_PICKUP,
+        comment: 'Готов к выдаче',
+        changedBy: null,
+      },
+    ],
   },
 ];
 
@@ -384,6 +519,7 @@ const notificationsSeed = [
 
 async function resetDatabase() {
   await prisma.notification.deleteMany();
+  await prisma.orderStatusHistory.deleteMany();
   await prisma.orderItem.deleteMany();
   await prisma.order.deleteMany();
   await prisma.basketItem.deleteMany();
@@ -393,6 +529,7 @@ async function resetDatabase() {
   await prisma.serviceItem.deleteMany();
   await prisma.frameStyle.deleteMany();
   await prisma.frameMaterial.deleteMany();
+  await prisma.team.deleteMany();
   await prisma.user.deleteMany();
 }
 
@@ -414,6 +551,7 @@ async function main() {
     })),
   });
   await prisma.serviceItem.createMany({ data: serviceItemsSeed });
+  await prisma.team.createMany({ data: teamsSeed });
 
   for (const user of usersSeed) {
     await prisma.user.create({ data: user });
@@ -428,6 +566,7 @@ async function main() {
       data: {
         id: order.id,
         userId: order.userId,
+        teamId: order.teamId,
         customerName: order.customerName,
         customerEmail: order.customerEmail,
         customerPhone: order.customerPhone,
@@ -449,6 +588,15 @@ async function main() {
                 type: note.type,
                 message: note.message,
               })),
+          },
+        },
+        history: {
+          createMany: {
+            data: (order.history ?? []).map((h) => ({
+              status: h.status,
+              comment: h.comment,
+              changedBy: h.changedBy,
+            })),
           },
         },
       },

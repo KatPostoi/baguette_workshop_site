@@ -20,7 +20,10 @@ enum UserRole {
 enum OrderStatus {
   PENDING
   PAID
-  SHIPPED
+  ASSEMBLY
+  READY_FOR_PICKUP
+  IN_TRANSIT
+  RECEIVED
   COMPLETED
   CANCELLED
 }
@@ -94,6 +97,7 @@ model User {
   basketItems  BasketItem[]
   presets      ConstructorPreset[]
   orders       Order[]
+  orderHistory OrderStatusHistory[]
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
 }
@@ -137,7 +141,9 @@ model ConstructorPreset {
 model Order {
   id              String       @id @default(uuid())
   userId          String?
+  teamId          String?
   user            User?        @relation(fields: [userId], references: [id], onDelete: SetNull)
+  team            Team?        @relation(fields: [teamId], references: [id], onDelete: SetNull)
   customerName    String
   customerEmail   String
   customerPhone   String?
@@ -146,10 +152,12 @@ model Order {
   total           Int
   items           OrderItem[]
   notifications   Notification[]
+  history         OrderStatusHistory[]
   createdAt       DateTime     @default(now())
   updatedAt       DateTime     @updatedAt
 
   @@index([userId])
+  @@index([teamId])
 }
 
 model OrderItem {
@@ -175,4 +183,27 @@ model Notification {
   order     Order      @relation(fields: [orderId], references: [id], onDelete: Cascade)
 
   @@index([orderId])
+}
+
+model Team {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  orders    Order[]
+}
+
+model OrderStatusHistory {
+  id        String      @id @default(uuid())
+  orderId   String
+  status    OrderStatus
+  changedBy String?
+  comment   String?
+  createdAt DateTime    @default(now())
+  order     Order       @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  actor     User?       @relation(fields: [changedBy], references: [id], onDelete: SetNull)
+
+  @@index([orderId])
+  @@index([changedBy])
 }

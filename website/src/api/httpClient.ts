@@ -1,4 +1,5 @@
 import { env } from '../config/env';
+import type { AuthTokenProvider } from './types';
 
 export class ApiError extends Error {
   constructor(
@@ -52,6 +53,17 @@ const parseResponseBody = async (response: Response): Promise<unknown> => {
   }
 };
 
+let tokenProvider: AuthTokenProvider | null = null;
+let unauthorizedHandler: (() => void) | null = null;
+
+export const setAuthTokenProvider = (provider: AuthTokenProvider) => {
+  tokenProvider = provider;
+};
+
+export const setUnauthorizedHandler = (handler: () => void) => {
+  unauthorizedHandler = handler;
+};
+
 export async function request<T>(path: string, options: RequestOptions = {}): Promise<T> {
   const url = buildUrl(path, options.query);
 
@@ -59,6 +71,11 @@ export async function request<T>(path: string, options: RequestOptions = {}): Pr
     Accept: 'application/json',
     ...options.headers,
   };
+
+  const token = tokenProvider?.();
+  if (token) {
+    headers.Authorization = `Bearer ${token}`;
+  }
 
   let body: BodyInit | undefined;
   if (options.body !== undefined) {
@@ -84,6 +101,11 @@ export async function request<T>(path: string, options: RequestOptions = {}): Pr
       (payload && typeof payload === 'object' && 'message' in payload
         ? String((payload as { message?: unknown }).message)
         : null) ?? `Request failed with status ${response.status}`;
+
+    if (response.status === 401) {
+      unauthorizedHandler?.();
+    }
+
     throw new ApiError(message, response.status, payload);
   }
 

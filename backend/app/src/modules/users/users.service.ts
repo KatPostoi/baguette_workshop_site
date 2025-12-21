@@ -1,7 +1,11 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import * as bcrypt from 'bcrypt';
 import { User } from '@prisma/client';
 import { PrismaService } from '../../database/prisma.service';
 import { UserProfileResponse } from './dto/user-profile.response';
+import { UpdateProfileDto } from './dto/update-profile.dto';
+import { ChangePasswordDto } from './dto/change-password.dto';
+import { UnauthorizedException } from '@nestjs/common';
 
 @Injectable()
 export class UsersService {
@@ -32,6 +36,22 @@ export class UsersService {
     return this.prisma.user.findUnique({ where: { id } });
   }
 
+  async create(data: {
+    email: string;
+    passwordHash: string;
+    fullName: string;
+    phone?: string;
+  }): Promise<User> {
+    return this.prisma.user.create({
+      data: {
+        email: data.email,
+        passwordHash: data.passwordHash,
+        fullName: data.fullName,
+        phone: data.phone,
+      },
+    });
+  }
+
   toProfile(user: User): UserProfileResponse {
     return {
       id: user.id,
@@ -40,5 +60,40 @@ export class UsersService {
       fullName: user.fullName,
       role: user.role,
     };
+  }
+
+  async updateProfile(
+    userId: string,
+    dto: UpdateProfileDto,
+  ): Promise<UserProfileResponse> {
+    const user = await this.prisma.user.update({
+      where: { id: userId },
+      data: {
+        fullName: dto.fullName,
+        phone: dto.phone,
+      },
+    });
+    return this.toProfile(user);
+  }
+
+  async changePassword(userId: string, dto: ChangePasswordDto): Promise<void> {
+    const user = await this.prisma.user.findUnique({ where: { id: userId } });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    const matches = await bcrypt.compare(
+      dto.currentPassword,
+      user.passwordHash,
+    );
+    if (!matches) {
+      throw new UnauthorizedException('Invalid current password');
+    }
+
+    const newHash = await bcrypt.hash(dto.newPassword, 10);
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: { passwordHash: newHash },
+    });
   }
 }

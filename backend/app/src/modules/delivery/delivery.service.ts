@@ -3,8 +3,8 @@ import { OrdersService } from '../orders/orders.service';
 import { NotificationsService } from '../notifications/notifications.service';
 import { ScheduleDeliveryDto } from './dto/schedule-delivery.dto';
 import { DeliveryBookingResponse } from './dto/delivery-response.dto';
-import { OrderStatus } from '@prisma/client';
 import { MockDeliveryProvider } from './providers/mock-delivery.provider';
+import { ORDER_STATUS } from '../orders/order-status';
 
 @Injectable()
 export class DeliveryService {
@@ -15,7 +15,12 @@ export class DeliveryService {
   ) {}
 
   async schedule(dto: ScheduleDeliveryDto): Promise<DeliveryBookingResponse> {
-    await this.ordersService.updateStatus(dto.orderId, OrderStatus.SHIPPED);
+    await this.ordersService.updateStatus({
+      orderId: dto.orderId,
+      status: ORDER_STATUS.IN_TRANSIT,
+      userId: null,
+      allowAll: true,
+    });
 
     const booking = await this.deliveryProvider.schedule(
       dto.orderId,

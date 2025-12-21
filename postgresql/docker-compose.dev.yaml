@@ -5,7 +5,7 @@ services:
     env_file:
       - ./.env.postgres
     volumes:
-      - postgres-data:/var/lib/postgresql/data/pgdata
+      - ./postgres-data:/var/lib/postgresql/data/pgdata
     ports:
       - "6317:5432"
     command: >
@@ -29,6 +29,3 @@ services:
 networks:
   backend-network:
     external: true
-
-volumes:
-  postgres-data:

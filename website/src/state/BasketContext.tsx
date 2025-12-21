@@ -16,7 +16,8 @@ import {
   updateBasketQuantity,
 } from '../api/basket';
 import type { BasketItem } from '../api/types';
-import { env } from '../config/env';
+import { ApiError } from '../api/httpClient';
+import { useAuth } from './AuthContext';
 
 type BasketContextValue = {
   items: BasketItem[];
@@ -33,12 +34,12 @@ type BasketContextValue = {
 const BasketContext = createContext<BasketContextValue | undefined>(undefined);
 
 export const BasketProvider = ({ children }: { children: ReactNode }) => {
+  const { user, status, logout } = useAuth();
   const [items, setItems] = useState<BasketItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isMutating, setIsMutating] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const abortRef = useRef(false);
-  const userId = env.demoUserId;
 
   useEffect(() => {
     abortRef.current = false;
@@ -47,16 +48,31 @@ export const BasketProvider = ({ children }: { children: ReactNode }) => {
     };
   }, []);
 
-  const handleError = (err: unknown) => {
-    console.error(err);
-    const message = err instanceof Error ? err.message : 'Не удалось выполнить запрос.';
-    setError(message);
-  };
+  const handleError = useCallback(
+    (err: unknown) => {
+      console.error(err);
+      if (err instanceof ApiError && err.status === 401) {
+        logout();
+        setError('Сессия истекла. Войдите снова.');
+        return;
+      }
+      const message = err instanceof Error ? err.message : 'Не удалось выполнить запрос.';
+      setError(message);
+    },
+    [logout],
+  );
 
   const loadItems = useCallback(async () => {
+    if (!user) {
+      setItems([]);
+      setIsLoading(false);
+      setError(null);
+      return;
+    }
+
     setIsLoading(true);
     try {
-      const data = await fetchBasketItems(userId);
+      const data = await fetchBasketItems();
       if (!abortRef.current) {
         setItems(data);
         setError(null);
@@ -70,10 +86,13 @@ export const BasketProvider = ({ children }: { children: ReactNode }) => {
         setIsLoading(false);
       }
     }
-  }, [userId]);
+  }, [user, handleError]);
 
   const runMutation = useCallback(
     async (operation: () => Promise<unknown>) => {
+      if (!user) {
+        throw new Error('Требуется авторизация');
+      }
       setIsMutating(true);
       try {
         await operation();
@@ -87,12 +106,12 @@ export const BasketProvider = ({ children }: { children: ReactNode }) => {
         }
       }
     },
-    [loadItems],
+    [loadItems, user, handleError],
   );
 
   useEffect(() => {
     loadItems();
-  }, [loadItems]);
+  }, [loadItems, status]);
 
   const contextValue = useMemo<BasketContextValue>(
     () => ({
@@ -101,13 +120,13 @@ export const BasketProvider = ({ children }: { children: ReactNode }) => {
       isMutating,
       error,
       refresh: loadItems,
-      addItem: (catalogItemId: string) => runMutation(() => addBasketItem(userId, catalogItemId)),
+      addItem: (catalogItemId: string) => runMutation(() => addBasketItem(catalogItemId)),
       updateQuantity: (catalogItemId, quantity) =>
-        runMutation(() => updateBasketQuantity(userId, catalogItemId, quantity)),
-      removeItem: (catalogItemId) => runMutation(() => removeBasketItem(userId, catalogItemId)),
-      clear: () => runMutation(() => clearBasket(userId)),
+        runMutation(() => updateBasketQuantity(catalogItemId, quantity)),
+      removeItem: (catalogItemId) => runMutation(() => removeBasketItem(catalogItemId)),
+      clear: () => runMutation(() => clearBasket()),
     }),
-    [items, isLoading, isMutating, error, loadItems, runMutation, userId],
+    [items, isLoading, isMutating, error, loadItems, runMutation],
   );
 
   return <BasketContext.Provider value={contextValue}>{children}</BasketContext.Provider>;

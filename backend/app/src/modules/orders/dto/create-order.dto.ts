@@ -6,17 +6,12 @@ import {
   IsNotEmpty,
   IsOptional,
   IsString,
-  IsUUID,
   MinLength,
   ValidateNested,
 } from 'class-validator';
 import { OrderItemInputDto } from './order-item.dto';
 
 export class CreateOrderDto {
-  @IsUUID()
-  @IsOptional()
-  userId?: string;
-
   @IsString()
   @IsNotEmpty()
   @MinLength(2)

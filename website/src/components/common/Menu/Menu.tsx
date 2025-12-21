@@ -1,8 +1,10 @@
 import classNames from 'classnames';
 import './menu.css';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type MouseEvent } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { LinkAsButton } from '../../ui-kit/LinkAsButton';
 import logoImg from '../../../assets/images/logo.png';
+import { useAuth } from '../../../state/AuthContext';
 
 interface NavItem {
   id: string;
@@ -19,69 +21,43 @@ const items: NavItem[] = [
   { id: 'account', label: 'Личный кабинет', href: '/account' },
 ];
 
-const normalizePathname = (pathname: string) => {
-  const trimmed = pathname.replace(/\/+$/, '');
-  return trimmed.length ? trimmed : '/';
-};
-
-const getActiveIdFromPath = (pathname: string) => {
-  const normalizedPath = normalizePathname(pathname);
-  const exactMatch = items.find((item) => item.href === normalizedPath);
-
-  if (exactMatch) {
-    return exactMatch.id;
-  }
-
-  const prefixMatch = items.find((item) =>
-    normalizedPath.startsWith(
-      item.href.endsWith('/') ? item.href : `${item.href}/`
-    )
-  );
-
-  return prefixMatch?.id ?? null;
-};
-
 export const Menu = () => {
-  const [activeId, setActiveId] = useState(() => {
-    if (typeof window === 'undefined') {
-      return items[0].id;
-    }
-
-    return getActiveIdFromPath(window.location.pathname);
-  });
+  const { user, status } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [activeId, setActiveId] = useState<string | null>(null);
 
   useEffect(() => {
-    if (typeof window === 'undefined') {
-      return;
+    const normalized = location.pathname.replace(/\/+$/, '') || '/';
+    const menuItems = user?.role === 'ADMIN' ? [...items, { id: 'admin', label: 'Админка', href: '/admin' }] : items;
+    const match =
+      menuItems.find((item) => item.href === normalized) ??
+      menuItems.find((item) => normalized.startsWith(item.href) && item.href !== '/');
+    setActiveId(match?.id ?? null);
+  }, [location.pathname, user?.role]);
+
+  const handleNavClick = (event: MouseEvent<HTMLAnchorElement>, item: NavItem) => {
+    if (!user && status === 'unauthenticated' && (item.id === 'basket' || item.id === 'account' || item.id === 'admin')) {
+      event.preventDefault();
+      navigate(`/login?redirect=${encodeURIComponent(item.href)}`);
     }
-
-    const handleLocationChange = () => {
-      setActiveId(getActiveIdFromPath(window.location.pathname));
-    };
-
-    window.addEventListener('popstate', handleLocationChange);
-    window.addEventListener('hashchange', handleLocationChange);
-
-    return () => {
-      window.removeEventListener('popstate', handleLocationChange);
-      window.removeEventListener('hashchange', handleLocationChange);
-    };
-  }, []);
+  };
 
   return (
     <div>
       <div className="menu-wrapper">
         <nav className="nav-menu">
-          {items.map((item) => (
-            <a
-              href={item.href}
+          {(user?.role === 'ADMIN' ? [...items, { id: 'admin', label: 'Админка', href: '/admin' }] : items).map((item) => (
+            <Link
+              to={item.href}
               key={item.id}
               className={classNames('nav-menu__item', 'anonymous-pro-bold', {
                 'nav-menu__item_active': item.id === activeId,
               })}
+              onClick={(event) => handleNavClick(event, item)}
             >
               {item.label}
-            </a>
+            </Link>
           ))}
         </nav>
 

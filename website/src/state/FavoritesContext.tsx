@@ -10,7 +10,8 @@ import {
 } from 'react';
 import { addFavorite, fetchFavorites, removeFavorite } from '../api/favorites';
 import type { FavoriteItem } from '../api/types';
-import { env } from '../config/env';
+import { ApiError } from '../api/httpClient';
+import { useAuth } from './AuthContext';
 
 type FavoritesContextValue = {
   favorites: FavoriteItem[];
@@ -26,12 +27,12 @@ type FavoritesContextValue = {
 const FavoritesContext = createContext<FavoritesContextValue | undefined>(undefined);
 
 export const FavoritesProvider = ({ children }: { children: ReactNode }) => {
+  const { user, status, logout } = useAuth();
   const [favorites, setFavorites] = useState<FavoriteItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isMutating, setIsMutating] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const abortRef = useRef(false);
-  const userId = env.demoUserId;
 
   useEffect(() => {
     abortRef.current = false;
@@ -40,16 +41,31 @@ export const FavoritesProvider = ({ children }: { children: ReactNode }) => {
     };
   }, []);
 
-  const handleError = (err: unknown) => {
-    console.error(err);
-    const message = err instanceof Error ? err.message : 'Не удалось выполнить запрос.';
-    setError(message);
-  };
+  const handleError = useCallback(
+    (err: unknown) => {
+      console.error(err);
+      if (err instanceof ApiError && err.status === 401) {
+        logout();
+        setError('Сессия истекла. Войдите снова.');
+        return;
+      }
+      const message = err instanceof Error ? err.message : 'Не удалось выполнить запрос.';
+      setError(message);
+    },
+    [logout],
+  );
 
   const loadFavorites = useCallback(async () => {
+    if (!user) {
+      setFavorites([]);
+      setIsLoading(false);
+      setError(null);
+      return;
+    }
+
     setIsLoading(true);
     try {
-      const data = await fetchFavorites(userId);
+      const data = await fetchFavorites();
       if (!abortRef.current) {
         setFavorites(data);
         setError(null);
@@ -63,10 +79,13 @@ export const FavoritesProvider = ({ children }: { children: ReactNode }) => {
         setIsLoading(false);
       }
     }
-  }, [userId]);
+  }, [user, handleError]);
 
   const runMutation = useCallback(
     async (operation: () => Promise<unknown>) => {
+      if (!user) {
+        throw new Error('Требуется авторизация');
+      }
       setIsMutating(true);
       try {
         await operation();
@@ -80,12 +99,12 @@ export const FavoritesProvider = ({ children }: { children: ReactNode }) => {
         }
       }
     },
-    [loadFavorites],
+    [loadFavorites, user, handleError],
   );
 
   useEffect(() => {
     loadFavorites();
-  }, [loadFavorites]);
+  }, [loadFavorites, status]);
 
   const contextValue = useMemo<FavoritesContextValue>(
     () => ({
@@ -94,12 +113,12 @@ export const FavoritesProvider = ({ children }: { children: ReactNode }) => {
       isMutating,
       error,
       refresh: loadFavorites,
-      add: (catalogItemId: string) => runMutation(() => addFavorite(userId, catalogItemId)),
-      remove: (catalogItemId: string) => runMutation(() => removeFavorite(userId, catalogItemId)),
+      add: (catalogItemId: string) => runMutation(() => addFavorite(catalogItemId)),
+      remove: (catalogItemId: string) => runMutation(() => removeFavorite(catalogItemId)),
       isFavorite: (catalogItemId: string) =>
         favorites.some((fav) => fav.catalogItemId === catalogItemId),
     }),
-    [favorites, isLoading, isMutating, error, loadFavorites, runMutation, userId],
+    [favorites, isLoading, isMutating, error, loadFavorites, runMutation],
   );
 
   return (

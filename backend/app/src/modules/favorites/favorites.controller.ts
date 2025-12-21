@@ -4,39 +4,40 @@ import {
   Delete,
   Get,
   HttpCode,
-  Param,
-  ParseUUIDPipe,
   Post,
+  UseGuards,
 } from '@nestjs/common';
 import { FavoritesService } from './favorites.service';
 import { FavoriteItemResponse } from './dto/favorite-item.response';
 import { ModifyFavoriteDto } from './dto/modify-favorite.dto';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { CurrentUser } from '../auth/current-user.decorator';
+import { AuthUser } from '../auth/types';
 
+@UseGuards(JwtAuthGuard)
 @Controller('favorites')
 export class FavoritesController {
   constructor(private readonly favoritesService: FavoritesService) {}
 
-  @Get(':userId')
-  list(
-    @Param('userId', new ParseUUIDPipe()) userId: string,
-  ): Promise<FavoriteItemResponse[]> {
-    return this.favoritesService.list(userId);
+  @Get()
+  list(@CurrentUser() user: AuthUser): Promise<FavoriteItemResponse[]> {
+    return this.favoritesService.list(user.sub);
   }
 
-  @Post(':userId')
+  @Post()
   add(
-    @Param('userId', new ParseUUIDPipe()) userId: string,
+    @CurrentUser() user: AuthUser,
     @Body() dto: ModifyFavoriteDto,
   ): Promise<FavoriteItemResponse> {
-    return this.favoritesService.add(userId, dto.catalogItemId);
+    return this.favoritesService.add(user.sub, dto.catalogItemId);
   }
 
-  @Delete(':userId')
+  @Delete()
   @HttpCode(204)
   remove(
-    @Param('userId', new ParseUUIDPipe()) userId: string,
+    @CurrentUser() user: AuthUser,
     @Body() dto: ModifyFavoriteDto,
   ): Promise<void> {
-    return this.favoritesService.remove(userId, dto.catalogItemId);
+    return this.favoritesService.remove(user.sub, dto.catalogItemId);
   }
 }

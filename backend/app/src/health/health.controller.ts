@@ -1,6 +1,7 @@
 import { Controller, Get } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { HealthService, HealthStatus } from './health.service';
+import { Public } from '../modules/auth/public.decorator';
 
 @Controller()
 export class HealthController {
@@ -10,6 +11,7 @@ export class HealthController {
   ) {}
 
   @Get('health')
+  @Public()
   check(): HealthStatus {
     const env = this.configService.get<string>('app.nodeEnv', 'development');
     return this.healthService.getStatus(env);

@@ -1,4 +1,4 @@
-import { OrderStatus } from '@prisma/client';
+import type { OrderStatus } from '../order-status';
 
 export interface OrderItemResponse {
   id: string;
@@ -23,4 +23,21 @@ export interface OrderResponse {
   deliveryAddress?: string | null;
   createdAt: Date;
   items: OrderItemResponse[];
+  team?: {
+    id: string;
+    name: string;
+  } | null;
+  history?: OrderStatusHistoryResponse[];
+}
+
+export interface OrderStatusHistoryResponse {
+  id: string;
+  status: OrderStatus;
+  changedBy?: {
+    id: string;
+    fullName: string;
+    role: string;
+  } | null;
+  comment?: string | null;
+  createdAt: Date;
 }

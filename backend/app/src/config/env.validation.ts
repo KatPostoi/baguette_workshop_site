@@ -9,4 +9,6 @@ export const envValidationSchema = Joi.object({
     .uri({ scheme: ['postgres', 'postgresql'] })
     .required(),
   JWT_SECRET: Joi.string().min(8).required(),
+  JWT_REFRESH_SECRET: Joi.string().min(8).required(),
+  JWT_REFRESH_EXPIRES: Joi.string().default('30d'),
 });
