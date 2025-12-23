@@ -1,3 +1,34 @@
+.admin-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
+  position: relative;
+}
+
+.admin-back {
+  position: fixed;
+  top: 8px;
+  left: 16px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: 1px solid #e5b07a;
+  background: #fff9f3;
+  color: #111;
+  text-decoration: none;
+  font-weight: 700;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.admin-back:hover {
+  background: #ffe7ce;
+}
+
+.admin-header__title {
+  text-align: center;
+  margin: 0;
+}
+
 .admin-subnav {
   display: flex;
   gap: 12px;

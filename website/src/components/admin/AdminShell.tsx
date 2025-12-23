@@ -9,7 +9,12 @@ type AdminShellProps = PropsWithChildren<{
 
 export const AdminShell = ({ title, active, children }: AdminShellProps) => (
   <div className="page-container">
-    <h1 className="anonymous-pro-bold">{title}</h1>
+    <div className="admin-header">
+      <Link to="/" className="admin-back">
+        ← На главную
+      </Link>
+      <h1 className="anonymous-pro-bold admin-header__title">{title}</h1>
+    </div>
     <div className="admin-subnav">
       <Link to="/admin/orders" className={active === 'orders' ? 'active' : undefined}>
         Заказы
@@ -18,7 +23,7 @@ export const AdminShell = ({ title, active, children }: AdminShellProps) => (
         Аудит
       </Link>
       <Link to="/admin/data" className={active === 'data' ? 'active' : undefined}>
-        Каталог
+        Данные
       </Link>
     </div>
     {children}

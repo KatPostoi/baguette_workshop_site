@@ -112,7 +112,7 @@ model CustomFrame {
 
 model ServiceItem {
   id        Int      @id
-  type      String   @unique
+  type      String
   title     String
   price     Int
   createdAt DateTime @default(now())

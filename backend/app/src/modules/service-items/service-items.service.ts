@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { Prisma, ServiceItem } from '@prisma/client';
 import { PrismaService } from '../../database/prisma.service';
 import { ServiceItemResponse } from './dto/service-item.response';
@@ -38,14 +42,24 @@ export class ServiceItemsService {
   }
 
   async create(data: Prisma.ServiceItemCreateInput) {
-    const created = await this.prisma.serviceItem.create({ data });
-    await this.audit.record({
-      action: 'service_item_create',
-      entity: 'ServiceItem',
-      entityId: String(created.id),
-      after: created,
-    });
-    return this.mapToResponse(created);
+    try {
+      const created = await this.prisma.serviceItem.create({ data });
+      await this.audit.record({
+        action: 'service_item_create',
+        entity: 'ServiceItem',
+        entityId: String(created.id),
+        after: created,
+      });
+      return this.mapToResponse(created);
+    } catch (error) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === 'P2002'
+      ) {
+        throw new BadRequestException('Услуга с таким типом уже существует');
+      }
+      throw error;
+    }
   }
 
   async update(id: number, data: Prisma.ServiceItemUpdateInput) {
