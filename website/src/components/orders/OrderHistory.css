@@ -1,0 +1,40 @@
+.order-history {
+  border: 1px solid #e5e5e5;
+  border-radius: 10px;
+  padding: 10px 12px;
+  background: #ffffff;
+  display: grid;
+  gap: 8px;
+}
+
+.order-history__item {
+  border-top: 1px dashed #e0e0e0;
+  padding-top: 8px;
+}
+
+.order-history__item:first-child {
+  border-top: none;
+  padding-top: 0;
+}
+
+.order-history__row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.order-history__date {
+  color: #666666;
+  font-size: 13px;
+}
+
+.order-history__comment {
+  margin-top: 4px;
+  color: #333333;
+}
+
+.order-history__actor {
+  color: #555555;
+  font-size: 13px;
+}

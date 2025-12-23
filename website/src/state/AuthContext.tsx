@@ -36,6 +36,7 @@ type AuthContextValue = {
     password: string;
     fullName: string;
     phone?: string;
+    gender?: string;
     remember?: boolean;
   }) => Promise<void>;
   logout: () => void;
@@ -153,6 +154,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       password: string;
       fullName: string;
       phone?: string;
+      gender?: string;
       remember?: boolean;
     }) => {
       if (typeof window !== 'undefined') {

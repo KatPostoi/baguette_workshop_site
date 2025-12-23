@@ -10,4 +10,8 @@ export class UpdateProfileDto {
   @IsString()
   @Matches(/^[+\d\s()-]{7,}$/)
   phone?: string;
+
+  @IsOptional()
+  @IsString()
+  gender?: string;
 }

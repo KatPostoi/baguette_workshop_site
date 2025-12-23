@@ -2,11 +2,18 @@ import type { OrderStatus } from '../order-status';
 
 export interface OrderItemResponse {
   id: string;
-  catalogItemId: string;
+  catalogItemId?: string;
+  customFrameId?: string;
+  source: 'default' | 'custom';
   title: string;
   slug: string;
   quantity: number;
   price: number;
+  size: {
+    widthCm: number;
+    heightCm: number;
+  };
+  color?: string | null;
   image: {
     src: string;
     alt: string;

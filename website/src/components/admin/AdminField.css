@@ -1,0 +1,39 @@
+.admin-grid {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+
+.admin-grid label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 14px;
+}
+
+.admin-grid label span {
+  font-weight: 700;
+  color: #1f1f1f;
+}
+
+.admin-grid label small {
+  color: #666666;
+}
+
+.admin-grid .full {
+  grid-column: 1 / -1;
+}
+
+.auth-input {
+  border: none;
+  border-bottom: 3px solid #000000;
+  padding: 0.75rem 0;
+  font-size: 18px;
+  background: transparent;
+  font-family: 'Anonymous Pro', monospace;
+}
+
+.auth-input:focus-visible {
+  outline: none;
+  border-color: #e97721;
+}

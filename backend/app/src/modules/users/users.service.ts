@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
-import { User } from '@prisma/client';
+import { Prisma, User } from '@prisma/client';
 import { PrismaService } from '../../database/prisma.service';
 import { UserProfileResponse } from './dto/user-profile.response';
 import { UpdateProfileDto } from './dto/update-profile.dto';
@@ -36,11 +36,31 @@ export class UsersService {
     return this.prisma.user.findUnique({ where: { id } });
   }
 
+  async search(params: { search?: string; role?: string }) {
+    const where: Prisma.UserWhereInput = {};
+    if (params.role) {
+      where.role = params.role as any;
+    }
+    if (params.search) {
+      where.OR = [
+        { email: { contains: params.search, mode: 'insensitive' } },
+        { fullName: { contains: params.search, mode: 'insensitive' } },
+        { phone: { contains: params.search, mode: 'insensitive' } },
+      ];
+    }
+    const users = await this.prisma.user.findMany({
+      where,
+      orderBy: { createdAt: 'desc' },
+    });
+    return users.map((u) => this.toProfile(u));
+  }
+
   async create(data: {
     email: string;
     passwordHash: string;
     fullName: string;
     phone?: string;
+    gender?: string;
   }): Promise<User> {
     return this.prisma.user.create({
       data: {
@@ -48,7 +68,9 @@ export class UsersService {
         passwordHash: data.passwordHash,
         fullName: data.fullName,
         phone: data.phone,
-      },
+        // gender поле добавлено в схему; используем any до регенерации Prisma client
+        gender: data.gender,
+      } as any,
     });
   }
 
@@ -58,6 +80,7 @@ export class UsersService {
       email: user.email,
       phone: user.phone,
       fullName: user.fullName,
+      gender: (user as any).gender ?? null,
       role: user.role,
     };
   }
@@ -71,7 +94,9 @@ export class UsersService {
       data: {
         fullName: dto.fullName,
         phone: dto.phone,
-      },
+        // gender поле добавлено в схему; используем any до регенерации Prisma client
+        gender: dto.gender,
+      } as any,
     });
     return this.toProfile(user);
   }

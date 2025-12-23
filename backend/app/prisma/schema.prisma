@@ -12,6 +12,11 @@ enum CatalogItemType {
   CUSTOM
 }
 
+enum FrameSource {
+  DEFAULT
+  CUSTOM
+}
+
 enum UserRole {
   CUSTOMER
   ADMIN
@@ -37,6 +42,7 @@ model FrameMaterial {
   imageAlt     String
   pricePerCm   Int
   catalogItems CatalogItem[]
+  customFrames CustomFrame[]
   createdAt    DateTime       @default(now())
   updatedAt    DateTime       @updatedAt
 }
@@ -46,6 +52,7 @@ model FrameStyle {
   name         String
   coefficient  Float
   catalogItems CatalogItem[]
+  customFrames CustomFrame[]
   createdAt    DateTime       @default(now())
   updatedAt    DateTime       @updatedAt
 }
@@ -77,6 +84,32 @@ model CatalogItem {
   @@index([styleId])
 }
 
+model CustomFrame {
+  id          String        @id @default(uuid())
+  userId      String
+  title       String
+  description String?
+  materialId  Int
+  styleId     String?
+  color       String?
+  widthCm     Int
+  heightCm    Int
+  price       Int
+  previewUrl  String?
+  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  material    FrameMaterial @relation(fields: [materialId], references: [id])
+  style       FrameStyle?   @relation(fields: [styleId], references: [id])
+  basketItems BasketItem[]
+  orderItems  OrderItem[]
+  favorites   Favorite[]
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  @@index([userId])
+  @@index([materialId])
+  @@index([styleId])
+}
+
 model ServiceItem {
   id        Int      @id
   type      String   @unique
@@ -92,12 +125,15 @@ model User {
   phone        String?       @unique
   passwordHash String
   fullName     String
+  gender       String?
   role         UserRole      @default(CUSTOMER)
   favorites    Favorite[]
   basketItems  BasketItem[]
   presets      ConstructorPreset[]
   orders       Order[]
   orderHistory OrderStatusHistory[]
+  auditEvents  AuditEvent[]
+  customFrames CustomFrame[]
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
 }
@@ -105,25 +141,33 @@ model User {
 model Favorite {
   id            String      @id @default(uuid())
   userId        String
-  catalogItemId String
+  catalogItemId String?
+  customFrameId String?
+  source        FrameSource @default(DEFAULT)
   user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  catalogItem   CatalogItem @relation(fields: [catalogItemId], references: [id], onDelete: Cascade)
+  catalogItem   CatalogItem? @relation(fields: [catalogItemId], references: [id], onDelete: Cascade)
+  customFrame   CustomFrame? @relation(fields: [customFrameId], references: [id], onDelete: Cascade)
   createdAt     DateTime    @default(now())
 
   @@unique([userId, catalogItemId])
+  @@unique([userId, customFrameId])
 }
 
 model BasketItem {
   id            String      @id @default(uuid())
   userId        String
-  catalogItemId String
+  catalogItemId String?
+  customFrameId String?
   quantity      Int         @default(1)
+  source        FrameSource @default(DEFAULT)
   user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  catalogItem   CatalogItem @relation(fields: [catalogItemId], references: [id], onDelete: Cascade)
+  catalogItem   CatalogItem? @relation(fields: [catalogItemId], references: [id], onDelete: Cascade)
+  customFrame   CustomFrame? @relation(fields: [customFrameId], references: [id], onDelete: Cascade)
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
 
   @@unique([userId, catalogItemId])
+  @@unique([userId, customFrameId])
 }
 
 model ConstructorPreset {
@@ -163,15 +207,21 @@ model Order {
 model OrderItem {
   id            String      @id @default(uuid())
   orderId       String
-  catalogItemId String
+  catalogItemId String?
+  customFrameId String?
   title         String
   slug          String
   price         Int
   quantity      Int
   imageUrl      String
   imageAlt      String
+  widthCm       Int          @default(0)
+  heightCm      Int          @default(0)
+  color         String?
+  source        FrameSource @default(DEFAULT)
   order         Order       @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  catalogItem   CatalogItem @relation(fields: [catalogItemId], references: [id])
+  catalogItem   CatalogItem? @relation(fields: [catalogItemId], references: [id])
+  customFrame   CustomFrame? @relation(fields: [customFrameId], references: [id])
 }
 
 model Notification {
@@ -206,4 +256,20 @@ model OrderStatusHistory {
 
   @@index([orderId])
   @@index([changedBy])
+}
+
+model AuditEvent {
+  id        String   @id @default(uuid())
+  actorId   String?
+  action    String
+  entity    String
+  entityId  String
+  before    Json?
+  after     Json?
+  meta      Json?
+  createdAt DateTime @default(now())
+  actor     User?    @relation(fields: [actorId], references: [id], onDelete: SetNull)
+
+  @@index([actorId])
+  @@index([entity, entityId])
 }

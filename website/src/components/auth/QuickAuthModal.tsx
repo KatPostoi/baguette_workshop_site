@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Modal } from '../ui-kit/Modal/Modal';
-import { AuthLoginForm } from './AuthLoginForm';
+import { AuthLoginForm, type LoginFormValues } from './AuthLoginForm';
 import { AuthRegisterForm, type RegisterFormValues } from './AuthRegisterForm';
 import { useAuth } from '../../state/AuthContext';
 import { useAuthModal } from '../../state/AuthModalContext';
 import { ApiError } from '../../api/httpClient';
 import { AuthSwitchLink } from './AuthSwitchLink';
+import './QuickAuthModal.css';
 
 export const QuickAuthModal = () => {
   const { isOpen, mode, close, redirectTo, open } = useAuthModal();
@@ -26,7 +27,7 @@ export const QuickAuthModal = () => {
     open(nextMode, redirectTo ?? undefined);
   };
 
-  const handleLogin = async (values: { email: string; password: string; consent: boolean; remember: boolean }) => {
+  const handleLogin = async (values: LoginFormValues) => {
     setLoading(true);
     setError(null);
     try {
@@ -56,6 +57,7 @@ export const QuickAuthModal = () => {
         password: values.password.trim(),
         fullName: values.fullName.trim(),
         phone: values.phone.trim(),
+        gender: values.gender?.trim() || undefined,
         remember: values.remember ?? true,
       });
       if (redirectTo) {
@@ -72,10 +74,10 @@ export const QuickAuthModal = () => {
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={close} className="auth-card">
-      <div className="auth-card__header">
+    <Modal isOpen={isOpen} onClose={close} className="quick-auth">
+      <div className="quick-auth__header">
         <div>
-          <h1 className="auth-card__title">
+          <h1 className="quick-auth__title">
             {title.split('\n').map((line, idx) => (
               <span key={line}>
                 {line}
@@ -85,11 +87,11 @@ export const QuickAuthModal = () => {
           </h1>
           <AuthSwitchLink mode={mode} onSwitch={setMode} />
         </div>
-        <button type="button" className="auth-card__close" onClick={close} aria-label="Закрыть">
+        <button type="button" className="quick-auth__close" onClick={close} aria-label="Закрыть">
           ×
         </button>
       </div>
-      <div className="auth-card__body">
+      <div className="quick-auth__body">
         {mode === 'login' ? (
           <AuthLoginForm onSubmit={handleLogin} loading={loading} serverError={error} />
         ) : (

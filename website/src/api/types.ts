@@ -7,6 +7,7 @@ export interface UserProfile {
   email: string;
   phone?: string | null;
   fullName: string;
+  gender?: string | null;
   role: UserRole;
 }
 
@@ -25,6 +26,8 @@ export type OrderStatus =
   | 'RECEIVED'
   | 'COMPLETED'
   | 'CANCELLED';
+
+export type FrameSource = 'default' | 'custom';
 
 export interface Team {
   id: string;
@@ -46,11 +49,18 @@ export interface OrderStatusHistory {
 
 export interface OrderItem {
   id: string;
-  catalogItemId: string;
+  catalogItemId?: string;
+  customFrameId?: string;
   title: string;
   slug: string;
   quantity: number;
   price: number;
+  source: FrameSource;
+  size: {
+    widthCm: number;
+    heightCm: number;
+  };
+  color?: string | null;
   image: {
     src: string;
     alt: string;
@@ -95,6 +105,7 @@ export interface CatalogStyle {
 }
 
 export type CatalogItemType = 'default' | 'custom';
+export type CustomFrameType = 'custom';
 
 export interface CatalogItem {
   id: string;
@@ -103,6 +114,7 @@ export interface CatalogItem {
   description: string;
   color: string;
   type: CatalogItemType;
+  source?: FrameSource;
   size: {
     widthCm: number;
     heightCm: number;
@@ -120,15 +132,19 @@ export type FrameStyle = CatalogStyle;
 
 export interface BasketItem {
   id: string;
-  catalogItemId: string;
+  catalogItemId?: string;
+  customFrameId?: string;
   quantity: number;
-  catalogItem: CatalogItem;
+  source: FrameSource;
+  frame: CatalogItem;
 }
 
 export interface FavoriteItem {
   id: string;
-  catalogItemId: string;
-  catalogItem: CatalogItem;
+  catalogItemId?: string;
+  customFrameId?: string;
+  source: FrameSource;
+  frame: CatalogItem;
 }
 
 export interface ServiceItem {
@@ -140,3 +156,34 @@ export interface ServiceItem {
 
 export type BasketItemResponse = BasketItem;
 export type FavoriteItemResponse = FavoriteItem;
+
+export interface NotificationItem {
+  id: string;
+  orderId: string;
+  type: string;
+  message: string;
+  createdAt: string;
+}
+
+export interface OrderTimeline {
+  orderId: string;
+  notifications: NotificationItem[];
+  history: OrderStatusHistory[];
+}
+
+export interface AuditEvent {
+  id: string;
+  action: string;
+  entity: string;
+  entityId: string;
+  before?: unknown;
+  after?: unknown;
+  meta?: unknown;
+  createdAt: string;
+  actor?: {
+    id: string;
+    fullName: string;
+    email: string;
+    role: UserRole;
+  } | null;
+}

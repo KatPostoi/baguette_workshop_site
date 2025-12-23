@@ -7,41 +7,89 @@ export type BasketViewItem = {
   frame: FrameItem;
   quantity: number;
   subtotal: number;
+  catalogItemId?: string;
+  customFrameId?: string;
+  source: 'default' | 'custom';
 };
 
 export const useBasket = () => {
-  const { items, isLoading, isMutating, error, addItem, updateQuantity, removeItem, clear, refresh } =
-    useBasketContext();
+  const {
+    items,
+    isLoading,
+    isMutating,
+    error,
+    updateQuantity,
+    removeItem: removeItemRaw,
+    clear,
+    refresh,
+  } = useBasketContext();
 
   const viewItems = useMemo<BasketViewItem[]>(
     () =>
       items.map((item) => ({
-        id: item.catalogItemId,
-        frame: item.catalogItem,
+        id: item.id,
+        frame: item.frame,
         quantity: item.quantity,
-        subtotal: item.catalogItem.price * item.quantity,
+        subtotal: item.frame.price * item.quantity,
+        catalogItemId: item.catalogItemId,
+        customFrameId: item.customFrameId,
+        source: item.source,
       })),
     [items],
   );
 
   const incrementItem = useCallback(
-    async (catalogItemId: string) => {
-      await addItem(catalogItemId);
+    async (itemId: string) => {
+      const current = viewItems.find((i) => i.id === itemId);
+      const quantity = (current?.quantity ?? 0) + 1;
+      const target =
+        current?.customFrameId || current?.catalogItemId
+          ? {
+              itemId,
+              catalogItemId: current?.catalogItemId,
+              customFrameId: current?.customFrameId,
+            }
+          : { itemId };
+      await updateQuantity(target, quantity);
     },
-    [addItem],
+    [updateQuantity, viewItems],
   );
 
   const decrementItem = useCallback(
-    async (catalogItemId: string) => {
-      const currentQuantity =
-        items.find((item) => item.catalogItemId === catalogItemId)?.quantity ?? 0;
+    async (itemId: string) => {
+      const current = viewItems.find((i) => i.id === itemId);
+      const currentQuantity = current?.quantity ?? 0;
+      const target =
+        current?.customFrameId || current?.catalogItemId
+          ? {
+              itemId,
+              catalogItemId: current?.catalogItemId,
+              customFrameId: current?.customFrameId,
+            }
+          : { itemId };
       if (currentQuantity <= 1) {
-        await removeItem(catalogItemId);
+        await removeItemRaw(target);
         return;
       }
-      await updateQuantity(catalogItemId, currentQuantity - 1);
+      await updateQuantity(target, currentQuantity - 1);
     },
-    [items, removeItem, updateQuantity],
+    [removeItemRaw, updateQuantity, viewItems],
+  );
+
+  const removeItem = useCallback(
+    async (itemId: string) => {
+      const current = viewItems.find((i) => i.id === itemId);
+      const target =
+        current?.customFrameId || current?.catalogItemId
+          ? {
+              itemId,
+              catalogItemId: current?.catalogItemId,
+              customFrameId: current?.customFrameId,
+            }
+          : { itemId };
+      await removeItemRaw(target);
+    },
+    [removeItemRaw, viewItems],
   );
 
   const summary = useMemo(() => {

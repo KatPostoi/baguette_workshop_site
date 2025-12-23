@@ -7,6 +7,7 @@ import { PersonalDataSection } from '../components/common/PersonalData/PersonalD
 import { useAuth } from '../state/AuthContext';
 import { Button } from '../components/ui-kit/Button';
 import { UserOrdersSection } from '../components/orders/UserOrdersSection';
+import '../components/auth/AuthCard.css';
 
 export const PersonalAccountPage = () => {
   const { user, logout } = useAuth();
@@ -23,7 +24,9 @@ export const PersonalAccountPage = () => {
                 <h2 className="auth-card__title">Профиль</h2>
                 <p className="auth-card__subtitle">{user.fullName}</p>
                 <p className="auth-card__subtitle">{user.email}</p>
-                {user.phone ? <p className="auth-card__subtitle">{user.phone}</p> : null}
+                {user.phone ? (
+                  <p className="auth-card__subtitle">{user.phone}</p>
+                ) : null}
               </div>
               <Button onClick={logout}>Выйти</Button>
             </div>

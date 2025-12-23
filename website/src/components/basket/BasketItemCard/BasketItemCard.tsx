@@ -43,7 +43,7 @@ export const BasketItemCard = ({
 
       <div className="goods-in-basket_wrapper_content">
         <div className="goods-in-basket_wrapper_content_description">
-          <ButtonFavorites frameData={item.frame} />
+          {item.source === 'default' ? <ButtonFavorites frameData={item.frame} /> : null}
 
           <div className="goods-in-basket_wrapper_content_description_text">
             <h2 className="anonymous-pro-bold home-text-block__sm">{item.frame.title}</h2>
@@ -54,6 +54,11 @@ export const BasketItemCard = ({
               <h2 className="anonymous-pro-bold home-text-block__vsm_grey">
                 Ширина: {item.frame.size.widthCm} см; Высота: {item.frame.size.heightCm} см
               </h2>
+              {item.source === 'custom' ? (
+                <h2 className="anonymous-pro-bold home-text-block__vsm_grey">
+                  Индивидуальная рама (создана в конструкторе)
+                </h2>
+              ) : null}
             </div>
           </div>
 

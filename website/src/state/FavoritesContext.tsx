@@ -19,9 +19,9 @@ type FavoritesContextValue = {
   isMutating: boolean;
   error: string | null;
   refresh: () => Promise<void>;
-  add: (catalogItemId: string) => Promise<void>;
-  remove: (catalogItemId: string) => Promise<void>;
-  isFavorite: (catalogItemId: string) => boolean;
+  add: (payload: { catalogItemId?: string; customFrameId?: string }) => Promise<void>;
+  remove: (payload: { catalogItemId?: string; customFrameId?: string }) => Promise<void>;
+  isFavorite: (frameId: string) => boolean;
 };
 
 const FavoritesContext = createContext<FavoritesContextValue | undefined>(undefined);
@@ -113,10 +113,9 @@ export const FavoritesProvider = ({ children }: { children: ReactNode }) => {
       isMutating,
       error,
       refresh: loadFavorites,
-      add: (catalogItemId: string) => runMutation(() => addFavorite(catalogItemId)),
-      remove: (catalogItemId: string) => runMutation(() => removeFavorite(catalogItemId)),
-      isFavorite: (catalogItemId: string) =>
-        favorites.some((fav) => fav.catalogItemId === catalogItemId),
+      add: (payload) => runMutation(() => addFavorite(payload)),
+      remove: (payload) => runMutation(() => removeFavorite(payload)),
+      isFavorite: (frameId: string) => favorites.some((fav) => fav.frame.id === frameId),
     }),
     [favorites, isLoading, isMutating, error, loadFavorites, runMutation],
   );

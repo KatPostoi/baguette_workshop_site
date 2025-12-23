@@ -5,7 +5,8 @@ export type Permission =
   | 'orders:update'
   | 'catalog:manage'
   | 'users:read'
-  | 'admin:access';
+  | 'admin:access'
+  | 'audit:read';
 
 const rolePermissions: Record<UserRole, Permission[]> = {
   ADMIN: [
@@ -14,6 +15,7 @@ const rolePermissions: Record<UserRole, Permission[]> = {
     'orders:update',
     'catalog:manage',
     'users:read',
+    'audit:read',
   ],
   CUSTOMER: ['orders:read'],
 };

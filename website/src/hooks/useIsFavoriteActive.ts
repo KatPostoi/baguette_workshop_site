@@ -10,7 +10,7 @@ export const useIsFavoriteActive = (frameData: FrameItem) => {
   const { open } = useAuthModal();
 
   const isFavorite = useMemo(
-    () => favorites.some((favorite) => favorite.catalogItemId === frameData.id),
+    () => favorites.some((favorite) => favorite.frame.id === frameData.id),
     [favorites, frameData.id],
   );
 
@@ -23,12 +23,17 @@ export const useIsFavoriteActive = (frameData: FrameItem) => {
       return;
     }
 
+    const payload =
+      frameData.source === 'custom'
+        ? { customFrameId: frameData.id }
+        : { catalogItemId: frameData.id };
+
     if (isFavorite) {
-      await remove(frameData.id);
+      await remove(payload);
       return;
     }
-    await add(frameData.id);
-  }, [add, remove, frameData.id, isFavorite, status, user, open]);
+    await add(payload);
+  }, [add, remove, frameData.id, frameData.source, isFavorite, status, user, open]);
 
   return {
     isFavorite,

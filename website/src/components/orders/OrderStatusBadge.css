@@ -1,0 +1,52 @@
+.order-status {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 8px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  background: #f0f0f0;
+  color: #333333;
+}
+
+.order-status_pending {
+  background: #fff4e5;
+  color: #a65b00;
+}
+
+.order-status_paid {
+  background: #e6f7e8;
+  color: #1b6b2e;
+}
+
+.order-status_assembly {
+  background: #eef2ff;
+  color: #3f3cbb;
+}
+
+.order-status_ready_for_pickup {
+  background: #e5f6ff;
+  color: #05668d;
+}
+
+.order-status_in_transit {
+  background: #e5f6ff;
+  color: #005f73;
+}
+
+.order-status_received {
+  background: #e6f4ea;
+  color: #1b4332;
+}
+
+.order-status_completed {
+  background: #f0fff4;
+  color: #166534;
+}
+
+.order-status_cancelled {
+  background: #ffe5e5;
+  color: #a80000;
+}

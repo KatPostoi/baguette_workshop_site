@@ -10,7 +10,7 @@ export const useIsBasketActive = (frameData: FrameItem) => {
   const { open } = useAuthModal();
 
   const isBasketActive = useMemo(
-    () => items.some((item) => item.catalogItemId === frameData.id),
+    () => items.some((item) => item.frame.id === frameData.id),
     [items, frameData.id],
   );
 
@@ -24,11 +24,19 @@ export const useIsBasketActive = (frameData: FrameItem) => {
     }
 
     if (isBasketActive) {
-      await removeItem(frameData.id);
+      await removeItem(
+        frameData.source === 'custom'
+          ? { customFrameId: frameData.id }
+          : { catalogItemId: frameData.id },
+      );
       return;
     }
-    await addItem(frameData.id);
-  }, [addItem, removeItem, frameData.id, isBasketActive, status, user, open]);
+    await addItem(
+      frameData.source === 'custom'
+        ? { customFrameId: frameData.id }
+        : { catalogItemId: frameData.id },
+    );
+  }, [addItem, removeItem, frameData.id, frameData.source, isBasketActive, status, user, open]);
 
   return {
     isBasketActive,

@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { AuthCard } from '../components/auth/AuthCard';
-import { AuthLoginForm } from '../components/auth/AuthLoginForm';
+import { AuthLoginForm, type LoginFormValues } from '../components/auth/AuthLoginForm';
 import { useAuth } from '../state/AuthContext';
 import { ApiError } from '../api/httpClient';
 import { AuthSwitchLink } from '../components/auth/AuthSwitchLink';
+import { AuthPage } from '../components/auth/AuthPage';
 
 type LoginPageProps = {
   redirectTo?: string;
@@ -28,12 +29,7 @@ export const LoginPage = ({ redirectTo: redirectOverride }: LoginPageProps) => {
     }
   }, [status, user, redirectTo, navigate]);
 
-  const handleSubmit = async (values: {
-    email: string;
-    password: string;
-    consent: boolean;
-    remember: boolean;
-  }) => {
+  const handleSubmit = async (values: LoginFormValues) => {
     setLoading(true);
     setError(null);
     try {
@@ -58,7 +54,7 @@ export const LoginPage = ({ redirectTo: redirectOverride }: LoginPageProps) => {
   const title = 'Вход в личный\nкабинет';
 
   return (
-    <div className="auth-page">
+    <AuthPage>
       <AuthCard
         title={title}
         subtitle="Добро пожаловать"
@@ -71,6 +67,6 @@ export const LoginPage = ({ redirectTo: redirectOverride }: LoginPageProps) => {
           serverError={error}
         />
       </AuthCard>
-    </div>
+    </AuthPage>
   );
 };

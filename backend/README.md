@@ -58,14 +58,22 @@
 - `GET /orders`, `GET /orders/:id`, `POST /orders` - заказ/оформление.
 - `PATCH /orders/:id/status` - смена статуса (валидация переходов), доступно только ADMIN.
 - `PATCH /orders/:id/cancel` - отмена заказа пользователем (из ранних статусов).
+- `PATCH /orders/:id/pay` - демо-оплата заказа пользователем (только PENDING → PAID, проверка владельца).
 - `GET /admin/orders` - список заказов (фильтры: status, from, to, userId, teamId), только ADMIN.
 - `GET /admin/orders/:id` / `:id/timeline` - просмотр заказа/таймлайна, только ADMIN.
 - `PATCH /admin/orders/:id/status` - смена статуса заказа, только ADMIN.
 - `PATCH /admin/orders/bulk/status` - массовая смена статуса заказов, только ADMIN.
 - `PATCH /admin/orders/:id/team` - назначить команду (teamId), только ADMIN.
+- `GET|POST|PATCH|DELETE /admin/catalog` - CRUD по товарам каталога, только ADMIN.
+- `GET|POST|PATCH|DELETE /admin/materials` - CRUD по материалам, только ADMIN.
+- `GET|POST|PATCH|DELETE /admin/styles` - CRUD по стилям, только ADMIN.
+- `GET|POST|PATCH|DELETE /admin/services` - CRUD по услугам, только ADMIN.
+- `GET /admin/users?search&role` - поиск/листинг пользователей, только ADMIN.
+- `GET /admin/audit?actorId&entity&action&from&to&limit` - просмотр аудита действий, только ADMIN.
 - `GET/POST/PATCH /admin/teams` - управление командами мастеров, только ADMIN.
 
-Новые статусы заказов: PENDING, PAID, ASSEMBLY, READY_FOR_PICKUP, IN_TRANSIT (для доставки), RECEIVED, COMPLETED, CANCELLED.
+Новые статусы заказов: PENDING, PAID, ASSEMBLY, READY_FOR_PICKUP, IN_TRANSIT (для доставки), RECEIVED, COMPLETED, CANCELLED.  
+Демо-оплата: `PATCH /orders/:id/pay` меняет статус на PAID, пишет историю/аудит/уведомление `order_paid`.
 
 ## Тестовые пользователи (seed)
 - Админы:

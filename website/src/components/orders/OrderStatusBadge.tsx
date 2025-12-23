@@ -1,5 +1,6 @@
 import classNames from 'classnames';
 import type { OrderStatus } from '../../api/types';
+import './OrderStatusBadge.css';
 
 const statusLabels: Record<OrderStatus, string> = {
   PENDING: 'Ожидает оплаты',

@@ -1,0 +1,16 @@
+.admin-audit-json details {
+  margin-bottom: 4px;
+}
+
+.admin-audit-json pre {
+  background: #0d1117;
+  color: #e6edf3;
+  padding: 8px;
+  border-radius: 6px;
+  overflow: auto;
+}
+
+.admin-empty {
+  padding: 12px 0;
+  color: #666666;
+}

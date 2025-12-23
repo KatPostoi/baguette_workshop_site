@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { TopicSection } from '../../../common/TopicSection';
 import { Button } from '../../../ui-kit/Button';
 import { Dropdown } from '../../../ui-kit/Dropdown';
@@ -6,51 +6,63 @@ import type { DropdownOption } from '../../../ui-kit/Dropdown/Dropdown';
 import { TopicSectionTitle } from '../../TopicSection/TopicSectionTitle';
 import { TEXT_POSITION } from '../../TopicSection/types';
 import { useAuth } from '../../../../state/AuthContext';
-import { updateProfile, changePassword } from '../../../../api/users';
+import { updateProfileExtended, changePassword } from '../../../../api/users';
 import { ApiError } from '../../../../api/httpClient';
+import { normalizePhone } from '../../../../utils/phone';
 
 import './personal-data-style.css';
 
-const POL_OPTIONS: Array<DropdownOption> = [
-  {
-    id: '1',
-    label: 'М',
-  },
-  {
-    id: '2',
-    label: 'Ж',
-  },
+const POL_OPTIONS: DropdownOption[] = [
+  { id: 'M', label: 'Муж' },
+  { id: 'F', label: 'Жен' },
 ];
 
 export const PersonalDataSection = () => {
   const { user, refreshProfile } = useAuth();
-  const [selectedPol, setSelectedPol] = useState<DropdownOption>();
+  const [genderId, setGenderId] = useState<string | null>(() => {
+    if (typeof window === 'undefined') return null;
+    const fromUser = user?.gender ?? null;
+    const fromStorage = window.localStorage.getItem('profile_gender');
+    return fromUser ?? fromStorage;
+  });
   const [fullName, setFullName] = useState(user?.fullName ?? '');
   const [phone, setPhone] = useState(user?.phone ?? '');
   const [email] = useState(user?.email ?? '');
+  const [consent, setConsent] = useState(false);
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [status, setStatus] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const phonePlaceholder = useMemo(() => '+7XXXXXXXXXX', []);
+  const initialPhone = useMemo(() => (user?.phone ? normalizePhone(user.phone) : ''), [user?.phone]);
+  const selectedGenderOption = useMemo<DropdownOption | null>(() => {
+    if (!genderId) return null;
+    const found = POL_OPTIONS.find((option) => typeof option !== 'string' && option.id === genderId);
+    return found ?? null;
+  }, [genderId]);
 
-  const normalizePhone = (raw: string) => {
-    const digits = raw.replace(/\D/g, '');
-    if (!digits) return '';
-    const normalized = digits.startsWith('7') ? digits : `7${digits}`;
-    return `+${normalized}`;
-  };
+  const hasChanges = useMemo(() => {
+    const currentPhone = phone ? normalizePhone(phone) : '';
+    const currentGender = genderId ?? '';
+    return (
+      (fullName ?? '') !== (user?.fullName ?? '') ||
+      currentPhone !== (initialPhone ?? '') ||
+      currentGender !== (user?.gender ?? '')
+    );
+  }, [fullName, phone, genderId, user?.fullName, user?.gender, initialPhone]);
 
   const handleSave = async () => {
     setStatus(null);
     setError(null);
     try {
-      await updateProfile({
+      await updateProfileExtended({
         fullName: fullName.trim() || undefined,
         phone: phone ? normalizePhone(phone) : undefined,
+        gender: genderId ?? undefined,
       });
       await refreshProfile();
+      setConsent(false);
       setStatus('Данные обновлены');
     } catch (err) {
       const message = err instanceof ApiError ? err.message : 'Не удалось сохранить профиль';
@@ -76,6 +88,21 @@ export const PersonalDataSection = () => {
     }
   };
 
+  useEffect(() => {
+    if (genderId && typeof window !== 'undefined') {
+      window.localStorage.setItem('profile_gender', genderId);
+    }
+  }, [genderId]);
+
+  useEffect(() => {
+    if (user?.gender) {
+      setGenderId(user.gender);
+    }
+    setFullName(user?.fullName ?? '');
+    setPhone(user?.phone ?? '');
+    setConsent(false);
+  }, [user?.gender, user?.fullName, user?.phone]);
+
   return (
     <TopicSection className="personal-account-section">
       <TopicSectionTitle textPosition={TEXT_POSITION.LEFT}>Личный кабинет</TopicSectionTitle>
@@ -99,8 +126,14 @@ export const PersonalDataSection = () => {
             labelClassName="anonymous-pro-bold home-text-block__md_grey"
             title="Пол"
             options={POL_OPTIONS}
-            selectedItem={selectedPol}
-            setSelectedItem={setSelectedPol}
+            selectedItem={selectedGenderOption}
+            setSelectedItem={(option) => {
+              if (typeof option === 'string') {
+                setGenderId(option);
+                return;
+              }
+              setGenderId(String(option.id));
+            }}
           />
         </div>
         <div className="design-constructor_content-wrapper_text_single">
@@ -123,15 +156,25 @@ export const PersonalDataSection = () => {
             disabled
           />
         </div>
-        <div className="agreement-block">
-          <input type="checkbox" className="square-agreement" />
-          <h2 className="anonymous-pro-bold home-text-block__vsm ">
-            Нажимая на кнопку, Вы даете согласие на обработку персональных данных. Подробную информацию об условиях
-            обработки Ваших данных и Ваших правах можно найти в Политике конфиденциальности.
-          </h2>
-        </div>
-
-        <Button onClick={handleSave}>Сохранить</Button>
+        {hasChanges ? (
+          <>
+            <div className="agreement-block">
+              <input
+                type="checkbox"
+                className="square-agreement"
+                checked={consent}
+                onChange={(event) => setConsent(event.target.checked)}
+              />
+              <h2 className="anonymous-pro-bold home-text-block__vsm ">
+                Нажимая на кнопку, Вы даете согласие на обработку персональных данных. Подробную информацию об условиях
+                обработки Ваших данных и Ваших правах можно найти в Политике конфиденциальности.
+              </h2>
+            </div>
+            <Button onClick={handleSave} disabled={!consent}>
+              Сохранить
+            </Button>
+          </>
+        ) : null}
 
         <div className="design-constructor_content-wrapper_text_double" style={{ marginTop: '1rem' }}>
           <div className="design-constructor_content-wrapper_text_single">

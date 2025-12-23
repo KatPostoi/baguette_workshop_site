@@ -3,5 +3,6 @@ export interface UserProfileResponse {
   email: string;
   phone: string | null;
   fullName: string;
+  gender: string | null;
   role: string;
 }

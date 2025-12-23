@@ -1,5 +1,6 @@
 import classNames from 'classnames';
 import type { ReactNode } from 'react';
+import './AuthCard.css';
 
 type AuthCardProps = {
   title: string;

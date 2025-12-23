@@ -1,10 +1,17 @@
 import { Type } from 'class-transformer';
-import { IsInt, IsNotEmpty, IsString, Min } from 'class-validator';
+import { IsInt, IsOptional, IsString, Min, ValidateIf } from 'class-validator';
 
 export class OrderItemInputDto {
+  @IsOptional()
   @IsString()
-  @IsNotEmpty()
-  catalogItemId!: string;
+  catalogItemId?: string;
+
+  @IsOptional()
+  @IsString()
+  customFrameId?: string;
+
+  @ValidateIf((o) => !o.catalogItemId && !o.customFrameId)
+  _?: never;
 
   @Type(() => Number)
   @IsInt()

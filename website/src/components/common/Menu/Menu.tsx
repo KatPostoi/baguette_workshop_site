@@ -29,7 +29,8 @@ export const Menu = () => {
 
   useEffect(() => {
     const normalized = location.pathname.replace(/\/+$/, '') || '/';
-    const menuItems = user?.role === 'ADMIN' ? [...items, { id: 'admin', label: 'Админка', href: '/admin' }] : items;
+    const menuItems =
+      user?.role === 'ADMIN' ? [...items, { id: 'admin', label: 'Админка', href: '/admin/orders' }] : items;
     const match =
       menuItems.find((item) => item.href === normalized) ??
       menuItems.find((item) => normalized.startsWith(item.href) && item.href !== '/');
@@ -47,7 +48,7 @@ export const Menu = () => {
     <div>
       <div className="menu-wrapper">
         <nav className="nav-menu">
-          {(user?.role === 'ADMIN' ? [...items, { id: 'admin', label: 'Админка', href: '/admin' }] : items).map((item) => (
+          {(user?.role === 'ADMIN' ? [...items, { id: 'admin', label: 'Админка', href: '/admin/orders' }] : items).map((item) => (
             <Link
               to={item.href}
               key={item.id}

@@ -25,9 +25,12 @@ type BasketContextValue = {
   isMutating: boolean;
   error: string | null;
   refresh: () => Promise<void>;
-  addItem: (catalogItemId: string) => Promise<void>;
-  updateQuantity: (catalogItemId: string, quantity: number) => Promise<void>;
-  removeItem: (catalogItemId: string) => Promise<void>;
+  addItem: (payload: { catalogItemId?: string; customFrameId?: string }) => Promise<void>;
+  updateQuantity: (
+    target: { itemId?: string; catalogItemId?: string; customFrameId?: string },
+    quantity: number,
+  ) => Promise<void>;
+  removeItem: (target: { itemId?: string; catalogItemId?: string; customFrameId?: string }) => Promise<void>;
   clear: () => Promise<void>;
 };
 
@@ -120,10 +123,10 @@ export const BasketProvider = ({ children }: { children: ReactNode }) => {
       isMutating,
       error,
       refresh: loadItems,
-      addItem: (catalogItemId: string) => runMutation(() => addBasketItem(catalogItemId)),
-      updateQuantity: (catalogItemId, quantity) =>
-        runMutation(() => updateBasketQuantity(catalogItemId, quantity)),
-      removeItem: (catalogItemId) => runMutation(() => removeBasketItem(catalogItemId)),
+      addItem: (payload) => runMutation(() => addBasketItem(payload)),
+      updateQuantity: (target, quantity) =>
+        runMutation(() => updateBasketQuantity({ ...target, quantity })),
+      removeItem: (target) => runMutation(() => removeBasketItem(target)),
       clear: () => runMutation(() => clearBasket()),
     }),
     [items, isLoading, isMutating, error, loadItems, runMutation],

@@ -19,7 +19,7 @@ export class AuthService {
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
-  ) { }
+  ) {}
 
   async login(dto: LoginDto): Promise<AuthResponse> {
     const user = await this.usersService.findByEmail(dto.email);
@@ -49,6 +49,7 @@ export class AuthService {
       passwordHash,
       fullName: dto.fullName,
       phone: dto.phone,
+      gender: dto.gender,
     });
 
     return this.buildAuthResponse(user);

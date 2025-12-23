@@ -34,7 +34,7 @@ export class BasketController {
     @CurrentUser() user: AuthUser,
     @Body() dto: UpsertBasketItemDto,
   ): Promise<DetailedBasketItemResponse> {
-    return this.basketService.upsertItem(user.sub, dto.catalogItemId);
+    return this.basketService.upsertItem(user.sub, dto);
   }
 
   @Patch('items')
@@ -42,11 +42,7 @@ export class BasketController {
     @CurrentUser() user: AuthUser,
     @Body() dto: UpdateQuantityDto,
   ): Promise<DetailedBasketItemResponse> {
-    return this.basketService.updateQuantity(
-      user.sub,
-      dto.catalogItemId,
-      dto.quantity,
-    );
+    return this.basketService.updateQuantity(user.sub, dto);
   }
 
   @Delete('items')
@@ -55,7 +51,7 @@ export class BasketController {
     @CurrentUser() user: AuthUser,
     @Body() dto: RemoveBasketItemDto,
   ): Promise<void> {
-    return this.basketService.removeItem(user.sub, dto.catalogItemId);
+    return this.basketService.removeItem(user.sub, dto);
   }
 
   @Delete()

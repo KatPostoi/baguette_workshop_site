@@ -1,5 +1,11 @@
 import type { OrderStatusHistory } from '../../api/types';
 import { OrderStatusBadge } from './OrderStatusBadge';
+import './OrderHistory.css';
+
+const roleLabel: Record<string, string> = {
+  ADMIN: 'Администратор',
+  CUSTOMER: 'Покупатель',
+};
 
 export const OrderHistory = ({ history }: { history: OrderStatusHistory[] }) => {
   if (!history.length) return null;
@@ -16,7 +22,7 @@ export const OrderHistory = ({ history }: { history: OrderStatusHistory[] }) => 
             {entry.comment ? <div className="order-history__comment">{entry.comment}</div> : null}
             {entry.changedBy ? (
               <div className="order-history__actor">
-                {entry.changedBy.fullName} ({entry.changedBy.role})
+                {entry.changedBy.fullName} ({roleLabel[entry.changedBy.role] ?? entry.changedBy.role})
               </div>
             ) : null}
           </li>

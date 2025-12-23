@@ -16,14 +16,18 @@ import { AuthModalProvider } from './state/AuthModalContext';
 import { QuickAuthModal } from './components/auth/QuickAuthModal';
 import { AdminRoute } from './components/routing/AdminRoute';
 import { AdminDashboardPage } from './pages/AdminDashboard';
+import { AdminAuditPage } from './pages/AdminAudit';
+import { AdminDataPage } from './pages/AdminData';
 import { ForbiddenPage } from './pages/Forbidden';
+import { ToastProvider } from './state/ToastContext';
+import { AuthPage } from './components/auth/AuthPage';
 
 const ProtectedRoute = ({ children }: { children: ReactElement }) => {
   const { user, status } = useAuth();
   const location = useLocation();
 
   if (status === 'idle' || status === 'loading') {
-    return <div className="auth-page">Загружаем профиль…</div>;
+    return <AuthPage>Загружаем профиль…</AuthPage>;
   }
 
   if (!user) {
@@ -61,10 +65,27 @@ const RoutedApp = () => {
           }
         />
         <Route
-          path="/admin"
+          path="/admin/orders"
           element={
             <AdminRoute>
               <AdminDashboardPage />
+            </AdminRoute>
+          }
+        />
+        <Route path="/admin" element={<Navigate to="/admin/orders" replace />} />
+        <Route
+          path="/admin/audit"
+          element={
+            <AdminRoute>
+              <AdminAuditPage />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/admin/data"
+          element={
+            <AdminRoute>
+              <AdminDataPage />
             </AdminRoute>
           }
         />
@@ -82,13 +103,15 @@ const App = () => {
   return (
     <AuthProvider>
       <AuthModalProvider>
-        <FavoritesProvider>
-          <BasketProvider>
-            <BrowserRouter>
-              <RoutedApp />
-            </BrowserRouter>
-          </BasketProvider>
-        </FavoritesProvider>
+        <ToastProvider>
+          <FavoritesProvider>
+            <BasketProvider>
+              <BrowserRouter>
+                <RoutedApp />
+              </BrowserRouter>
+            </BasketProvider>
+          </FavoritesProvider>
+        </ToastProvider>
       </AuthModalProvider>
     </AuthProvider>
   );

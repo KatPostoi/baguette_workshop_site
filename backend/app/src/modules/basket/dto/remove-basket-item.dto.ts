@@ -1,7 +1,18 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsOptional, IsString, ValidateIf } from 'class-validator';
 
 export class RemoveBasketItemDto {
+  @IsOptional()
   @IsString()
-  @IsNotEmpty()
-  catalogItemId!: string;
+  itemId?: string;
+
+  @IsOptional()
+  @IsString()
+  catalogItemId?: string;
+
+  @IsOptional()
+  @IsString()
+  customFrameId?: string;
+
+  @ValidateIf((o) => !o.itemId && !o.catalogItemId && !o.customFrameId)
+  _?: never;
 }

@@ -1,10 +1,28 @@
 import { Type } from 'class-transformer';
-import { IsNotEmpty, IsNumber, IsString, Max, Min } from 'class-validator';
+import {
+  IsNumber,
+  IsOptional,
+  IsString,
+  Max,
+  Min,
+  ValidateIf,
+} from 'class-validator';
 
 export class UpdateQuantityDto {
+  @IsOptional()
   @IsString()
-  @IsNotEmpty()
-  catalogItemId!: string;
+  itemId?: string;
+
+  @IsOptional()
+  @IsString()
+  catalogItemId?: string;
+
+  @IsOptional()
+  @IsString()
+  customFrameId?: string;
+
+  @ValidateIf((o) => !o.itemId && !o.catalogItemId && !o.customFrameId)
+  _?: never;
 
   @Type(() => Number)
   @IsNumber()

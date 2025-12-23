@@ -5,5 +5,5 @@ import { useFavoritesContext } from '../state/FavoritesContext';
 export const useLikedFrames = (): FrameItem[] => {
   const { favorites } = useFavoritesContext();
 
-  return useMemo(() => favorites.map((favorite) => favorite.catalogItem), [favorites]);
+  return useMemo(() => favorites.map((favorite) => favorite.frame), [favorites]);
 };

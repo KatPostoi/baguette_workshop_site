@@ -40,6 +40,7 @@ export interface CatalogItemResponse {
   description: string;
   color: string;
   type: CatalogItemTypeResponse;
+  source?: 'default' | 'custom';
   size: CatalogSizeResponse;
   price: number;
   stock: number;

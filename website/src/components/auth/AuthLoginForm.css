@@ -1,0 +1,76 @@
+.auth-form {
+  display: grid;
+  gap: 24px;
+}
+
+.auth-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 24px;
+}
+
+.auth-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.auth-label {
+  font-size: 20px;
+  color: #8b8273;
+  text-align: left;
+}
+
+.auth-input {
+  border: none;
+  border-bottom: 3px solid #000000;
+  padding: 0.75rem 0;
+  font-size: 24px;
+  background: transparent;
+  font-family: 'Anonymous Pro', monospace;
+}
+
+.auth-input:focus-visible {
+  outline: none;
+  border-color: #e97721;
+}
+
+.auth-checkbox {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.auth-checkbox input[type='checkbox'] {
+  width: 22px;
+  height: 22px;
+  border: 2px solid #000000;
+  accent-color: #000000;
+}
+
+.auth-checkbox__text {
+  font-size: 16px;
+  line-height: 1.4;
+  text-align: left;
+}
+
+.auth-checkbox--remember {
+  margin: 1rem 0;
+}
+
+.auth-error {
+  color: #b3261e;
+  font-size: 14px;
+  text-align: left;
+}
+
+.auth-actions {
+  display: flex;
+  justify-content: flex-start;
+}
+
+@media (max-width: 768px) {
+  .auth-input {
+    font-size: 20px;
+  }
+}

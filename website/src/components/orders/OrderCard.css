@@ -1,0 +1,70 @@
+.order-card {
+  border: 1px solid #e5d3c2;
+  border-radius: 18px;
+  padding: 14px 16px;
+  background: #ffffff;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.05);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.order-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 38px rgba(0, 0, 0, 0.08);
+  border-color: #e97721;
+}
+
+.order-card__header {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.order-card__leading {
+  display: flex;
+  align-items: center;
+}
+
+.order-card__leading input[type='checkbox'] {
+  width: 18px;
+  height: 18px;
+}
+
+.order-card__title {
+  font-weight: 700;
+  font-size: 18px;
+  color: #1f1f1f;
+}
+
+.order-card__header-content {
+  display: grid;
+  gap: 6px;
+  flex: 1;
+}
+
+.order-card__meta {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  color: #666;
+  font-size: 13px;
+}
+
+.order-card__status {
+  display: flex;
+  align-items: center;
+}
+
+.order-card__body {
+  display: grid;
+  gap: 6px;
+  color: #2b2b2b;
+  font-size: 14px;
+}
+
+.order-card__actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}

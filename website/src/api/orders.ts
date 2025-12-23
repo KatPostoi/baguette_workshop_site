@@ -1,5 +1,20 @@
 import { httpClient } from './httpClient';
-import type { Order, OrderStatus, Team } from './types';
+import type { Order, OrderStatus, Team, OrderTimeline } from './types';
+
+export type CreateOrderItemPayload = {
+  catalogItemId?: string;
+  customFrameId?: string;
+  quantity: number;
+};
+
+export type CreateOrderPayload = {
+  customerName: string;
+  customerEmail: string;
+  customerPhone?: string | null;
+  deliveryAddress?: string | null;
+  items: CreateOrderItemPayload[];
+  clearBasketAfterOrder?: boolean;
+};
 
 export type OrderFilters = Partial<{
   status: OrderStatus;
@@ -19,6 +34,10 @@ export const fetchOrder = async (id: string): Promise<Order> => {
 
 export const cancelOrder = async (id: string): Promise<Order> => {
   return httpClient.patch(`/orders/${id}/cancel`);
+};
+
+export const payOrder = async (id: string): Promise<Order> => {
+  return httpClient.patch(`/orders/${id}/pay`);
 };
 
 export const fetchAdminOrders = async (filters: OrderFilters = {}): Promise<Order[]> => {
@@ -44,4 +63,12 @@ export const assignTeam = async (id: string, teamId: string) => {
 
 export const fetchTeams = async (): Promise<Team[]> => {
   return httpClient.get('/admin/teams');
+};
+
+export const fetchOrderTimeline = async (orderId: string): Promise<OrderTimeline> => {
+  return httpClient.get(`/admin/orders/${orderId}/timeline`);
+};
+
+export const createOrder = async (payload: CreateOrderPayload): Promise<Order> => {
+  return httpClient.post<Order>('/orders', payload);
 };

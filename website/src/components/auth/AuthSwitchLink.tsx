@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import type { MouseEventHandler } from 'react';
 import classNames from 'classnames';
+import './AuthSwitchLink.css';
 
 type AuthSwitchLinkProps =
   | {

@@ -1,11 +1,12 @@
 import { useMemo, useState, type ChangeEvent, type FormEvent } from 'react';
 import { Button } from '../ui-kit/Button';
 import { Dropdown } from '../ui-kit/Dropdown';
-import type { DropdownOption } from '../ui-kit/Dropdown/Dropdown';
+import { normalizePhone } from '../../utils/phone';
+import './AuthRegisterForm.css';
 
 export type RegisterFormValues = {
   fullName: string;
-  gender?: DropdownOption;
+  gender?: string;
   phone: string;
   email: string;
   password: string;
@@ -20,9 +21,11 @@ type AuthRegisterFormProps = {
   initialEmail?: string;
 };
 
-const GENDER_OPTIONS: DropdownOption[] = [
-  { id: 'M', label: 'М' },
-  { id: 'F', label: 'Ж' },
+type GenderOption = { id: string; label: string };
+
+const GENDER_OPTIONS: GenderOption[] = [
+  { id: 'M', label: 'Муж' },
+  { id: 'F', label: 'Жен' },
 ];
 
 export const AuthRegisterForm = ({
@@ -44,15 +47,6 @@ export const AuthRegisterForm = ({
 
   const isSubmitDisabled = useMemo(() => loading, [loading]);
 
-  const normalizePhone = (raw: string) => {
-    const digits = raw.replace(/\D/g, '');
-    if (!digits) {
-      return '';
-    }
-    const normalized = digits.startsWith('7') ? digits : `7${digits}`;
-    return `+${normalized}`;
-  };
-
   const handleChange =
     (field: keyof RegisterFormValues) =>
     (event: ChangeEvent<HTMLInputElement>) => {
@@ -65,8 +59,8 @@ export const AuthRegisterForm = ({
       setValues((prev) => ({ ...prev, [field]: value }));
     };
 
-  const handleGenderChange = (option: DropdownOption) => {
-    setValues((prev) => ({ ...prev, gender: option }));
+  const handleGenderChange = (option: GenderOption | null) => {
+    setValues((prev) => ({ ...prev, gender: option?.id }));
   };
 
   const validate = (): boolean => {
@@ -130,7 +124,7 @@ export const AuthRegisterForm = ({
           <Dropdown
             title="Выберите"
             options={GENDER_OPTIONS}
-            selectedItem={values.gender ?? null}
+            selectedItem={values.gender ? GENDER_OPTIONS.find((opt) => opt.id === values.gender) ?? null : null}
             setSelectedItem={handleGenderChange}
             variant="line"
             labelClassName="auth-label"

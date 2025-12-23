@@ -17,6 +17,9 @@ import { OrderTimelineResponse } from './dto/order-timeline.response';
 import { AdminOrderFilterDto } from './dto/admin-order-filter.dto';
 import { AssignTeamDto } from './dto/assign-team.dto';
 import { ORDER_STATUS, type OrderStatus } from './order-status';
+import { AuditService } from '../audit/audit.service';
+import { CustomFramesService } from '../custom-frames/custom-frames.service';
+import { FrameSource } from '@prisma/client';
 
 @Injectable()
 export class OrdersService {
@@ -24,6 +27,8 @@ export class OrdersService {
     private readonly prisma: PrismaService,
     private readonly catalogService: CatalogService,
     private readonly notificationsService: NotificationsService,
+    private readonly auditService: AuditService,
+    private readonly customFramesService: CustomFramesService,
   ) {}
 
   async list(params: {
@@ -113,17 +118,54 @@ export class OrdersService {
 
     const enrichedItems = await Promise.all(
       dto.items.map(async (item) => {
-        const summary = await this.catalogService.getSummaryByIdOrThrow(
+        if (item.customFrameId) {
+          if (!userId) {
+            throw new BadRequestException(
+              'Кастомные рамы доступны только авторизованным пользователям',
+            );
+          }
+          const frame = await this.customFramesService.getById(
+            item.customFrameId,
+            userId ?? '',
+          );
+          return {
+            customFrameId: frame.id,
+            catalogItemId: null,
+            slug: frame.slug,
+            title: frame.title,
+            price: frame.price,
+            quantity: item.quantity,
+            imageUrl: frame.image.src,
+            imageAlt: frame.image.alt,
+            widthCm: frame.size.widthCm,
+            heightCm: frame.size.heightCm,
+            color: frame.color ?? null,
+            source: FrameSource.CUSTOM,
+          };
+        }
+
+        if (!item.catalogItemId) {
+          throw new BadRequestException(
+            'Укажите товар каталога или кастомную раму',
+          );
+        }
+
+        const summary = await this.catalogService.findOneById(
           item.catalogItemId,
         );
         return {
           catalogItemId: summary.id,
+          customFrameId: null,
           slug: summary.slug,
           title: summary.title,
           price: summary.price,
           quantity: item.quantity,
           imageUrl: summary.image.src,
           imageAlt: summary.image.alt,
+          widthCm: summary.size.widthCm,
+          heightCm: summary.size.heightCm,
+          color: summary.color,
+          source: FrameSource.DEFAULT,
         };
       }),
     );
@@ -159,19 +201,18 @@ export class OrdersService {
       return created;
     });
 
-    const response = this.mapToResponse(order);
     await this.recordHistory(
       order.id,
       ORDER_STATUS.PENDING,
       null,
-      'Order created',
+      'Заказ создан, ожидает оплаты',
     );
     await this.notificationsService.record(
-      response.id,
+      order.id,
       'order_created',
-      `Order created for ${response.customerEmail}`,
+      `Order created for ${dto.customerEmail}`,
     );
-    return response;
+    return this.buildOrderResponse(order.id);
   }
 
   async updateStatus(params: {
@@ -199,24 +240,28 @@ export class OrdersService {
       );
     }
 
-    const updated = await this.prisma.order.update({
+    await this.prisma.order.update({
       where: { id: orderId },
       data: { status },
-      include: {
-        items: true,
-        team: true,
-        history: { include: { actor: true } },
-      },
     });
 
     await this.recordHistory(orderId, status, userId, comment ?? undefined);
     await this.notificationsService.record(
       orderId,
       'order_status_changed',
-      `Status -> ${status}`,
+      `Статус изменён на ${status}`,
     );
+    await this.auditService.record({
+      actorId: userId ?? undefined,
+      action: 'order_status_change',
+      entity: 'Order',
+      entityId: orderId,
+      before: { status: order.status },
+      after: { status },
+      meta: { comment },
+    });
 
-    return this.mapToResponse(updated);
+    return this.buildOrderResponse(orderId);
   }
 
   async getTimeline(params: {
@@ -267,22 +312,17 @@ export class OrdersService {
       }
     });
 
-    const updated = await this.prisma.$transaction(
+    await this.prisma.$transaction(
       orders.map((order) =>
         this.prisma.order.update({
           where: { id: order.id },
           data: { status },
-          include: {
-            items: true,
-            team: true,
-            history: { include: { actor: true } },
-          },
         }),
       ),
     );
 
     await Promise.all(
-      updated.map((order) =>
+      orders.map((order) =>
         this.notificationsService.record(
           order.id,
           'order_status_changed',
@@ -292,12 +332,21 @@ export class OrdersService {
     );
 
     await Promise.all(
-      updated.map((order) =>
+      orders.map((order) =>
         this.recordHistory(order.id, status, userId, comment ?? undefined),
       ),
     );
+    await this.auditService.record({
+      actorId: userId,
+      action: 'order_status_bulk_change',
+      entity: 'Order',
+      entityId: orderIds.join(','),
+      before: { ids: orderIds },
+      after: { status },
+      meta: { comment },
+    });
 
-    return updated.map((order) => this.mapToResponse(order));
+    return Promise.all(orderIds.map((id) => this.buildOrderResponse(id)));
   }
 
   async assignTeam(
@@ -338,6 +387,14 @@ export class OrdersService {
       actorId,
       `Назначена команда: ${team.name}`,
     );
+    await this.auditService.record({
+      actorId,
+      action: 'order_team_assigned',
+      entity: 'Order',
+      entityId: orderId,
+      before: { teamId: order.teamId },
+      after: { teamId: dto.teamId, teamName: team.name },
+    });
 
     return this.mapToResponse(updated);
   }
@@ -371,6 +428,54 @@ export class OrdersService {
     });
   }
 
+  async pay(orderId: string, userId: string): Promise<OrderResponse> {
+    const order = await this.prisma.order.findUnique({
+      where: { id: orderId, userId },
+      include: {
+        items: true,
+        team: true,
+        history: { include: { actor: true } },
+      },
+    });
+
+    if (!order) {
+      throw new NotFoundException(`Order ${orderId} not found`);
+    }
+
+    if (order.status !== ORDER_STATUS.PENDING) {
+      throw new BadRequestException(
+        'Order already processed or cannot be paid',
+      );
+    }
+
+    await this.recordHistory(
+      orderId,
+      ORDER_STATUS.PAID,
+      userId,
+      'Оплачено (демо-провайдер)',
+    );
+    await this.notificationsService.record(
+      orderId,
+      'order_paid',
+      'Оплата прошла успешно (демо)',
+    );
+    await this.auditService.record({
+      actorId: userId,
+      action: 'order_pay',
+      entity: 'Order',
+      entityId: orderId,
+      before: { status: order.status },
+      after: { status: ORDER_STATUS.PAID },
+    });
+
+    await this.prisma.order.update({
+      where: { id: orderId },
+      data: { status: ORDER_STATUS.PAID },
+    });
+
+    return this.buildOrderResponse(orderId);
+  }
+
   private mapToResponse(order: {
     id: string;
     status: OrderStatus;
@@ -382,13 +487,18 @@ export class OrdersService {
     createdAt: Date;
     items: Array<{
       id: string;
-      catalogItemId: string;
+      catalogItemId: string | null;
+      customFrameId: string | null;
       title: string;
       slug: string;
       price: number;
       quantity: number;
       imageUrl: string;
       imageAlt: string;
+      widthCm: number;
+      heightCm: number;
+      color: string | null;
+      source: FrameSource;
     }>;
     team?: { id: string; name: string } | null;
     history?: Array<{
@@ -426,6 +536,14 @@ export class OrdersService {
           src: item.imageUrl,
           alt: item.imageAlt,
         },
+        size: {
+          widthCm: item.widthCm,
+          heightCm: item.heightCm,
+        },
+        color: item.color ?? null,
+        source:
+          item.source === FrameSource.CUSTOM ? 'custom' : ('default' as const),
+        customFrameId: item.customFrameId ?? undefined,
       })),
     };
   }
@@ -501,5 +619,23 @@ export class OrdersService {
         comment,
       },
     });
+  }
+
+  private async buildOrderResponse(orderId: string): Promise<OrderResponse> {
+    const order = await this.prisma.order.findUnique({
+      where: { id: orderId },
+      include: {
+        items: true,
+        team: true,
+        history: {
+          include: { actor: true },
+          orderBy: { createdAt: 'desc' },
+        },
+      },
+    });
+    if (!order) {
+      throw new NotFoundException(`Order ${orderId} not found`);
+    }
+    return this.mapToResponse(order);
   }
 }

@@ -9,6 +9,9 @@ import { TopicSectionTitle } from '../components/common/TopicSection/TopicSectio
 import { TEXT_POSITION } from '../components/common/TopicSection/types';
 import { useServicesData } from '../hooks/useServicesData';
 import { useBasket } from '../hooks/useBasket';
+import { useAuth } from '../state/AuthContext';
+import { useToast } from '../state/ToastContext';
+import { createOrder } from '../api/orders';
 import {
   BasketEmptyState,
   BasketItemCard,
@@ -32,10 +35,14 @@ const BasketPage = () => {
     isLoading: isServicesLoading,
     error: servicesError,
   } = useServicesData();
+  const { user } = useAuth();
+  const { success, error: toastError } = useToast();
 
   const [selectedServiceId, setSelectedServiceId] = useState<string | null>(null);
   const [deliveryAddress, setDeliveryAddress] = useState('');
   const [selectionMap, setSelectionMap] = useState<Record<string, boolean>>({});
+  const [orderError, setOrderError] = useState<string | null>(null);
+  const [orderLoading, setOrderLoading] = useState(false);
 
   useEffect(() => {
     if (
@@ -88,18 +95,48 @@ const BasketPage = () => {
     }
   };
 
-  const handleCheckout = () => {
-    console.log({
-      items: selectedItems,
-      delivery: selectedService,
-      address: deliveryAddress,
-      totalPrice,
-    });
+  const handleCheckout = async () => {
+    if (!user) {
+      setOrderError('Требуется авторизация');
+      return;
+    }
+    setOrderError(null);
+    setOrderLoading(true);
+    try {
+      const payload = {
+        customerName: user.fullName || user.email,
+        customerEmail: user.email,
+        customerPhone: user.phone ?? undefined,
+        deliveryAddress: selectedService ? deliveryAddress.trim() || undefined : undefined,
+        clearBasketAfterOrder: true,
+        items: selectedItems.map((item) =>
+          item.source === 'custom'
+            ? {
+                customFrameId: item.customFrameId ?? item.frame.id,
+                quantity: item.quantity,
+              }
+            : {
+                catalogItemId: item.catalogItemId ?? item.frame.id,
+                quantity: item.quantity,
+              },
+        ),
+      };
+      await createOrder(payload);
+      success('Заказ создан');
+      await clear();
+    } catch (err) {
+      console.error(err);
+      setOrderError('Не удалось оформить заказ. Попробуйте позже.');
+      toastError('Ошибка при создании заказа');
+    } finally {
+      setOrderLoading(false);
+    }
   };
 
   const disableCheckout =
     selectedItems.length === 0 ||
     isProcessing ||
+    orderLoading ||
     (selectedService != null && deliveryAddress.trim().length === 0);
 
   return (
@@ -145,6 +182,10 @@ const BasketPage = () => {
                 {error}. Попробуйте обновить страницу.
               </p>
             )}
+
+            {orderError ? (
+              <p className="anonymous-pro-bold home-text-block__vsm_red">{orderError}</p>
+            ) : null}
 
             {servicesError && (
               <p className="anonymous-pro-bold home-text-block__vsm_grey">
@@ -192,7 +233,7 @@ const BasketPage = () => {
                   totalPrice={totalPrice}
                   onCheckout={handleCheckout}
                   isCheckoutDisabled={disableCheckout}
-                  isProcessing={isProcessing}
+                  isProcessing={isProcessing || orderLoading}
                 />
               </>
             )}

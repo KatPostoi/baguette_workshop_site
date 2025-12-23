@@ -5,6 +5,7 @@ import { AuthRegisterForm, type RegisterFormValues } from '../components/auth/Au
 import { useAuth } from '../state/AuthContext';
 import { ApiError } from '../api/httpClient';
 import { AuthSwitchLink } from '../components/auth/AuthSwitchLink';
+import { AuthPage } from '../components/auth/AuthPage';
 
 type RegisterPageProps = {
   redirectTo?: string;
@@ -37,6 +38,7 @@ export const RegisterPage = ({ redirectTo: redirectOverride }: RegisterPageProps
         password: values.password.trim(),
         fullName: values.fullName.trim(),
         phone: values.phone.trim(),
+        gender: values.gender?.trim() || undefined,
         remember: values.remember,
       });
       navigate(redirectTo, { replace: true });
@@ -51,7 +53,7 @@ export const RegisterPage = ({ redirectTo: redirectOverride }: RegisterPageProps
   const title = 'Зарегистрируйтесь\nдля совершения покупок!';
 
   return (
-    <div className="auth-page">
+    <AuthPage>
       <AuthCard
         title={title}
         subtitle="Создайте аккаунт, чтобы оформить заказ"
@@ -60,6 +62,6 @@ export const RegisterPage = ({ redirectTo: redirectOverride }: RegisterPageProps
       >
         <AuthRegisterForm onSubmit={handleSubmit} loading={loading} serverError={error} />
       </AuthCard>
-    </div>
+    </AuthPage>
   );
 };

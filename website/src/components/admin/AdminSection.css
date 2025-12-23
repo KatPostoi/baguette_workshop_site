@@ -1,0 +1,27 @@
+.admin-section {
+  background: #ffffff;
+  border: 1px solid #e7e7e7;
+  border-radius: 18px;
+  padding: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  display: grid;
+  gap: 12px;
+}
+
+.admin-section__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.admin-section__header h2 {
+  margin: 0;
+}
+
+.admin-section__actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}

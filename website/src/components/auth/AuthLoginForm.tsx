@@ -1,10 +1,10 @@
 import { useMemo, useState, type ChangeEvent, type FormEvent } from 'react';
 import { Button } from '../ui-kit/Button';
+import './AuthLoginForm.css';
 
-type LoginFormValues = {
+export type LoginFormValues = {
   email: string;
   password: string;
-  consent: boolean;
   remember: boolean;
 };
 
@@ -24,7 +24,6 @@ export const AuthLoginForm = ({
   const [values, setValues] = useState<LoginFormValues>({
     email: initialEmail,
     password: '',
-    consent: false,
     remember: true,
   });
   const [errors, setErrors] = useState<
@@ -36,10 +35,7 @@ export const AuthLoginForm = ({
   const handleChange =
     (field: keyof LoginFormValues) =>
     (event: ChangeEvent<HTMLInputElement>) => {
-      const value =
-        field === 'consent' || field === 'remember'
-          ? event.target.checked
-          : event.target.value;
+      const value = field === 'remember' ? event.target.checked : event.target.value;
       setValues((prev) => ({ ...prev, [field]: value }));
     };
 
@@ -50,9 +46,6 @@ export const AuthLoginForm = ({
     }
     if (!values.password.trim()) {
       nextErrors.password = 'Укажите пароль';
-    }
-    if (!values.consent) {
-      nextErrors.consent = 'Требуется согласие';
     }
     setErrors(nextErrors);
     return Object.keys(nextErrors).length === 0;
@@ -106,25 +99,7 @@ export const AuthLoginForm = ({
         ) : null}
       </div>
 
-      <label className="auth-checkbox">
-        <input
-          type="checkbox"
-          name="consent"
-          checked={values.consent}
-          onChange={handleChange('consent')}
-          aria-describedby="login-consent"
-        />
-        <span className="auth-checkbox__text" id="login-consent">
-          Нажимая на кнопку, Вы даете согласие на обработку персональных данных.
-          Подробную информацию об условиях обработки Ваших данных и Ваших правах
-          можно найти в Политике конфиденциальности.
-        </span>
-      </label>
-      {errors.consent ? (
-        <span className="auth-error">3{errors.consent}</span>
-      ) : null}
-
-      <label className="auth-checkbox">
+      <label className="auth-checkbox auth-checkbox--remember">
         <input
           type="checkbox"
           name="remember"

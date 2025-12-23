@@ -11,6 +11,7 @@ export type RegisterPayload = {
   password: string;
   fullName: string;
   phone?: string;
+  gender?: string;
 };
 
 export const login = (payload: LoginPayload): Promise<AuthResponse> =>

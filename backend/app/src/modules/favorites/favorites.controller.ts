@@ -29,7 +29,7 @@ export class FavoritesController {
     @CurrentUser() user: AuthUser,
     @Body() dto: ModifyFavoriteDto,
   ): Promise<FavoriteItemResponse> {
-    return this.favoritesService.add(user.sub, dto.catalogItemId);
+    return this.favoritesService.add(user.sub, dto);
   }
 
   @Delete()
@@ -38,6 +38,6 @@ export class FavoritesController {
     @CurrentUser() user: AuthUser,
     @Body() dto: ModifyFavoriteDto,
   ): Promise<void> {
-    return this.favoritesService.remove(user.sub, dto.catalogItemId);
+    return this.favoritesService.remove(user.sub, dto);
   }
 }

@@ -36,6 +36,7 @@ export class OrdersController {
       userId: user.sub,
       allowAll: isAdmin,
       filters: isAdmin ? filters : undefined,
+      includeHistory: !isAdmin,
     });
   }
 
@@ -105,5 +106,13 @@ export class OrdersController {
     @CurrentUser() user: AuthUser,
   ): Promise<OrderResponse> {
     return this.ordersService.cancel(id, user.sub);
+  }
+
+  @Patch(':id/pay')
+  pay(
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @CurrentUser() user: AuthUser,
+  ): Promise<OrderResponse> {
+    return this.ordersService.pay(id, user.sub);
   }
 }

@@ -17,6 +17,8 @@ import { NotificationsModule } from './modules/notifications/notifications.modul
 import { PaymentsModule } from './modules/payments/payments.module';
 import { DeliveryModule } from './modules/delivery/delivery.module';
 import { TeamsModule } from './modules/teams/teams.module';
+import { AuditModule } from './modules/audit/audit.module';
+import { CustomFramesModule } from './modules/custom-frames/custom-frames.module';
 import { APP_GUARD } from '@nestjs/core';
 import { AppAuthGuard } from './modules/auth/app-auth.guard';
 import { RolesGuard } from './modules/auth/roles.guard';
@@ -44,6 +46,8 @@ import { RolesGuard } from './modules/auth/roles.guard';
     PaymentsModule,
     DeliveryModule,
     TeamsModule,
+    AuditModule,
+    CustomFramesModule,
   ],
   providers: [
     {
