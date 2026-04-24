@@ -127,6 +127,7 @@ model User {
   fullName     String
   gender       String?
   role         UserRole      @default(CUSTOMER)
+  isActive     Boolean       @default(true)
   favorites    Favorite[]
   basketItems  BasketItem[]
   presets      ConstructorPreset[]

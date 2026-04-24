@@ -6,7 +6,7 @@ import type { DropdownOption } from '../../../ui-kit/Dropdown/Dropdown';
 import { TopicSectionTitle } from '../../TopicSection/TopicSectionTitle';
 import { TEXT_POSITION } from '../../TopicSection/types';
 import { useAuth } from '../../../../state/AuthContext';
-import { updateProfileExtended, changePassword } from '../../../../api/users';
+import { updateProfile, changePassword } from '../../../../api/users';
 import { ApiError } from '../../../../api/httpClient';
 import { normalizePhone } from '../../../../utils/phone';
 
@@ -56,7 +56,7 @@ export const PersonalDataSection = () => {
     setStatus(null);
     setError(null);
     try {
-      await updateProfileExtended({
+      await updateProfile({
         fullName: fullName.trim() || undefined,
         phone: phone ? normalizePhone(phone) : undefined,
         gender: genderId ?? undefined,

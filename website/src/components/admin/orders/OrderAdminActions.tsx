@@ -30,6 +30,8 @@ export const OrderAdminActions = ({
 }: OrderAdminActionsProps) => {
   const statusOptions = getOrderStatusOptions(order);
   const statusDisabled = !canUpdateOrders || statusLoading || statusOptions.length <= 1;
+  const hasInactiveAssignedTeam =
+    !!order.team && !teams.some((team) => team.id === order.team?.id);
   const teamDisabled = !canUpdateOrders || teamLoading || !teams.length;
 
   return (
@@ -49,6 +51,11 @@ export const OrderAdminActions = ({
             aria-label={`Назначить команду заказу ${order.id}`}
           >
             <option value="">Назначить команду</option>
+            {hasInactiveAssignedTeam && order.team ? (
+              <option value={order.team.id} disabled>
+                {order.team.name} (неактивна)
+              </option>
+            ) : null}
             {teams.map((team) => (
               <option key={team.id} value={team.id}>
                 {team.name}

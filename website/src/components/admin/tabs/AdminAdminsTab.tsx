@@ -1,29 +1,11 @@
-import { AdminFilterPanel } from '../AdminFilterPanel';
-import { AdminInput, AdminSelect } from '../AdminField';
-import { AdminListBlock } from '../AdminListBlock';
-import { AdminListState } from '../AdminListState';
+import { AdminUserManagementTab } from '../users/AdminUserManagementTab';
 
 export const AdminAdminsTab = () => (
-  <>
-    <AdminFilterPanel>
-      <AdminInput
-        label="Поиск администраторов"
-        placeholder="Поиск по email и ФИО появится на следующем шаге"
-        disabled
-      />
-      <AdminSelect label="Статус" value="" disabled>
-        <option value="">Все администраторы</option>
-      </AdminSelect>
-    </AdminFilterPanel>
-
-    <AdminListBlock
-      title="Администраторы"
-      description="Sandbox-вкладка подготовлена заранее. Лучший вариант для следующего шага: строить её как отдельную проекцию сущности User с role=ADMIN, а не плодить новую модель."
-    >
-      <AdminListState
-        isEmpty
-        emptyMessage="На этом шаге вкладка служит каркасом: фильтры, list block и будущая точка расширения уже готовы."
-      />
-    </AdminListBlock>
-  </>
+  <AdminUserManagementTab
+    title="Администраторы"
+    description="Это admin-first проекция того же user-domain: отдельного admins-module не появляется, а опасные сценарии закрыты защитой self-deactivate и last-active-admin."
+    defaultRole="ADMIN"
+    emptyMessage="Нет администраторов по текущему фильтру."
+    entityLabel="администратора"
+  />
 );

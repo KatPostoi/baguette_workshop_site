@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
-  fetchAdminOrders,
-  updateOrderStatus,
   bulkUpdateOrderStatus,
+  fetchAdminOrders,
   fetchOrderTimeline,
+  updateOrderStatus,
 } from '../api/orders';
 import { ApiError } from '../api/httpClient';
-import { assignTeamToOrder, fetchTeams } from '../api/teams';
+import { adminAssignTeamToOrder, adminListTeams } from '../api/teams';
 import type { Order, OrderStatus, Team, OrderTimeline } from '../api/types';
 import { OrderDetailsModal } from '../components/orders/OrderDetailsModal';
 import { useAuth } from '../state/AuthContext';
@@ -117,7 +117,7 @@ export const AdminDashboardPage = () => {
     setTeamsError(null);
 
     try {
-      setTeams(await fetchTeams());
+      setTeams(await adminListTeams({ active: true }));
     } catch (err) {
       console.error(err);
       const message = getErrorMessage(
@@ -139,7 +139,7 @@ export const AdminDashboardPage = () => {
     setTeamLoadingOrderId(orderId);
 
     try {
-      const updated = await assignTeamToOrder(orderId, teamId);
+      const updated = await adminAssignTeamToOrder(orderId, teamId);
       setOrders((prev) => prev.map((o) => (o.id === updated.id ? updated : o)));
       addToast({ type: 'success', message: 'Команда назначена' });
     } catch (err) {

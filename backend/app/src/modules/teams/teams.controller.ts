@@ -1,11 +1,9 @@
 import {
   Body,
   Controller,
-  DefaultValuePipe,
   Delete,
   Get,
   Param,
-  ParseBoolPipe,
   ParseUUIDPipe,
   Patch,
   Post,
@@ -17,6 +15,8 @@ import { Roles } from '../auth/roles.decorator';
 import { TeamsService } from './teams.service';
 import { CreateTeamDto } from './dto/create-team.dto';
 import { UpdateTeamDto } from './dto/update-team.dto';
+import { AdminTeamFilterDto } from './dto/admin-team-filter.dto';
+import { parseOptionalBooleanQuery } from '../../common/query/parse-optional-boolean-query';
 
 @Controller('admin/teams')
 @UseGuards(JwtAuthGuard)
@@ -26,10 +26,14 @@ export class TeamsController {
 
   @Get()
   list(
-    @Query('includeInactive', new DefaultValuePipe('false'), ParseBoolPipe)
-    includeInactive: boolean,
+    @Query() filters: AdminTeamFilterDto,
+    @Query('active') activeRaw?: string,
+    @Query('includeInactive') includeInactiveRaw?: string,
   ) {
-    return this.teamsService.list({ includeInactive });
+    return this.teamsService.list({
+      search: filters.search,
+      active: this.parseActivity(activeRaw, includeInactiveRaw),
+    });
   }
 
   @Post()
@@ -48,5 +52,23 @@ export class TeamsController {
   @Delete(':id')
   remove(@Param('id', new ParseUUIDPipe()) id: string) {
     return this.teamsService.deactivate(id);
+  }
+
+  private parseActivity(
+    activeValue?: string,
+    includeInactiveValue?: string,
+  ): boolean | undefined {
+    const active = parseOptionalBooleanQuery('active', activeValue);
+
+    if (active !== undefined) {
+      return active;
+    }
+
+    const includeInactive = parseOptionalBooleanQuery(
+      'includeInactive',
+      includeInactiveValue,
+    );
+
+    return includeInactive ? undefined : true;
   }
 }

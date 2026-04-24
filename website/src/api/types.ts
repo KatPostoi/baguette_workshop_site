@@ -9,6 +9,7 @@ export interface UserProfile {
   fullName: string;
   gender?: string | null;
   role: UserRole;
+  isActive: boolean;
 }
 
 export interface AuthResponse {

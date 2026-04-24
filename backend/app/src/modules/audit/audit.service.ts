@@ -16,15 +16,15 @@ export class AuditService {
     meta?: unknown;
   }) {
     const { actorId, action, entity, entityId, before, after, meta } = params;
-    await (this.prisma as any).auditEvent.create({
+    await this.prisma.auditEvent.create({
       data: {
         actorId: actorId ?? null,
         action,
         entity,
         entityId,
-        before: before as any,
-        after: after as any,
-        meta: meta as any,
+        before: this.toAuditJson(before),
+        after: this.toAuditJson(after),
+        meta: this.toAuditJson(meta),
       },
     });
   }
@@ -67,7 +67,7 @@ export class AuditService {
     const skip = params.offset ?? 0;
 
     const [events, total] = await Promise.all([
-      (this.prisma as any).auditEvent.findMany({
+      this.prisma.auditEvent.findMany({
         where,
         include: {
           actor: {
@@ -78,13 +78,11 @@ export class AuditService {
         take,
         skip,
       }),
-      (this.prisma as any).auditEvent.count({ where }),
+      this.prisma.auditEvent.count({ where }),
     ]);
 
-    const typedEvents = events as AuditEventWithActor[];
-
     return {
-      items: typedEvents.map((event) => ({
+      items: events.map((event: AuditEventWithActor) => ({
         id: event.id,
         actor: event.actor,
         action: event.action,
@@ -97,5 +95,62 @@ export class AuditService {
       })),
       total,
     };
+  }
+
+  private toAuditJson(
+    value: unknown,
+  ): Prisma.InputJsonValue | Prisma.NullableJsonNullValueInput | undefined {
+    if (value === undefined) {
+      return undefined;
+    }
+
+    if (value === null) {
+      return Prisma.JsonNull;
+    }
+
+    return this.normalizeJsonValue(value);
+  }
+
+  private normalizeJsonValue(value: unknown): Prisma.InputJsonValue {
+    if (
+      typeof value === 'string' ||
+      typeof value === 'number' ||
+      typeof value === 'boolean'
+    ) {
+      return value;
+    }
+
+    if (value instanceof Date) {
+      return value.toISOString();
+    }
+
+    if (typeof value === 'bigint') {
+      return value.toString();
+    }
+
+    if (Array.isArray(value)) {
+      return value.map((item) =>
+        item === undefined ? null : this.normalizeJsonValue(item),
+      );
+    }
+
+    if (value && typeof value === 'object') {
+      const normalized: Record<string, Prisma.InputJsonValue | null> = {};
+
+      Object.entries(value).forEach(([key, nestedValue]) => {
+        if (nestedValue !== undefined) {
+          normalized[key] =
+            nestedValue === null ? null : this.normalizeJsonValue(nestedValue);
+        }
+      });
+
+      return normalized;
+    }
+
+    if (typeof value === 'symbol' || typeof value === 'function') {
+      return String(value);
+    }
+
+    return 'unsupported-audit-value';
   }
 }

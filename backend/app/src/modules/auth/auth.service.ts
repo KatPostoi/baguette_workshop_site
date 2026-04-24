@@ -22,7 +22,7 @@ export class AuthService {
   ) {}
 
   async login(dto: LoginDto): Promise<AuthResponse> {
-    const user = await this.usersService.findByEmail(dto.email);
+    const user = await this.usersService.findActiveByEmail(dto.email);
     if (!user) {
       throw new UnauthorizedException('Invalid credentials');
     }
@@ -96,7 +96,7 @@ export class AuthService {
       .catch(() => {
         throw new UnauthorizedException('Invalid refresh token');
       });
-    const user = await this.usersService.findById(payload.sub);
+    const user = await this.usersService.findActiveById(payload.sub);
     if (!user) {
       throw new UnauthorizedException('User not found');
     }

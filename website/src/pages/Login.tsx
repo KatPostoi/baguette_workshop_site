@@ -40,7 +40,6 @@ export const LoginPage = ({ redirectTo: redirectOverride }: LoginPageProps) => {
       });
       navigate(redirectTo, { replace: true });
     } catch (err) {
-      console.log(err);
       const message =
         err instanceof ApiError
           ? err.message

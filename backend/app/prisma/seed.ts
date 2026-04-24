@@ -280,6 +280,7 @@ const usersSeed = [
     gender: 'M',
     passwordHash: PASSWORD_HASH,
     role: UserRole.ADMIN,
+    isActive: true,
   },
   {
     id: '1c2d3e4f-1111-2222-3333-444455556666',
@@ -289,6 +290,7 @@ const usersSeed = [
     gender: 'M',
     passwordHash: PASSWORD_HASH,
     role: UserRole.ADMIN,
+    isActive: true,
   },
   {
     id: '32c9b77a-5fe8-4efc-9d62-9ce5c6290321',
@@ -298,6 +300,7 @@ const usersSeed = [
     gender: 'F',
     passwordHash: PASSWORD_HASH,
     role: UserRole.CUSTOMER,
+    isActive: true,
   },
   {
     id: '7a7b7c7d-aaaa-bbbb-cccc-ddddeeeeffff',
@@ -307,6 +310,7 @@ const usersSeed = [
     gender: 'M',
     passwordHash: PASSWORD_HASH,
     role: UserRole.CUSTOMER,
+    isActive: true,
   },
   {
     id: '88888888-9999-0000-aaaa-bbbbbbbbbbbb',
@@ -316,6 +320,7 @@ const usersSeed = [
     gender: 'F',
     passwordHash: PASSWORD_HASH,
     role: UserRole.CUSTOMER,
+    isActive: true,
   },
 ];
 

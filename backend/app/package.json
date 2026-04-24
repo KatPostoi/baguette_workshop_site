@@ -18,6 +18,7 @@
     "format:fix": "prettier --write \"src/**/*.ts\" \"prisma/**/*.ts\"",
     "format:check": "prettier --check \"src/**/*.ts\" \"prisma/**/*.ts\"",
     "typecheck": "tsc --noEmit --incremental false --tsBuildInfoFile /tmp/tsconfig.tsbuildinfo",
+    "smoke:admin": "node scripts/admin-smoke-check.mjs",
     "prisma:generate": "dotenv -e ../.env.backend -- prisma generate --schema ./prisma/schema.prisma",
     "prisma:migrate": "dotenv -e ../.env.backend -- prisma migrate dev --schema ./prisma/schema.prisma",
     "prisma:seed": "dotenv -e ../.env.backend -- prisma db seed --schema ./prisma/schema.prisma",

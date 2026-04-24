@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
+import { PrismaService } from '../../database/prisma.service';
 import { AuthUser } from './types';
 
 type RequestWithUser = {
@@ -13,11 +14,19 @@ type RequestWithUser = {
   user?: AuthUser;
 };
 
+type AuthenticatedDbUser = {
+  id: string;
+  email: string;
+  role: AuthUser['role'];
+  isActive?: boolean;
+} | null;
+
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
   constructor(
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
+    private readonly prisma: PrismaService,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -28,7 +37,20 @@ export class JwtAuthGuard implements CanActivate {
       const payload = await this.jwtService.verifyAsync<AuthUser>(token, {
         secret: this.configService.get<string>('app.jwtSecret'),
       });
-      request.user = payload;
+
+      const user = (await this.prisma.user.findUnique({
+        where: { id: payload.sub },
+      })) as AuthenticatedDbUser;
+
+      if (!user || user.isActive === false) {
+        throw new UnauthorizedException('User is inactive or not found');
+      }
+
+      request.user = {
+        sub: user.id,
+        email: user.email,
+        role: user.role,
+      };
       return true;
     } catch {
       throw new UnauthorizedException('Invalid or expired token');

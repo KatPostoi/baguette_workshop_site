@@ -41,12 +41,13 @@ export const payOrder = async (id: string): Promise<Order> => {
 };
 
 export const fetchAdminOrders = async (filters: OrderFilters = {}): Promise<Order[]> => {
-  const query = new URLSearchParams();
-  Object.entries(filters).forEach(([key, value]) => {
-    if (value) query.set(key, String(value));
+  return httpClient.get<Order[]>('/admin/orders', {
+    ...(filters.status ? { status: filters.status } : {}),
+    ...(filters.from ? { from: filters.from } : {}),
+    ...(filters.to ? { to: filters.to } : {}),
+    ...(filters.teamId ? { teamId: filters.teamId } : {}),
+    ...(filters.userId ? { userId: filters.userId } : {}),
   });
-  const suffix = query.toString() ? `?${query.toString()}` : '';
-  return httpClient.get(`/admin/orders${suffix}`);
 };
 
 export const updateOrderStatus = async (id: string, payload: { status: OrderStatus; comment?: string }) => {

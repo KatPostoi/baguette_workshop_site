@@ -183,7 +183,7 @@ export class OrdersService {
           customerEmail: dto.customerEmail,
           customerPhone: dto.customerPhone,
           deliveryAddress: dto.deliveryAddress,
-          status: ORDER_STATUS.PENDING as any,
+          status: ORDER_STATUS.PENDING,
           total,
           items: {
             createMany: {

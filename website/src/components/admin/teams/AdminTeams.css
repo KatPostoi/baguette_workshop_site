@@ -1,0 +1,74 @@
+.admin-teams-table .admin-table__head,
+.admin-teams-table .admin-table__row {
+  grid-template-columns:
+    minmax(260px, 1.7fr)
+    minmax(160px, 0.9fr)
+    minmax(180px, 1fr);
+}
+
+.admin-teams-table__row_inactive {
+  opacity: 0.72;
+  background: #faf7f2;
+}
+
+.admin-teams-table__identity {
+  display: grid;
+  gap: 4px;
+}
+
+.admin-teams-table__name {
+  font-weight: 700;
+  color: #241d18;
+}
+
+.admin-teams-table__meta {
+  color: #6b5e52;
+  font-size: 12px;
+  word-break: break-word;
+}
+
+.admin-teams-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
+  border: 1px solid transparent;
+  white-space: nowrap;
+}
+
+.admin-teams-badge_status-active {
+  background: #eef8ef;
+  border-color: #b8dfbc;
+  color: #29653d;
+}
+
+.admin-teams-badge_status-inactive {
+  background: #fbefef;
+  border-color: #e3b9b9;
+  color: #8b2727;
+}
+
+.admin-teams-dialog__note {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.45;
+  color: #6b5e52;
+}
+
+@media (max-width: 960px) {
+  .admin-teams-table .admin-table__head,
+  .admin-teams-table .admin-table__row {
+    grid-template-columns: repeat(2, minmax(220px, 1fr));
+  }
+}
+
+@media (max-width: 720px) {
+  .admin-teams-table .admin-table__head,
+  .admin-teams-table .admin-table__row {
+    grid-template-columns: 1fr;
+  }
+}
