@@ -27,11 +27,7 @@ export type CatalogUpsertInput = {
 };
 
 export const adminListCatalog = async (): Promise<CatalogItem[]> => {
-  return httpClient.get('/admin/catalog');
-};
-
-export const adminGetCatalogItem = async (id: string): Promise<CatalogItem> => {
-  return httpClient.get(`/admin/catalog/${id}`);
+  return httpClient.get<CatalogItem[]>('/admin/catalog');
 };
 
 export const adminUpsertCatalogItem = async (payload: CatalogUpsertInput) => {
@@ -51,5 +47,5 @@ export const adminUpsertCatalogItem = async (payload: CatalogUpsertInput) => {
 };
 
 export const adminDeleteCatalogItem = async (id: string) => {
-  return httpClient.delete(`/admin/catalog/${id}`);
+  return httpClient.delete<{ success: true }>(`/admin/catalog/${id}`);
 };

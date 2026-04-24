@@ -4,7 +4,6 @@ import {
   Delete,
   Get,
   Param,
-  ParseUUIDPipe,
   Patch,
   Post,
   UseGuards,
@@ -31,15 +30,12 @@ export class AdminStylesController {
   }
 
   @Patch(':id')
-  update(
-    @Param('id', ParseUUIDPipe) id: string,
-    @Body() dto: Prisma.FrameStyleUpdateInput,
-  ) {
+  update(@Param('id') id: string, @Body() dto: Prisma.FrameStyleUpdateInput) {
     return this.stylesService.update(id, dto);
   }
 
   @Delete(':id')
-  remove(@Param('id', ParseUUIDPipe) id: string) {
+  remove(@Param('id') id: string) {
     return this.stylesService.remove(id);
   }
 }

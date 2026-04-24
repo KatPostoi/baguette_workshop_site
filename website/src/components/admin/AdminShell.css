@@ -2,7 +2,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 12px;
+  margin-bottom: 16px;
   position: relative;
 }
 
@@ -55,26 +55,27 @@
   box-shadow: 0 6px 18px rgba(233, 119, 33, 0.25);
 }
 
-.admin-filters {
-  display: grid;
-  gap: 16px;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  align-items: end;
-  margin-bottom: 16px;
-  padding: 16px;
-  background: #ffffff;
-  border: 1px solid #e7e7e7;
-  border-radius: 16px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+@media (max-width: 900px) {
+  .admin-header {
+    justify-content: flex-start;
+    padding-top: 48px;
+  }
+
+  .admin-back {
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
 }
 
-.admin-filter__field {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  font-weight: 600;
-}
+@media (max-width: 720px) {
+  .admin-subnav {
+    gap: 8px;
+    padding: 8px;
+  }
 
-.admin-filter__field span {
-  color: #3a3a3a;
+  .admin-subnav a {
+    flex: 1 1 160px;
+    text-align: center;
+  }
 }

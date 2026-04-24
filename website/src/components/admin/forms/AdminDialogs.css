@@ -1,0 +1,146 @@
+.admin-dialog {
+  width: min(100%, 920px);
+  background: #fffdf9;
+  border: 1px solid #e3d7ca;
+  border-radius: 24px;
+  padding: 24px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.18);
+  display: grid;
+  gap: 18px;
+}
+
+.admin-dialog_confirm {
+  width: min(100%, 560px);
+}
+
+.admin-dialog__header {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.admin-dialog__header-copy {
+  display: grid;
+  gap: 8px;
+}
+
+.admin-dialog__title {
+  margin: 0;
+  font-size: 28px;
+  line-height: 1.1;
+}
+
+.admin-dialog__description {
+  margin: 0;
+  color: #5f554a;
+}
+
+.admin-dialog__close {
+  border: none;
+  background: #191919;
+  color: #ffffff;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.admin-dialog__body {
+  display: grid;
+  gap: 16px;
+}
+
+.admin-dialog__form-grid {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  align-items: start;
+}
+
+.admin-dialog__meta {
+  padding: 14px 16px;
+  border-radius: 16px;
+  background: linear-gradient(180deg, #fff7ef 0%, #fff1e2 100%);
+  border: 1px solid #ecd2b5;
+  color: #5d5144;
+  display: grid;
+  gap: 6px;
+}
+
+.admin-dialog__meta-label {
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #7f6851;
+}
+
+.admin-dialog__meta-value {
+  font-size: 16px;
+  font-weight: 700;
+  color: #271f18;
+}
+
+.admin-dialog__footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+}
+
+.admin-dialog__footer-start {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  color: #6a5d51;
+}
+
+.admin-dialog__footer-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.admin-dialog__danger-button {
+  background: #9a1c1c;
+  border-color: #9a1c1c;
+}
+
+.admin-dialog__danger-button:hover:not(:disabled) {
+  background: #7e1010;
+  border-color: #7e1010;
+}
+
+@media (max-width: 720px) {
+  .admin-dialog {
+    padding: 18px;
+    width: min(100%, 100vw - 24px);
+  }
+
+  .admin-dialog__title {
+    font-size: 24px;
+  }
+
+  .admin-dialog__form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-dialog__footer {
+    grid-template-columns: 1fr;
+    display: grid;
+  }
+
+  .admin-dialog__footer-start,
+  .admin-dialog__footer-actions {
+    width: 100%;
+    justify-content: stretch;
+  }
+
+  .admin-dialog__footer-actions > * {
+    width: 100%;
+  }
+}

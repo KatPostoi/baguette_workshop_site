@@ -1,5 +1,5 @@
 import { httpClient } from './httpClient';
-import type { Order, OrderStatus, Team, OrderTimeline } from './types';
+import type { Order, OrderStatus, OrderTimeline } from './types';
 
 export type CreateOrderItemPayload = {
   catalogItemId?: string;
@@ -55,14 +55,6 @@ export const updateOrderStatus = async (id: string, payload: { status: OrderStat
 
 export const bulkUpdateOrderStatus = async (payload: { orderIds: string[]; status: OrderStatus; comment?: string }) => {
   return httpClient.patch<Order[]>(`/admin/orders/bulk/status`, payload);
-};
-
-export const assignTeam = async (id: string, teamId: string) => {
-  return httpClient.patch<Order>(`/admin/orders/${id}/team`, { teamId });
-};
-
-export const fetchTeams = async (): Promise<Team[]> => {
-  return httpClient.get('/admin/teams');
 };
 
 export const fetchOrderTimeline = async (orderId: string): Promise<OrderTimeline> => {

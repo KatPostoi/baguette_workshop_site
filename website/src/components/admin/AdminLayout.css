@@ -1,0 +1,132 @@
+.admin-page-layout {
+  display: grid;
+  gap: 20px;
+}
+
+.admin-filter-panel {
+  display: grid;
+  gap: 16px;
+  padding: 18px;
+  background: #ffffff;
+  border: 1px solid #e7e7e7;
+  border-radius: 18px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+}
+
+.admin-filter-panel__grid {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  align-items: end;
+}
+
+.admin-filter-panel__actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.admin-list-block {
+  display: grid;
+  gap: 16px;
+}
+
+.admin-list-block__description {
+  margin: 0;
+  color: #5f5a55;
+  max-width: 72ch;
+}
+
+.admin-list-block__body {
+  display: grid;
+  gap: 14px;
+}
+
+.admin-list-state {
+  padding: 22px 18px;
+  border: 1px dashed #d8c7b6;
+  border-radius: 16px;
+  background: linear-gradient(180deg, #fffdf9 0%, #fff7ef 100%);
+  color: #574f48;
+}
+
+.admin-list-state p {
+  margin: 0;
+}
+
+.admin-row-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.admin-tab-bar {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.admin-tab-bar__button {
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1px solid #d9d9d9;
+  background: #f5f5f5;
+  cursor: pointer;
+  font-weight: 700;
+  transition: all 0.2s ease;
+}
+
+.admin-tab-bar__button[aria-selected='true'] {
+  background: #1d1d1d;
+  color: #ffffff;
+  border-color: #1d1d1d;
+}
+
+.admin-tab-bar__button:not([aria-selected='true']):hover {
+  background: #ececec;
+}
+
+.admin-field--full {
+  grid-column: 1 / -1;
+}
+
+.admin-inline-pagination {
+  width: 100%;
+}
+
+.admin-list-toolbar {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.admin-panel-note {
+  margin: 0;
+  color: #6d665f;
+}
+
+@media (max-width: 720px) {
+  .admin-filter-panel {
+    padding: 16px;
+  }
+
+  .admin-filter-panel__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-filter-panel__actions,
+  .admin-list-toolbar {
+    justify-content: stretch;
+  }
+
+  .admin-filter-panel__actions > *,
+  .admin-list-toolbar > * {
+    width: 100%;
+  }
+
+  .admin-tab-bar__button {
+    flex: 1 1 180px;
+    text-align: center;
+  }
+}

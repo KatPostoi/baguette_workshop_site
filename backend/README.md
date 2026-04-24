@@ -70,7 +70,7 @@
 - `GET|POST|PATCH|DELETE /admin/services` - CRUD по услугам, только ADMIN.
 - `GET /admin/users?search&role` - поиск/листинг пользователей, только ADMIN.
 - `GET /admin/audit?actorId&entity&action&from&to&limit` - просмотр аудита действий, только ADMIN.
-- `GET/POST/PATCH /admin/teams` - управление командами мастеров, только ADMIN.
+- `GET/POST/PATCH/DELETE /admin/teams` - управление командами мастеров, только ADMIN.
 
 Новые статусы заказов: PENDING, PAID, ASSEMBLY, READY_FOR_PICKUP, IN_TRANSIT (для доставки), RECEIVED, COMPLETED, CANCELLED.  
 Демо-оплата: `PATCH /orders/:id/pay` меняет статус на PAID, пишет историю/аудит/уведомление `order_paid`.

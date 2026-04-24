@@ -494,22 +494,22 @@ const basketItemsSeed = [
 
 const teamsSeed = [
   {
-    id: 'aaa11111-1111-1111-1111-111111111111',
+    id: '0c9b2f43-4d4c-42e5-8df0-9e3fbcf4d101',
     name: 'Сборка «Классика»',
     active: true,
   },
   {
-    id: 'bbb22222-2222-2222-2222-222222222222',
+    id: '1f6d0a2b-98ef-4e21-8f5c-4a7a30dfb202',
     name: 'Сборка «Современный стиль»',
     active: true,
   },
   {
-    id: 'ccc33333-3333-3333-3333-333333333333',
+    id: '2baf3816-5bdb-4d51-9b6a-8d991a5ac303',
     name: 'Сборка «Премиум»',
     active: true,
   },
   {
-    id: 'ddd44444-4444-4444-4444-444444444444',
+    id: '3cc749f7-2bd7-458d-b1b8-6341fc73d404',
     name: 'Доставка «Курьер-экспресс»',
     active: true,
   },
@@ -554,7 +554,7 @@ const ordersSeed = [
     customerEmail: 'customer2@baguette.local',
     customerPhone: '+78120000004',
     deliveryAddress: 'Санкт-Петербург, наб. Карповки, 21',
-    teamId: 'bbb22222-2222-2222-2222-222222222222',
+    teamId: '1f6d0a2b-98ef-4e21-8f5c-4a7a30dfb202',
     status: OrderStatus.ASSEMBLY,
     total: 4025,
     items: [
@@ -604,7 +604,7 @@ const ordersSeed = [
     customerEmail: 'customer3@baguette.local',
     customerPhone: '+78120000005',
     deliveryAddress: null,
-    teamId: 'aaa11111-1111-1111-1111-111111111111',
+    teamId: '0c9b2f43-4d4c-42e5-8df0-9e3fbcf4d101',
     status: OrderStatus.READY_FOR_PICKUP,
     total: 2300,
     items: [
@@ -647,7 +647,7 @@ const ordersSeed = [
     customerEmail: 'customer1@baguette.local',
     customerPhone: '+78120000003',
     deliveryAddress: 'Кудрово, Европейский пр-т, 10',
-    teamId: 'ddd44444-4444-4444-4444-444444444444',
+    teamId: '3cc749f7-2bd7-458d-b1b8-6341fc73d404',
     status: OrderStatus.IN_TRANSIT,
     total: 5475,
     items: [
@@ -715,7 +715,7 @@ const ordersSeed = [
     customerEmail: 'customer2@baguette.local',
     customerPhone: '+78120000004',
     deliveryAddress: null,
-    teamId: 'ccc33333-3333-3333-3333-333333333333',
+    teamId: '2baf3816-5bdb-4d51-9b6a-8d991a5ac303',
     status: OrderStatus.COMPLETED,
     total: 2300,
     items: [
@@ -760,7 +760,7 @@ const ordersSeed = [
     customerEmail: 'customer3@baguette.local',
     customerPhone: '+78120000005',
     deliveryAddress: 'Пушкин, Софийская ул., 18',
-    teamId: 'ddd44444-4444-4444-4444-444444444444',
+    teamId: '3cc749f7-2bd7-458d-b1b8-6341fc73d404',
     status: OrderStatus.CANCELLED,
     total: 2800,
     items: [
@@ -833,6 +833,13 @@ async function main() {
       id: material.id as unknown as Prisma.FrameMaterialCreateManyInput['id'],
     })),
   });
+  await prisma.$executeRawUnsafe(`
+    SELECT setval(
+      pg_get_serial_sequence('"FrameMaterial"', 'id'),
+      COALESCE((SELECT MAX(id) FROM "FrameMaterial"), 1),
+      true
+    );
+  `);
   await prisma.frameStyle.createMany({ data: frameStylesSeed });
   await prisma.catalogItem.createMany({
     data: catalogItemsSeed.map((item) => ({

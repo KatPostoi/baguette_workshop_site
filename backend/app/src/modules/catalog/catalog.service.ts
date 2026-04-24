@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CatalogItemType, Prisma } from '@prisma/client';
 import { randomUUID } from 'crypto';
 import { PrismaService } from '../../database/prisma.service';
@@ -118,14 +122,29 @@ export class CatalogService {
       stock: dto.stock,
     };
 
-    const saved = await this.prisma.catalogItem.upsert({
-      where: { id },
-      create: data,
-      update: {
-        ...data,
-      },
-      include: { material: true, style: true },
-    });
+    let saved: Prisma.CatalogItemGetPayload<{
+      include: { material: true; style: true };
+    }>;
+
+    try {
+      saved = await this.prisma.catalogItem.upsert({
+        where: { id },
+        create: data,
+        update: {
+          ...data,
+        },
+        include: { material: true, style: true },
+      });
+    } catch (error) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === 'P2002'
+      ) {
+        throw new BadRequestException('Товар с таким slug уже существует');
+      }
+
+      throw error;
+    }
 
     await this.audit.record({
       action: existing ? 'catalog_update' : 'catalog_create',

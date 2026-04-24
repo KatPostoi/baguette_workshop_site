@@ -5,13 +5,21 @@ export async function fetchServices(): Promise<ServiceItem[]> {
   return httpClient.get<ServiceItem[]>('/services');
 }
 
-export async function fetchService(id: number): Promise<ServiceItem> {
-  return httpClient.get<ServiceItem>(`/services/${id}`);
-}
+export type AdminServiceInput = {
+  id: number;
+  type: string;
+  title: string;
+  price: number;
+};
 
-export const adminListServices = async (): Promise<ServiceItem[]> => httpClient.get('/admin/services');
-export const adminCreateService = async (dto: Partial<ServiceItem>) =>
+export const adminListServices = async (): Promise<ServiceItem[]> =>
+  httpClient.get<ServiceItem[]>('/admin/services');
+export const adminCreateService = async (dto: AdminServiceInput) =>
   httpClient.post<ServiceItem>('/admin/services', dto);
-export const adminUpdateService = async (id: number, dto: Partial<ServiceItem>) =>
+export const adminUpdateService = async (
+  id: number,
+  dto: Omit<AdminServiceInput, 'id'>,
+) =>
   httpClient.patch<ServiceItem>(`/admin/services/${id}`, dto);
-export const adminDeleteService = async (id: number) => httpClient.delete(`/admin/services/${id}`);
+export const adminDeleteService = async (id: number) =>
+  httpClient.delete<{ success: true }>(`/admin/services/${id}`);

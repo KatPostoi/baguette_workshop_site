@@ -170,20 +170,3 @@ export interface OrderTimeline {
   notifications: NotificationItem[];
   history: OrderStatusHistory[];
 }
-
-export interface AuditEvent {
-  id: string;
-  action: string;
-  entity: string;
-  entityId: string;
-  before?: unknown;
-  after?: unknown;
-  meta?: unknown;
-  createdAt: string;
-  actor?: {
-    id: string;
-    fullName: string;
-    email: string;
-    role: UserRole;
-  } | null;
-}

@@ -56,7 +56,7 @@ export class ServiceItemsService {
         error instanceof Prisma.PrismaClientKnownRequestError &&
         error.code === 'P2002'
       ) {
-        throw new BadRequestException('Услуга с таким типом уже существует');
+        throw new BadRequestException('Услуга с таким ID уже существует');
       }
       throw error;
     }

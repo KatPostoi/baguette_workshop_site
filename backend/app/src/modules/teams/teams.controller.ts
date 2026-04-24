@@ -1,11 +1,15 @@
 import {
   Body,
   Controller,
+  DefaultValuePipe,
+  Delete,
   Get,
   Param,
+  ParseBoolPipe,
   ParseUUIDPipe,
   Patch,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
@@ -21,8 +25,11 @@ export class TeamsController {
   constructor(private readonly teamsService: TeamsService) {}
 
   @Get()
-  list() {
-    return this.teamsService.list();
+  list(
+    @Query('includeInactive', new DefaultValuePipe('false'), ParseBoolPipe)
+    includeInactive: boolean,
+  ) {
+    return this.teamsService.list({ includeInactive });
   }
 
   @Post()
@@ -36,5 +43,10 @@ export class TeamsController {
     @Body() dto: UpdateTeamDto,
   ) {
     return this.teamsService.update(id, dto);
+  }
+
+  @Delete(':id')
+  remove(@Param('id', new ParseUUIDPipe()) id: string) {
+    return this.teamsService.deactivate(id);
   }
 }

@@ -14,6 +14,7 @@ import { Roles } from '../auth/roles.decorator';
 import { AuthUser } from '../auth/types';
 import { CurrentUser } from '../auth/current-user.decorator';
 import { AdminOrderFilterDto } from './dto/admin-order-filter.dto';
+import { AssignTeamDto } from './dto/assign-team.dto';
 import { OrderResponse } from './dto/order.response';
 import { OrderTimelineResponse } from './dto/order-timeline.response';
 import { UpdateOrderStatusDto } from './dto/update-order-status.dto';
@@ -67,6 +68,15 @@ export class AdminOrdersController {
       allowAll: true,
       comment: dto.comment,
     });
+  }
+
+  @Patch(':id/team')
+  assignTeam(
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @Body() dto: AssignTeamDto,
+    @CurrentUser() user: AuthUser,
+  ): Promise<OrderResponse> {
+    return this.ordersService.assignTeam(id, dto, user.sub);
   }
 
   @Patch('bulk/status')

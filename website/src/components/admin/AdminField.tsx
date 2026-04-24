@@ -5,6 +5,7 @@ import type {
   SelectHTMLAttributes,
   TextareaHTMLAttributes,
 } from 'react';
+import classNames from 'classnames';
 import './AdminField.css';
 
 type BaseProps = {
@@ -25,18 +26,18 @@ type SelectProps = BaseProps &
   Omit<SelectHTMLAttributes<HTMLSelectElement>, 'className' | 'children'>;
 
 export const AdminInput = ({ label, helper, className, type = 'text', ...rest }: InputProps) => (
-  <label className={className}>
-    <span>{label}</span>
+  <label className={classNames('admin-field', className)}>
+    <span className="admin-field__label">{label}</span>
     <input className="auth-input" type={type} {...rest} />
-    {helper ? <small>{helper}</small> : null}
+    {helper ? <small className="admin-field__helper">{helper}</small> : null}
   </label>
 );
 
 export const AdminTextarea = ({ label, helper, className, ...rest }: TextareaProps) => (
-  <label className={className}>
-    <span>{label}</span>
+  <label className={classNames('admin-field', className)}>
+    <span className="admin-field__label">{label}</span>
     <textarea className="auth-input" {...rest} />
-    {helper ? <small>{helper}</small> : null}
+    {helper ? <small className="admin-field__helper">{helper}</small> : null}
   </label>
 );
 
@@ -47,11 +48,11 @@ export const AdminSelect = ({
   children,
   ...rest
 }: PropsWithChildren<SelectProps>) => (
-  <label className={className}>
-    <span>{label}</span>
+  <label className={classNames('admin-field', className)}>
+    <span className="admin-field__label">{label}</span>
     <select className="auth-input" {...rest}>
       {children}
     </select>
-    {helper ? <small>{helper}</small> : null}
+    {helper ? <small className="admin-field__helper">{helper}</small> : null}
   </label>
 );

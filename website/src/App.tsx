@@ -16,7 +16,6 @@ import { AuthModalProvider } from './state/AuthModalContext';
 import { QuickAuthModal } from './components/auth/QuickAuthModal';
 import { AdminRoute } from './components/routing/AdminRoute';
 import { AdminDashboardPage } from './pages/AdminDashboard';
-import { AdminAuditPage } from './pages/AdminAudit';
 import { AdminDataPage } from './pages/AdminData';
 import { ForbiddenPage } from './pages/Forbidden';
 import { ToastProvider } from './state/ToastContext';
@@ -73,14 +72,6 @@ const RoutedApp = () => {
           }
         />
         <Route path="/admin" element={<Navigate to="/admin/orders" replace />} />
-        <Route
-          path="/admin/audit"
-          element={
-            <AdminRoute>
-              <AdminAuditPage />
-            </AdminRoute>
-          }
-        />
         <Route
           path="/admin/data"
           element={

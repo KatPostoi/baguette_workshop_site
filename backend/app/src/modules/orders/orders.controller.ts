@@ -18,7 +18,6 @@ import { CurrentUser } from '../auth/current-user.decorator';
 import { AuthUser } from '../auth/types';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { Roles } from '../auth/roles.decorator';
-import { AssignTeamDto } from './dto/assign-team.dto';
 import { AdminOrderFilterDto } from './dto/admin-order-filter.dto';
 
 @UseGuards(JwtAuthGuard)
@@ -88,16 +87,6 @@ export class OrdersController {
       allowAll: true,
       comment: dto.comment,
     });
-  }
-
-  @Patch(':id/team')
-  @Roles('ADMIN')
-  assignTeam(
-    @Param('id', new ParseUUIDPipe()) id: string,
-    @Body() dto: AssignTeamDto,
-    @CurrentUser() user: AuthUser,
-  ): Promise<OrderResponse> {
-    return this.ordersService.assignTeam(id, dto, user.sub);
   }
 
   @Patch(':id/cancel')

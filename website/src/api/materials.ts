@@ -3,13 +3,20 @@ import type { FrameMaterial } from './types';
 
 export const fetchMaterials = (): Promise<FrameMaterial[]> => httpClient.get('/materials');
 
-export const fetchMaterialById = (id: number): Promise<FrameMaterial> =>
-  httpClient.get(`/materials/${encodeURIComponent(id.toString())}`);
+export type AdminMaterialInput = {
+  title: string;
+  material: string;
+  description: string;
+  pricePerCm: number;
+  imageUrl: string;
+  imageAlt: string;
+};
 
-export const adminListMaterials = async (): Promise<FrameMaterial[]> => httpClient.get('/admin/materials');
-export const adminCreateMaterial = async (dto: Partial<FrameMaterial>) =>
+export const adminListMaterials = async (): Promise<FrameMaterial[]> =>
+  httpClient.get<FrameMaterial[]>('/admin/materials');
+export const adminCreateMaterial = async (dto: AdminMaterialInput) =>
   httpClient.post<FrameMaterial>('/admin/materials', dto);
-export const adminUpdateMaterial = async (id: number, dto: Partial<FrameMaterial>) =>
+export const adminUpdateMaterial = async (id: number, dto: AdminMaterialInput) =>
   httpClient.patch<FrameMaterial>(`/admin/materials/${id}`, dto);
 export const adminDeleteMaterial = async (id: number) =>
-  httpClient.delete(`/admin/materials/${id}`);
+  httpClient.delete<{ success: true }>(`/admin/materials/${id}`);

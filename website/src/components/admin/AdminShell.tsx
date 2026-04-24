@@ -4,7 +4,7 @@ import './AdminShell.css';
 
 type AdminShellProps = PropsWithChildren<{
   title: ReactNode;
-  active: 'orders' | 'audit' | 'data';
+  active: 'orders' | 'data';
 }>;
 
 export const AdminShell = ({ title, active, children }: AdminShellProps) => (
@@ -18,9 +18,6 @@ export const AdminShell = ({ title, active, children }: AdminShellProps) => (
     <div className="admin-subnav">
       <Link to="/admin/orders" className={active === 'orders' ? 'active' : undefined}>
         Заказы
-      </Link>
-      <Link to="/admin/audit" className={active === 'audit' ? 'active' : undefined}>
-        Аудит
       </Link>
       <Link to="/admin/data" className={active === 'data' ? 'active' : undefined}>
         Данные

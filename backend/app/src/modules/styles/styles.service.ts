@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { FrameStyle } from '@prisma/client';
 import { PrismaService } from '../../database/prisma.service';
 import { FrameStyleResponse } from './dto/frame-style.response';
@@ -38,7 +42,21 @@ export class StylesService {
   }
 
   async create(data: Prisma.FrameStyleCreateInput) {
-    const created = await this.prisma.frameStyle.create({ data });
+    let created: FrameStyle;
+
+    try {
+      created = await this.prisma.frameStyle.create({ data });
+    } catch (error) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === 'P2002'
+      ) {
+        throw new BadRequestException('Стиль с таким ID уже существует');
+      }
+
+      throw error;
+    }
+
     await this.audit.record({
       action: 'style_create',
       entity: 'FrameStyle',

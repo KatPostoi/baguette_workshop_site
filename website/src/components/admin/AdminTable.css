@@ -1,5 +1,9 @@
 .admin-table {
-  margin-top: 16px;
+  display: grid;
+  gap: 10px;
+}
+
+.admin-table__body {
   display: grid;
   gap: 10px;
 }
@@ -30,4 +34,11 @@
 .admin-empty {
   padding: 12px 0;
   color: #666666;
+}
+
+@media (max-width: 720px) {
+  .admin-table__head,
+  .admin-table__row {
+    grid-template-columns: 1fr;
+  }
 }

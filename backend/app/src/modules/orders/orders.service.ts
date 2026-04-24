@@ -363,7 +363,7 @@ export class OrdersService {
       throw new NotFoundException(`Order ${orderId} not found`);
     }
 
-    const team = await this.prisma.team.findUnique({
+    const team = await this.prisma.team.findFirst({
       where: { id: dto.teamId, active: true },
     });
 
@@ -396,7 +396,7 @@ export class OrdersService {
       after: { teamId: dto.teamId, teamName: team.name },
     });
 
-    return this.mapToResponse(updated);
+    return this.buildOrderResponse(orderId);
   }
 
   async cancel(orderId: string, userId: string): Promise<OrderResponse> {

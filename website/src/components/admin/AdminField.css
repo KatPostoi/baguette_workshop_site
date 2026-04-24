@@ -1,27 +1,17 @@
-.admin-grid {
-  display: grid;
-  gap: 14px;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-}
-
-.admin-grid label {
+.admin-field {
   display: flex;
   flex-direction: column;
   gap: 6px;
   font-size: 14px;
 }
 
-.admin-grid label span {
+.admin-field__label {
   font-weight: 700;
   color: #1f1f1f;
 }
 
-.admin-grid label small {
+.admin-field__helper {
   color: #666666;
-}
-
-.admin-grid .full {
-  grid-column: 1 / -1;
 }
 
 .auth-input {
@@ -36,4 +26,9 @@
 .auth-input:focus-visible {
   outline: none;
   border-color: #e97721;
+}
+
+.admin-field textarea.auth-input {
+  min-height: 120px;
+  resize: vertical;
 }
