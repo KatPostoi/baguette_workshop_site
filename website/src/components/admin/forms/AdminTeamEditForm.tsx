@@ -41,7 +41,6 @@ export const AdminTeamEditForm = ({
           label="Статус"
           value={draft.active ? 'active' : 'inactive'}
           onChange={(event) => onChange('active', event.target.value === 'active')}
-          helper="Неактивная группа исчезает из новых назначений в Заказах, но остаётся в уже назначенных заказах и истории."
         >
           <option value="active">Активна</option>
           <option value="inactive">Неактивна</option>
@@ -51,8 +50,7 @@ export const AdminTeamEditForm = ({
 
     {mode === 'create' ? (
       <p className="admin-teams-dialog__note">
-        Новая рабочая группа создаётся активной. Удаление в интерфейсе означает
-        мягкую деактивацию, а не физическое удаление из базы.
+        Новая рабочая группа создаётся активной и сразу доступна для назначения заказов.
       </p>
     ) : null}
   </>

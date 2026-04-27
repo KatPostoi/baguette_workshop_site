@@ -7,7 +7,7 @@
     minmax(120px, 0.9fr)
     minmax(150px, 1fr)
     minmax(150px, 1fr)
-    minmax(180px, 1.1fr);
+    minmax(220px, max-content);
 }
 
 .admin-users-table__row_inactive {
@@ -23,11 +23,12 @@
 .admin-users-table__name {
   font-weight: 700;
   color: #241d18;
+  font-size: 18px;
 }
 
 .admin-users-table__meta {
   color: #6b5e52;
-  font-size: 12px;
+  font-size: 18px;
   word-break: break-word;
 }
 
@@ -35,36 +36,29 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 6px 10px;
-  border-radius: 999px;
-  font-size: 12px;
+  padding: 0;
+  border-radius: 0;
+  font-size: 18px;
   font-weight: 700;
   line-height: 1;
-  border: 1px solid transparent;
+  border: none;
   white-space: nowrap;
+  background: transparent;
 }
 
 .admin-users-badge_role-admin {
-  background: #f4ece1;
-  border-color: #dfc3a6;
   color: #6d4b20;
 }
 
 .admin-users-badge_role-customer {
-  background: #eef3fb;
-  border-color: #c7d5ec;
   color: #32507b;
 }
 
 .admin-users-badge_status-active {
-  background: #eef8ef;
-  border-color: #b8dfbc;
   color: #29653d;
 }
 
 .admin-users-badge_status-inactive {
-  background: #fbefef;
-  border-color: #e3b9b9;
   color: #8b2727;
 }
 

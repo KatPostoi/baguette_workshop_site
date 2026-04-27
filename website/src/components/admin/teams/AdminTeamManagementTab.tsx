@@ -1,10 +1,14 @@
 import classNames from 'classnames';
 import { Button } from '../../ui-kit/Button';
+import { AdminCreateButton } from '../AdminCreateButton';
 import { AdminInput, AdminSelect } from '../AdminField';
 import { AdminFilterPanel } from '../AdminFilterPanel';
 import { AdminListBlock } from '../AdminListBlock';
 import { AdminListState } from '../AdminListState';
-import { AdminPagination } from '../AdminPagination';
+import {
+  AdminPaginationControls,
+  AdminPaginationInfo,
+} from '../AdminPagination';
 import { AdminRowActions } from '../AdminRowActions';
 import { AdminTable } from '../AdminTable';
 import { DEFAULT_ADMIN_PAGE_SIZE } from '../adminCrudUtils';
@@ -35,7 +39,6 @@ export const AdminTeamManagementTab = () => {
     setPage,
     applyFilters,
     resetFilters,
-    reloadTeams,
     openCreateDialog,
     openEditDialog,
     closeDialog,
@@ -54,10 +57,6 @@ export const AdminTeamManagementTab = () => {
             <Button variant="secondary" onClick={resetFilters}>
               Сбросить
             </Button>
-            <Button variant="secondary" onClick={() => void reloadTeams()} disabled={loading}>
-              Обновить
-            </Button>
-            <Button onClick={openCreateDialog}>Новая группа</Button>
           </>
         }
       >
@@ -67,8 +66,7 @@ export const AdminTeamManagementTab = () => {
           onChange={(event) =>
             setFilters((current) => ({ ...current, search: event.target.value }))
           }
-          placeholder="UUID или название"
-          helper="Working Groups остаются проекцией существующей сущности Team без нового domain-layer."
+          placeholder="Название"
         />
         <AdminSelect
           label="Статус"
@@ -87,10 +85,21 @@ export const AdminTeamManagementTab = () => {
       </AdminFilterPanel>
 
       <AdminListBlock
-        title="Рабочие группы"
-        description="Команды управляются через существующую сущность Team: удаление выполняется как deactivate, активные группы доступны для новых назначений в Заказах, а уже назначенные inactive-группы остаются видимыми в карточках и истории."
+        primaryAction={
+          <AdminCreateButton
+            onClick={openCreateDialog}
+            disabled={loading || saving || deleting}
+          />
+        }
+        centerContent={
+          <AdminPaginationInfo
+            total={teams.length}
+            page={page}
+            pageSize={DEFAULT_ADMIN_PAGE_SIZE}
+          />
+        }
         actions={
-          <AdminPagination
+          <AdminPaginationControls
             total={teams.length}
             page={page}
             pageSize={DEFAULT_ADMIN_PAGE_SIZE}
@@ -118,7 +127,6 @@ export const AdminTeamManagementTab = () => {
               >
                 <div className="admin-teams-table__identity">
                   <span className="admin-teams-table__name">{team.name}</span>
-                  <span className="admin-teams-table__meta">{team.id}</span>
                 </div>
                 <div>
                   <span
@@ -143,12 +151,7 @@ export const AdminTeamManagementTab = () => {
                     size="sm"
                     variant="secondary"
                     onClick={() => setDeleteCandidate(team)}
-                    disabled={deleting || !team.active}
-                    title={
-                      team.active
-                        ? undefined
-                        : 'Рабочая группа уже деактивирована.'
-                    }
+                    disabled={deleting || saving}
                   >
                     Удалить
                   </Button>
@@ -185,13 +188,13 @@ export const AdminTeamManagementTab = () => {
 
       <AdminConfirmDialog
         isOpen={deleteCandidate !== null}
-        title="Деактивировать рабочую группу?"
+        title="Удалить рабочую группу?"
         description={
           deleteCandidate
-            ? `Группа «${deleteCandidate.name}» станет неактивной и исчезнет из новых назначений в разделе «Заказы». Уже назначенные заказы сохранят ссылку на эту группу.`
+            ? `Рабочая группа «${deleteCandidate.name}» будет удалена из базы данных. В уже существующих заказах привязка к ней будет снята автоматически.`
             : ''
         }
-        confirmLabel="Деактивировать"
+        confirmLabel="Удалить группу"
         loading={deleting}
         onConfirm={() => void handleDelete()}
         onCancel={() => {

@@ -25,10 +25,7 @@ export class TeamsService {
     }
 
     if (params.search) {
-      where.OR = [
-        { id: { contains: params.search, mode: 'insensitive' } },
-        { name: { contains: params.search, mode: 'insensitive' } },
-      ];
+      where.name = { contains: params.search, mode: 'insensitive' };
     }
 
     return this.prisma.team.findMany({
@@ -103,35 +100,24 @@ export class TeamsService {
     return updated;
   }
 
-  async deactivate(id: string) {
+  async remove(id: string) {
     const existing = await this.prisma.team.findUnique({ where: { id } });
     if (!existing) {
       throw new NotFoundException(`Team ${id} not found`);
     }
 
-    if (!existing.active) {
-      return existing;
-    }
-
-    await this.ensureCanDeactivate({
-      currentActive: existing.active,
-      nextActive: false,
-    });
-
-    const updated = await this.prisma.team.update({
+    await this.prisma.team.delete({
       where: { id },
-      data: { active: false },
     });
 
     await this.audit.record({
-      action: 'team_deactivate',
+      action: 'team_delete',
       entity: 'Team',
       entityId: id,
       before: existing,
-      after: updated,
     });
 
-    return updated;
+    return { success: true };
   }
 
   private async ensureCanDeactivate(params: {

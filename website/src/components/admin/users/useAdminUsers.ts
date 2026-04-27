@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
-  adminDeactivateUser,
+  adminCreateUser,
   adminListUsers,
   adminUpdateUser,
 } from '../../../api/users';
@@ -10,9 +10,13 @@ import {
   DEFAULT_ADMIN_PAGE_SIZE,
   getAdminErrorMessage,
 } from '../adminCrudUtils';
-import type { AdminUserDraft } from '../forms/AdminUserEditForm';
+import type {
+  AdminUserDialogMode,
+  AdminUserDraft,
+} from '../forms/AdminUserEditForm';
 import {
   buildAdminUserQuery,
+  createEmptyAdminUserDraft,
   createAdminUserFilters,
   mapUserToDraft,
   type AdminUserFilterState,
@@ -32,10 +36,11 @@ export const useAdminUsers = (initialRole: AdminUserRoleFilter) => {
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [draft, setDraft] = useState<AdminUserDraft | null>(null);
+  const [dialogMode, setDialogMode] = useState<AdminUserDialogMode | null>(null);
+  const [draft, setDraft] = useState<AdminUserDraft>(
+    createEmptyAdminUserDraft(initialRole === 'ADMIN' ? 'ADMIN' : 'CUSTOMER'),
+  );
   const [saving, setSaving] = useState(false);
-  const [deleteCandidate, setDeleteCandidate] = useState<UserProfile | null>(null);
-  const [deleting, setDeleting] = useState(false);
 
   const loadUsers = useCallback(
     async (nextFilters: AdminUserFilterState = appliedFilters) => {
@@ -92,29 +97,46 @@ export const useAdminUsers = (initialRole: AdminUserRoleFilter) => {
     setPage(1);
   };
 
-  const openEditDialog = (user: UserProfile) => {
-    setDraft(mapUserToDraft(user));
+  const resolveCreateRole = () => {
+    if (filters.role === 'ADMIN' || filters.role === 'CUSTOMER') {
+      return filters.role;
+    }
+
+    return initialRole === 'ADMIN' ? 'ADMIN' : 'CUSTOMER';
   };
 
-  const closeEditDialog = () => {
-    if (!saving) {
-      setDraft(null);
+  const openCreateDialog = () => {
+    setDraft(createEmptyAdminUserDraft(resolveCreateRole()));
+    setDialogMode('create');
+  };
+
+  const openEditDialog = (user: UserProfile) => {
+    setDraft(mapUserToDraft(user));
+    setDialogMode('edit');
+  };
+
+  const closeDialog = () => {
+    if (saving) {
+      return;
     }
+
+    setDialogMode(null);
+    setDraft(createEmptyAdminUserDraft(resolveCreateRole()));
   };
 
   const updateDraft = <TKey extends keyof AdminUserDraft>(
     key: TKey,
     value: AdminUserDraft[TKey],
   ) => {
-    setDraft((current) => (current ? { ...current, [key]: value } : current));
+    setDraft((current) => ({ ...current, [key]: value }));
   };
 
   const handleSave = async () => {
-    if (!draft) {
+    if (!dialogMode) {
       return;
     }
 
-    const validationError = validateAdminUserDraft(draft);
+    const validationError = validateAdminUserDraft(draft, dialogMode);
     if (validationError) {
       addToast({ type: 'error', message: validationError });
       return;
@@ -123,15 +145,36 @@ export const useAdminUsers = (initialRole: AdminUserRoleFilter) => {
     setSaving(true);
 
     try {
-      await adminUpdateUser(draft.id, {
-        fullName: draft.fullName.trim(),
-        phone: draft.phone.trim() || null,
-        gender: draft.gender.trim() || null,
-        role: draft.role,
-        isActive: draft.isActive,
+      if (dialogMode === 'edit' && draft.id) {
+        await adminUpdateUser(draft.id, {
+          fullName: draft.fullName.trim(),
+          phone: draft.phone.trim() || null,
+          gender: draft.gender.trim() || null,
+          role: draft.role,
+          isActive: draft.isActive,
+        });
+      } else {
+        await adminCreateUser({
+          email: draft.email.trim(),
+          password: draft.password,
+          fullName: draft.fullName.trim(),
+          phone: draft.phone.trim() || null,
+          gender: draft.gender.trim() || null,
+          role: draft.role,
+          isActive: draft.isActive,
+        });
+        setPage(1);
+      }
+
+      setDialogMode(null);
+      setDraft(createEmptyAdminUserDraft(resolveCreateRole()));
+      addToast({
+        type: 'success',
+      message:
+          dialogMode === 'edit'
+            ? 'Профиль пользователя обновлён.'
+            : 'Пользователь создан.',
       });
-      setDraft(null);
-      addToast({ type: 'success', message: 'Профиль пользователя обновлён.' });
       await loadUsers(appliedFilters);
     } catch (saveError) {
       console.error(saveError);
@@ -147,32 +190,6 @@ export const useAdminUsers = (initialRole: AdminUserRoleFilter) => {
     }
   };
 
-  const handleDelete = async () => {
-    if (!deleteCandidate) {
-      return;
-    }
-
-    setDeleting(true);
-
-    try {
-      await adminDeactivateUser(deleteCandidate.id);
-      setDeleteCandidate(null);
-      addToast({ type: 'success', message: 'Пользователь деактивирован.' });
-      await loadUsers(appliedFilters);
-    } catch (deleteError) {
-      console.error(deleteError);
-      addToast({
-        type: 'error',
-        message: getAdminErrorMessage(
-          deleteError,
-          'Не удалось деактивировать пользователя.',
-        ),
-      });
-    } finally {
-      setDeleting(false);
-    }
-  };
-
   return {
     users,
     paginatedUsers,
@@ -182,18 +199,15 @@ export const useAdminUsers = (initialRole: AdminUserRoleFilter) => {
     error,
     draft,
     saving,
-    deleteCandidate,
-    deleting,
     setFilters,
     setPage,
     applyFilters,
     resetFilters,
-    reloadUsers: () => loadUsers(appliedFilters),
+    dialogMode,
+    openCreateDialog,
     openEditDialog,
-    closeEditDialog,
+    closeDialog,
     updateDraft,
     handleSave,
-    setDeleteCandidate,
-    handleDelete,
   };
 };

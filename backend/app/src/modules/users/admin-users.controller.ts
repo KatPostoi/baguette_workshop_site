@@ -6,6 +6,7 @@ import {
   Param,
   ParseUUIDPipe,
   Patch,
+  Post,
   Query,
   UseGuards,
 } from '@nestjs/common';
@@ -15,6 +16,7 @@ import { UsersService } from './users.service';
 import { CurrentUser } from '../auth/current-user.decorator';
 import { AuthUser } from '../auth/types';
 import { AdminUserFilterDto } from './dto/admin-user-filter.dto';
+import { AdminCreateUserDto } from './dto/admin-create-user.dto';
 import { AdminUpdateUserDto } from './dto/admin-update-user.dto';
 import { parseOptionalBooleanQuery } from '../../common/query/parse-optional-boolean-query';
 
@@ -33,6 +35,11 @@ export class AdminUsersController {
       ...filters,
       isActive: parseOptionalBooleanQuery('isActive', isActiveRaw),
     });
+  }
+
+  @Post()
+  create(@Body() dto: AdminCreateUserDto, @CurrentUser() user: AuthUser) {
+    return this.usersService.createAdminUser(dto, user.sub);
   }
 
   @Patch(':id')

@@ -9,6 +9,7 @@ import * as bcrypt from 'bcrypt';
 import { Prisma, User, UserRole } from '@prisma/client';
 import { PrismaService } from '../../database/prisma.service';
 import { AuditService } from '../audit/audit.service';
+import { AdminCreateUserDto } from './dto/admin-create-user.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { AdminUserFilterDto } from './dto/admin-user-filter.dto';
 import { AdminUpdateUserDto } from './dto/admin-update-user.dto';
@@ -79,6 +80,40 @@ export class UsersService {
           isActive: true,
         },
       });
+    } catch (error) {
+      this.rethrowUserWriteError(error);
+      throw error;
+    }
+  }
+
+  async createAdminUser(
+    dto: AdminCreateUserDto,
+    actorId: string,
+  ): Promise<UserProfileResponse> {
+    const passwordHash = await bcrypt.hash(dto.password, 10);
+
+    try {
+      const created = await this.prisma.user.create({
+        data: {
+          email: dto.email,
+          passwordHash,
+          fullName: dto.fullName,
+          phone: dto.phone ?? null,
+          gender: dto.gender ?? null,
+          role: dto.role ?? UserRole.CUSTOMER,
+          isActive: dto.isActive ?? true,
+        },
+      });
+
+      await this.audit.record({
+        actorId,
+        action: 'user_create',
+        entity: 'User',
+        entityId: created.id,
+        after: this.toProfile(created),
+      });
+
+      return this.toProfile(created);
     } catch (error) {
       this.rethrowUserWriteError(error);
       throw error;

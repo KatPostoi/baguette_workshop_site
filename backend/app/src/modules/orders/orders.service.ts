@@ -16,6 +16,8 @@ import { NotificationsService } from '../notifications/notifications.service';
 import { OrderTimelineResponse } from './dto/order-timeline.response';
 import { AdminOrderFilterDto } from './dto/admin-order-filter.dto';
 import { AssignTeamDto } from './dto/assign-team.dto';
+import { AdminCreateOrderDto } from './dto/admin-create-order.dto';
+import { AdminUpdateOrderDto } from './dto/admin-update-order.dto';
 import { ORDER_STATUS, type OrderStatus } from './order-status';
 import { AuditService } from '../audit/audit.service';
 import { CustomFramesService } from '../custom-frames/custom-frames.service';
@@ -213,6 +215,35 @@ export class OrdersService {
       `Order created for ${dto.customerEmail}`,
     );
     return this.buildOrderResponse(order.id);
+  }
+
+  async createAdminOrder(
+    dto: AdminCreateOrderDto,
+    actorId: string,
+  ): Promise<OrderResponse> {
+    const created = await this.create(
+      {
+        customerName: dto.customerName,
+        customerEmail: dto.customerEmail,
+        customerPhone: dto.customerPhone,
+        deliveryAddress: dto.deliveryAddress,
+        clearBasketAfterOrder: false,
+        items: dto.items,
+      },
+      null,
+    );
+
+    if (!dto.teamId) {
+      return created;
+    }
+
+    return this.updateAdminOrder(
+      created.id,
+      {
+        teamId: dto.teamId,
+      },
+      actorId,
+    );
   }
 
   async updateStatus(params: {
@@ -428,6 +459,144 @@ export class OrdersService {
     });
   }
 
+  async updateAdminOrder(
+    orderId: string,
+    dto: AdminUpdateOrderDto,
+    actorId: string | null,
+  ): Promise<OrderResponse> {
+    const existing = await this.prisma.order.findUnique({
+      where: { id: orderId },
+      include: { items: true, team: true },
+    });
+
+    if (!existing) {
+      throw new NotFoundException(`Order ${orderId} not found`);
+    }
+
+    const nextTeamId =
+      dto.teamId === undefined
+        ? existing.teamId
+        : dto.teamId === null
+          ? null
+          : dto.teamId === existing.teamId
+            ? existing.teamId
+            : (await this.getActiveTeamOrThrow(dto.teamId)).id;
+    const nextStatus =
+      (dto.status as OrderStatus | undefined) ?? existing.status;
+    const nextCustomerName = dto.customerName?.trim() ?? existing.customerName;
+    const nextCustomerEmail =
+      dto.customerEmail?.trim() ?? existing.customerEmail;
+    const nextCustomerPhone =
+      dto.customerPhone === undefined
+        ? existing.customerPhone
+        : dto.customerPhone?.trim() || null;
+    const nextDeliveryAddress =
+      dto.deliveryAddress === undefined
+        ? existing.deliveryAddress
+        : dto.deliveryAddress?.trim() || null;
+
+    const updateData: Prisma.OrderUpdateInput = {
+      customerName: nextCustomerName,
+      customerEmail: nextCustomerEmail,
+      customerPhone: nextCustomerPhone,
+      deliveryAddress: nextDeliveryAddress,
+      team:
+        dto.teamId === undefined
+          ? undefined
+          : nextTeamId
+            ? { connect: { id: nextTeamId } }
+            : { disconnect: true },
+    };
+
+    const hasChanges =
+      nextCustomerName !== existing.customerName ||
+      nextCustomerEmail !== existing.customerEmail ||
+      nextCustomerPhone !== existing.customerPhone ||
+      nextDeliveryAddress !== existing.deliveryAddress ||
+      nextTeamId !== existing.teamId ||
+      nextStatus !== existing.status;
+
+    if (!hasChanges) {
+      return this.buildOrderResponse(orderId);
+    }
+
+    if (
+      nextStatus !== existing.status &&
+      !this.isTransitionAllowed(
+        {
+          status: existing.status,
+          deliveryAddress: nextDeliveryAddress,
+        },
+        nextStatus,
+      )
+    ) {
+      throw new BadRequestException(
+        `Cannot change status from ${existing.status} to ${nextStatus}`,
+      );
+    }
+
+    await this.prisma.order.update({
+      where: { id: orderId },
+      data: {
+        ...updateData,
+        status: nextStatus,
+      },
+    });
+
+    if (nextTeamId !== existing.teamId) {
+      const nextTeam = nextTeamId
+        ? await this.prisma.team.findUnique({ where: { id: nextTeamId } })
+        : null;
+      await this.recordHistory(
+        orderId,
+        existing.status,
+        actorId,
+        nextTeam
+          ? `Команда обновлена: ${nextTeam.name}`
+          : 'Команда снята с заказа',
+      );
+    }
+
+    if (nextStatus !== existing.status) {
+      await this.recordHistory(
+        orderId,
+        nextStatus,
+        actorId,
+        `Статус изменён администратором: ${nextStatus}`,
+      );
+      await this.notificationsService.record(
+        orderId,
+        'order_status_changed',
+        `Статус изменён на ${nextStatus}`,
+      );
+    }
+
+    await this.auditService.record({
+      actorId: actorId ?? undefined,
+      action: 'order_update',
+      entity: 'Order',
+      entityId: orderId,
+      before: {
+        customerName: existing.customerName,
+        customerEmail: existing.customerEmail,
+        customerPhone: existing.customerPhone,
+        deliveryAddress: existing.deliveryAddress,
+        teamId: existing.teamId,
+        status: existing.status,
+      },
+      after: {
+        customerName: nextCustomerName,
+        customerEmail: nextCustomerEmail,
+        customerPhone: nextCustomerPhone,
+        deliveryAddress: nextDeliveryAddress,
+        teamId: nextTeamId,
+        status: nextStatus,
+      },
+    });
+
+    return this.buildOrderResponse(orderId);
+  }
+
   async pay(orderId: string, userId: string): Promise<OrderResponse> {
     const order = await this.prisma.order.findUnique({
       where: { id: orderId, userId },
@@ -474,6 +643,29 @@ export class OrdersService {
     });
 
     return this.buildOrderResponse(orderId);
+  }
+
+  async removeAdminOrder(orderId: string, actorId: string | null) {
+    const existing = await this.prisma.order.findUnique({
+      where: { id: orderId },
+      include: { items: true, team: true, history: true },
+    });
+
+    if (!existing) {
+      throw new NotFoundException(`Order ${orderId} not found`);
+    }
+
+    await this.prisma.order.delete({ where: { id: orderId } });
+
+    await this.auditService.record({
+      actorId: actorId ?? undefined,
+      action: 'order_delete',
+      entity: 'Order',
+      entityId: orderId,
+      before: existing,
+    });
+
+    return { success: true };
   }
 
   private mapToResponse(order: {
@@ -581,6 +773,18 @@ export class OrdersService {
     }
 
     return allowedMap[current]?.includes(next) ?? false;
+  }
+
+  private async getActiveTeamOrThrow(teamId: string) {
+    const team = await this.prisma.team.findFirst({
+      where: { id: teamId, active: true },
+    });
+
+    if (!team) {
+      throw new NotFoundException(`Team ${teamId} not found or inactive`);
+    }
+
+    return team;
   }
 
   private mapHistory(history: {

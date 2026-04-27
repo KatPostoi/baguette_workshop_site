@@ -19,9 +19,23 @@ export const createAdminUserFilters = (
   activity: 'active',
 });
 
+export const createEmptyAdminUserDraft = (
+  role: UserRole = 'CUSTOMER',
+): AdminUserDraft => ({
+  id: null,
+  email: '',
+  password: '',
+  fullName: '',
+  phone: '',
+  gender: '',
+  role,
+  isActive: true,
+});
+
 export const mapUserToDraft = (user: UserProfile): AdminUserDraft => ({
   id: user.id,
   email: user.email,
+  password: '',
   fullName: user.fullName,
   phone: user.phone ?? '',
   gender: user.gender ?? '',
@@ -62,7 +76,20 @@ export const formatUserGender = (gender?: string | null) => {
 export const formatUserStatus = (isActive: boolean) =>
   isActive ? 'Активен' : 'Неактивен';
 
-export const validateAdminUserDraft = (draft: AdminUserDraft) => {
+const isValidEmail = (value: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+
+export const validateAdminUserDraft = (
+  draft: AdminUserDraft,
+  mode: 'create' | 'edit',
+) => {
+  if (mode === 'create' && !isValidEmail(draft.email.trim())) {
+    return 'Укажите корректный email.';
+  }
+
+  if (mode === 'create' && draft.password.trim().length < 6) {
+    return 'Пароль должен содержать минимум 6 символов.';
+  }
+
   if (draft.fullName.trim().length < 2) {
     return 'ФИО должно содержать минимум 2 символа.';
   }

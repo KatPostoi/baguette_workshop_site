@@ -201,6 +201,17 @@ const main = async () => {
   assert(admins.length > 1, 'Need at least two active admins for smoke');
   assert(activeTeams.length > 1, 'Need at least two active teams for smoke');
 
+  const temporaryTeam = await runStep('Team create', () =>
+    apiRequest('/admin/teams', {
+      method: 'POST',
+      body: { name: `Smoke Team ${suffix}` },
+    }),
+  );
+
+  await runStep('Team delete', () =>
+    apiRequest(`/admin/teams/${temporaryTeam.id}`, { method: 'DELETE' }),
+  );
+
   let createdCatalogId = null;
   let createdMaterialId = null;
   let createdStyleId = null;
@@ -464,7 +475,13 @@ const main = async () => {
   );
 
   await runStep('Team deactivate', () =>
-    apiRequest(`/admin/teams/${updatedSmokeTeam.id}`, { method: 'DELETE' }),
+    apiRequest(`/admin/teams/${updatedSmokeTeam.id}`, {
+      method: 'PATCH',
+      body: {
+        name: updatedSmokeTeam.name,
+        active: false,
+      },
+    }),
   );
 
   const ordersAfterDeactivate = await runStep(

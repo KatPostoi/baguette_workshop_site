@@ -1,98 +1,75 @@
-import type { Order, Team, OrderStatus } from '../../../api/types';
-import { OrderCard } from '../../orders/OrderCard';
+import type { Order } from '../../../api/types';
 import { OrderStatusBadge } from '../../orders/OrderStatusBadge';
+import { AdminTable } from '../AdminTable';
 import { OrderAdminActions } from './OrderAdminActions';
+import { formatAdminOrderLabel } from './adminOrderUtils';
 
 type OrdersListProps = {
   orders: Order[];
-  teams: Team[];
-  selectedIds: Set<string>;
   canUpdateOrders: boolean;
-  bulkLoading?: boolean;
-  statusLoadingOrderId?: string | null;
-  teamLoadingOrderId?: string | null;
-  timelineLoadingOrderId?: string | null;
-  onToggleSelect: (id: string) => void;
-  onAssignTeam: (orderId: string, teamId: string) => void;
-  onChangeStatus: (orderId: string, status: OrderStatus) => void;
-  onOpenTimeline: (orderId: string) => void;
-  onOpenDetails: (orderId: string) => void;
+  actionLoadingOrderId?: string | null;
+  onEditOrder: (orderId: string) => void;
+  onDeleteOrder: (orderId: string) => void;
 };
-
-const formatOrderMeta = (order: Order) => [
-  `Клиент: ${order.customerEmail}`,
-  `Сумма: ${order.total} ₽`,
-  `Позиций: ${order.items.length}`,
-];
 
 export const OrdersList = ({
   orders,
-  teams,
-  selectedIds,
   canUpdateOrders,
-  bulkLoading = false,
-  statusLoadingOrderId = null,
-  teamLoadingOrderId = null,
-  timelineLoadingOrderId = null,
-  onToggleSelect,
-  onAssignTeam,
-  onChangeStatus,
-  onOpenTimeline,
-  onOpenDetails,
+  actionLoadingOrderId = null,
+  onEditOrder,
+  onDeleteOrder,
 }: OrdersListProps) => (
-  <div className="admin-orders__list">
+  <AdminTable
+    headers={[
+      'Заказ',
+      'Клиент',
+      'Контакты',
+      'Доставка',
+      'Команда',
+      'Статус',
+      'Действия',
+    ]}
+    className="admin-orders-table"
+  >
     {orders.map((order) => (
-      <OrderCard
-        key={order.id}
-        leading={
-          canUpdateOrders ? (
-            <input
-              type="checkbox"
-              checked={selectedIds.has(order.id)}
-              onChange={() => onToggleSelect(order.id)}
-              aria-label={`Выбрать заказ ${order.id}`}
-              disabled={bulkLoading}
-            />
-          ) : null
-        }
-        title={`Заказ #${order.id.slice(0, 6)}`}
-        meta={formatOrderMeta(order).map((item) => (
-          <span key={item}>{item}</span>
-        ))}
-        status={<OrderStatusBadge status={order.status} />}
-        body={
-          <>
-            <div className="admin-orders__body-line">
-              <span>Получатель: {order.customerName}</span>
-              <span>Телефон: {order.customerPhone ?? '—'}</span>
-            </div>
-            <div className="admin-orders__body-line">
-              <span>Команда: {order.team?.name ?? 'Не назначена'}</span>
-              <span>Создан: {new Date(order.createdAt).toLocaleString()}</span>
-            </div>
-            <div className="admin-orders__body-line">
-              <span>
-                Доставка:{' '}
-                {order.deliveryAddress ? order.deliveryAddress : 'Самовывоз / не указан'}
-              </span>
-            </div>
-          </>
-        }
-        actions={
+      <div key={order.id} className="admin-table__row">
+        <div className="admin-orders-table__identity">
+          <span className="admin-orders-table__name">
+            {formatAdminOrderLabel(order)}
+          </span>
+        </div>
+
+        <div className="admin-orders-table__cell">
+          <span className="admin-orders-table__name">{order.customerName}</span>
+        </div>
+
+        <div className="admin-orders-table__cell">
+          <span>{order.customerEmail}</span>
+          <span>{order.customerPhone ?? '—'}</span>
+        </div>
+
+        <div className="admin-orders-table__cell">
+          <span>{order.deliveryAddress || 'Самовывоз / не указан'}</span>
+        </div>
+
+        <div className="admin-orders-table__cell">
+          <span>{order.team?.name ?? 'Не назначена'}</span>
+        </div>
+
+        <div className="admin-orders-table__cell">
+          <OrderStatusBadge status={order.status} />
+        </div>
+
+        <div className="admin-orders-table__action-cell">
           <OrderAdminActions
             order={order}
-            teams={teams}
             canUpdateOrders={canUpdateOrders}
-            teamLoading={teamLoadingOrderId === order.id}
-            statusLoading={statusLoadingOrderId === order.id}
-            timelineLoading={timelineLoadingOrderId === order.id}
-            onAssignTeam={onAssignTeam}
-            onChangeStatus={onChangeStatus}
-            onOpenTimeline={onOpenTimeline}
-            onOpenDetails={onOpenDetails}
+            loading={actionLoadingOrderId === order.id}
+            onEdit={onEditOrder}
+            onDelete={onDeleteOrder}
           />
-        }
-      />
+        </div>
+      </div>
     ))}
-  </div>
+  </AdminTable>
 );

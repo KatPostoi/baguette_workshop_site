@@ -1,15 +1,18 @@
 import classNames from 'classnames';
 import { useAuth } from '../../../state/AuthContext';
 import { Button } from '../../ui-kit/Button';
+import { AdminCreateButton } from '../AdminCreateButton';
 import { AdminInput, AdminSelect } from '../AdminField';
 import { AdminFilterPanel } from '../AdminFilterPanel';
 import { AdminListBlock } from '../AdminListBlock';
 import { AdminListState } from '../AdminListState';
-import { AdminPagination } from '../AdminPagination';
+import {
+  AdminPaginationControls,
+  AdminPaginationInfo,
+} from '../AdminPagination';
 import { AdminRowActions } from '../AdminRowActions';
 import { AdminTable } from '../AdminTable';
 import { DEFAULT_ADMIN_PAGE_SIZE } from '../adminCrudUtils';
-import { AdminConfirmDialog } from '../forms/AdminConfirmDialog';
 import { AdminEntityDialog } from '../forms/AdminEntityDialog';
 import { AdminUserEditForm } from '../forms/AdminUserEditForm';
 import {
@@ -22,16 +25,14 @@ import { useAdminUsers } from './useAdminUsers';
 import './AdminUsers.css';
 
 type AdminUserManagementTabProps = {
-  title: string;
-  description: string;
+  collectionLabel: string;
   defaultRole: AdminUserRoleFilter;
   emptyMessage: string;
   entityLabel: string;
 };
 
 export const AdminUserManagementTab = ({
-  title,
-  description,
+  collectionLabel,
   defaultRole,
   emptyMessage,
   entityLabel,
@@ -45,24 +46,21 @@ export const AdminUserManagementTab = ({
     page,
     loading,
     error,
+    dialogMode,
     draft,
     saving,
-    deleteCandidate,
-    deleting,
     setFilters,
     setPage,
     applyFilters,
     resetFilters,
-    reloadUsers,
+    openCreateDialog,
     openEditDialog,
-    closeEditDialog,
+    closeDialog,
     updateDraft,
     handleSave,
-    setDeleteCandidate,
-    handleDelete,
   } = useAdminUsers(defaultRole);
 
-  const isEditingSelf = draft?.id === currentUserId;
+  const isEditingSelf = dialogMode === 'edit' && draft.id === currentUserId;
 
   return (
     <>
@@ -73,9 +71,6 @@ export const AdminUserManagementTab = ({
             <Button variant="secondary" onClick={resetFilters}>
               Сбросить
             </Button>
-            <Button variant="secondary" onClick={() => void reloadUsers()} disabled={loading}>
-              Обновить
-            </Button>
           </>
         }
       >
@@ -85,8 +80,7 @@ export const AdminUserManagementTab = ({
           onChange={(event) =>
             setFilters((current) => ({ ...current, search: event.target.value }))
           }
-          placeholder="Email, ФИО, телефон"
-          helper="Users и Admins работают поверх одной сущности User; вкладка отличается только стартовым role-filter."
+          placeholder="ФИО, Email, телефон"
         />
         <AdminSelect
           label="Роль"
@@ -119,10 +113,21 @@ export const AdminUserManagementTab = ({
       </AdminFilterPanel>
 
       <AdminListBlock
-        title={title}
-        description={description}
+        primaryAction={
+          <AdminCreateButton
+            onClick={openCreateDialog}
+            disabled={loading || saving}
+          />
+        }
+        centerContent={
+          <AdminPaginationInfo
+            total={users.length}
+            page={page}
+            pageSize={DEFAULT_ADMIN_PAGE_SIZE}
+          />
+        }
         actions={
-          <AdminPagination
+          <AdminPaginationControls
             total={users.length}
             page={page}
             pageSize={DEFAULT_ADMIN_PAGE_SIZE}
@@ -134,12 +139,12 @@ export const AdminUserManagementTab = ({
           loading={loading}
           error={error}
           isEmpty={!users.length}
-          loadingMessage={`Загружаем ${title.toLowerCase()}…`}
+          loadingMessage={`Загружаем ${collectionLabel.toLowerCase()}…`}
           emptyMessage={emptyMessage}
         >
           <AdminTable
             headers={[
-              'Пользователь',
+              'ФИО',
               'Email',
               'Телефон',
               'Пол',
@@ -150,9 +155,6 @@ export const AdminUserManagementTab = ({
             className="admin-users-table"
           >
             {paginatedUsers.map((targetUser) => {
-              const isSelf = targetUser.id === currentUserId;
-              const deleteDisabled = deleting || isSelf || !targetUser.isActive;
-
               return (
                 <div
                   key={targetUser.id}
@@ -162,7 +164,6 @@ export const AdminUserManagementTab = ({
                 >
                   <div className="admin-users-table__identity">
                     <span className="admin-users-table__name">{targetUser.fullName}</span>
-                    <span className="admin-users-table__meta">{targetUser.id}</span>
                   </div>
                   <div className="admin-users-table__meta">{targetUser.email}</div>
                   <div>{targetUser.phone ?? '—'}</div>
@@ -192,24 +193,9 @@ export const AdminUserManagementTab = ({
                       size="sm"
                       variant="secondary"
                       onClick={() => openEditDialog(targetUser)}
-                      disabled={saving || deleting}
+                      disabled={saving}
                     >
                       Редактировать
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="secondary"
-                      onClick={() => setDeleteCandidate(targetUser)}
-                      disabled={deleteDisabled}
-                      title={
-                        isSelf
-                          ? 'Нельзя деактивировать текущего администратора.'
-                          : !targetUser.isActive
-                            ? 'Пользователь уже деактивирован.'
-                            : undefined
-                      }
-                    >
-                      Удалить
                     </Button>
                   </AdminRowActions>
                 </div>
@@ -220,52 +206,45 @@ export const AdminUserManagementTab = ({
       </AdminListBlock>
 
       <AdminEntityDialog
-        isOpen={Boolean(draft)}
-        title={`Редактировать ${entityLabel}`}
-        description="Email и passwordHash не редактируются через админку. Здесь доступны только безопасные профильные поля и lifecycle-флаг."
-        submitLabel="Сохранить изменения"
-        onClose={closeEditDialog}
+        isOpen={dialogMode !== null}
+        title={
+          dialogMode === 'edit'
+            ? `Редактировать ${entityLabel}`
+            : `Создать ${entityLabel}`
+        }
+        description={
+          dialogMode === 'edit'
+            ? 'Email и passwordHash не редактируются через админку. Здесь доступны только безопасные профильные поля и lifecycle-флаг.'
+            : 'Откроется тот же профильный сценарий, но с пустыми полями. Новый пользователь сразу появится в общем user-domain и станет доступен в соответствующей вкладке.'
+        }
+        submitLabel={dialogMode === 'edit' ? 'Сохранить изменения' : 'Создать'}
+        onClose={closeDialog}
         onSubmit={() => void handleSave()}
         submitLoading={saving}
         footerStart={
-          isEditingSelf ? (
+          dialogMode === 'create' ? (
+            <span className="admin-users-dialog__note">
+              Email используется как логин, пароль задаётся один раз при создании.
+            </span>
+          ) : isEditingSelf ? (
             <span className="admin-users-dialog__note">
               Текущий администратор не может менять свою роль или деактивировать себя.
             </span>
           ) : (
             <span className="admin-users-dialog__note">
-              Кнопка «Удалить» выполняет soft deactivate и не удаляет исторические данные.
+              Из админки редактируются только безопасные профильные поля и lifecycle-флаг.
             </span>
           )
         }
       >
-        {draft ? (
-          <AdminUserEditForm
-            draft={draft}
-            onChange={updateDraft}
-            roleDisabled={isEditingSelf}
-            activityDisabled={isEditingSelf}
-          />
-        ) : null}
+        <AdminUserEditForm
+          mode={dialogMode === 'edit' ? 'edit' : 'create'}
+          draft={draft}
+          onChange={updateDraft}
+          roleDisabled={isEditingSelf}
+          activityDisabled={isEditingSelf}
+        />
       </AdminEntityDialog>
-
-      <AdminConfirmDialog
-        isOpen={Boolean(deleteCandidate)}
-        title={`Удалить ${entityLabel}?`}
-        description={
-          deleteCandidate
-            ? `${deleteCandidate.fullName} будет деактивирован${deleteCandidate.role === 'ADMIN' ? '. Защита последнего активного администратора сохранена.' : ', а связанные заказы и история останутся целыми.'}`
-            : ''
-        }
-        confirmLabel="Деактивировать"
-        loading={deleting}
-        onConfirm={() => void handleDelete()}
-        onCancel={() => {
-          if (!deleting) {
-            setDeleteCandidate(null);
-          }
-        }}
-      />
     </>
   );
 };

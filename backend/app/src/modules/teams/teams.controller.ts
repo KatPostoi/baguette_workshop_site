@@ -51,7 +51,7 @@ export class TeamsController {
 
   @Delete(':id')
   remove(@Param('id', new ParseUUIDPipe()) id: string) {
-    return this.teamsService.deactivate(id);
+    return this.teamsService.remove(id);
   }
 
   private parseActivity(

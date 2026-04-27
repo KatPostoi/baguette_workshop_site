@@ -1,7 +1,8 @@
 .admin-data__page {
   align-content: start;
+  gap: 40px;
 }
 
 .admin-data__tab-bar {
-  margin-top: -4px;
+  margin-top: 0;
 }

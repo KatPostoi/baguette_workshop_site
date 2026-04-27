@@ -3,7 +3,7 @@
   grid-template-columns:
     minmax(260px, 1.7fr)
     minmax(160px, 0.9fr)
-    minmax(180px, 1fr);
+    minmax(220px, max-content);
 }
 
 .admin-teams-table__row_inactive {
@@ -19,6 +19,7 @@
 .admin-teams-table__name {
   font-weight: 700;
   color: #241d18;
+  font-size: 18px;
 }
 
 .admin-teams-table__meta {
@@ -31,24 +32,21 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 6px 10px;
-  border-radius: 999px;
-  font-size: 12px;
+  padding: 0;
+  border-radius: 0;
+  font-size: 18px;
   font-weight: 700;
   line-height: 1;
-  border: 1px solid transparent;
+  border: none;
   white-space: nowrap;
+  background: transparent;
 }
 
 .admin-teams-badge_status-active {
-  background: #eef8ef;
-  border-color: #b8dfbc;
   color: #29653d;
 }
 
 .admin-teams-badge_status-inactive {
-  background: #fbefef;
-  border-color: #e3b9b9;
   color: #8b2727;
 }
 

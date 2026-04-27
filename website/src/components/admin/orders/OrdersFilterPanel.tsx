@@ -10,9 +10,8 @@ type OrdersFilterPanelProps = {
   teams: Team[];
   loading?: boolean;
   refreshing?: boolean;
-  teamsError?: string | null;
   onChange: (filters: OrdersFilters) => void;
-  onRefresh: () => void;
+  onApply: () => void;
   onReset: () => void;
 };
 
@@ -21,9 +20,8 @@ export const OrdersFilterPanel = ({
   teams,
   loading = false,
   refreshing = false,
-  teamsError,
   onChange,
-  onRefresh,
+  onApply,
   onReset,
 }: OrdersFilterPanelProps) => {
   const updateFilter = <TKey extends keyof OrdersFilters>(
@@ -40,24 +38,26 @@ export const OrdersFilterPanel = ({
     <AdminFilterPanel
       actions={
         <>
+          <Button onClick={onApply} disabled={loading || refreshing}>
+            Применить
+          </Button>
           <Button
-            variant="ghost"
+            variant="secondary"
             onClick={onReset}
             disabled={loading || refreshing}
           >
             Сбросить
           </Button>
-          <Button
-            variant="secondary"
-            onClick={onRefresh}
-            loading={refreshing}
-            disabled={loading}
-          >
-            Обновить
-          </Button>
         </>
       }
     >
+      <AdminInput
+        label="Поиск"
+        value={filters.search}
+        onChange={(event) => updateFilter('search', event.target.value)}
+        placeholder="Заказ, имя клиента"
+      />
+
       <AdminSelect
         label="Статус"
         value={filters.status}
@@ -78,7 +78,6 @@ export const OrdersFilterPanel = ({
         value={filters.teamId}
         onChange={(event) => updateFilter('teamId', event.target.value)}
         disabled={!teams.length}
-        helper={teamsError ?? 'Фильтр работает только по активным рабочим группам.'}
       >
         <option value="">Все команды</option>
         {teams.map((team) => (
@@ -87,14 +86,6 @@ export const OrdersFilterPanel = ({
           </option>
         ))}
       </AdminSelect>
-
-      <AdminInput
-        label="Пользователь (UUID)"
-        value={filters.userId}
-        onChange={(event) => updateFilter('userId', event.target.value)}
-        placeholder="UUID пользователя"
-        helper="Текущий backend-фильтр принимает только UUID пользователя."
-      />
 
       <AdminInput
         label="С даты"

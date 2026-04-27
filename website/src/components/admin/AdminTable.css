@@ -15,14 +15,33 @@
   gap: 10px;
   padding: 12px;
   border: 1px solid #e5e5e5;
-  border-radius: 12px;
+  border-radius: 20px;
+  align-items: start;
+  text-align: center;
+}
+
+.admin-table__head > :first-child,
+.admin-table__row > :first-child {
+  justify-self: start;
+  text-align: left;
+}
+
+.admin-table__head > :not(:first-child),
+.admin-table__row > :not(:first-child) {
+  justify-self: center;
 }
 
 .admin-table__head {
-  background: #f7ede3;
+  border: none;
+  background: #e97721;
+  font-size: 24px;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.4px;
+}
+
+.admin-table__row {
+  font-size: 18px;
 }
 
 .admin-table__actions {
@@ -34,6 +53,39 @@
 .admin-empty {
   padding: 12px 0;
   color: #666666;
+}
+
+.admin-catalog-table .admin-table__head,
+.admin-catalog-table .admin-table__row {
+  grid-template-columns:
+    minmax(140px, 0.9fr)
+    minmax(220px, 1.3fr)
+    minmax(120px, 0.8fr)
+    minmax(120px, 0.8fr)
+    minmax(180px, 1fr)
+    minmax(180px, 1fr)
+    minmax(260px, max-content);
+}
+
+.admin-materials-table .admin-table__head,
+.admin-materials-table .admin-table__row,
+.admin-styles-table .admin-table__head,
+.admin-styles-table .admin-table__row {
+  grid-template-columns:
+    minmax(140px, 0.8fr)
+    minmax(220px, 1.3fr)
+    minmax(160px, 0.9fr)
+    minmax(260px, max-content);
+}
+
+.admin-services-table .admin-table__head,
+.admin-services-table .admin-table__row {
+  grid-template-columns:
+    minmax(120px, 0.7fr)
+    minmax(180px, 1fr)
+    minmax(220px, 1.2fr)
+    minmax(140px, 0.8fr)
+    minmax(260px, max-content);
 }
 
 @media (max-width: 720px) {

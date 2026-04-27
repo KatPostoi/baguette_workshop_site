@@ -1,18 +1,15 @@
-.admin-pagination {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-  flex-wrap: nowrap;
-  width: 100%;
-}
-
 .admin-pagination__info {
   display: flex;
   gap: 10px;
   flex-wrap: nowrap;
   align-items: center;
-  font-weight: 600;
+  justify-content: center;
+  font-family: 'Anonymous Pro', monospace;
+  font-size: 18px;
+  font-weight: 700;
+  font-style: normal;
+  line-height: 1;
+  color: #000000;
   white-space: nowrap;
 }
 
@@ -28,11 +25,6 @@
   display: flex;
   gap: 8px;
   flex-wrap: nowrap;
-  margin-left: auto;
-}
-
-.admin-pagination_compact {
-  gap: 8px;
 }
 
 .admin-pagination__buttons .ui-button {
@@ -40,11 +32,19 @@
   background: transparent;
   color: #c55a13;
   box-shadow: none;
-  padding: 6px 10px;
+  padding: 0;
   min-width: auto;
   height: auto;
   white-space: nowrap;
   cursor: pointer;
+  font-size: 24px;
+}
+
+@media (max-width: 1100px) {
+  .admin-pagination__info {
+    text-align: center;
+    white-space: normal;
+  }
 }
 
 .admin-pagination__buttons .ui-button:hover:not(:disabled) {

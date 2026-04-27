@@ -1,10 +1,12 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   ParseUUIDPipe,
   Patch,
+  Post,
   Query,
   UseGuards,
 } from '@nestjs/common';
@@ -19,6 +21,8 @@ import { OrderResponse } from './dto/order.response';
 import { OrderTimelineResponse } from './dto/order-timeline.response';
 import { UpdateOrderStatusDto } from './dto/update-order-status.dto';
 import { BulkUpdateStatusDto } from './dto/bulk-update-status.dto';
+import { AdminCreateOrderDto } from './dto/admin-create-order.dto';
+import { AdminUpdateOrderDto } from './dto/admin-update-order.dto';
 
 @Controller('admin/orders')
 @UseGuards(JwtAuthGuard)
@@ -42,6 +46,14 @@ export class AdminOrdersController {
       userId: null,
       allowAll: true,
     });
+  }
+
+  @Post()
+  create(
+    @Body() dto: AdminCreateOrderDto,
+    @CurrentUser() user: AuthUser,
+  ): Promise<OrderResponse> {
+    return this.ordersService.createAdminOrder(dto, user.sub);
   }
 
   @Get(':id/timeline')
@@ -70,6 +82,15 @@ export class AdminOrdersController {
     });
   }
 
+  @Patch(':id')
+  update(
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @Body() dto: AdminUpdateOrderDto,
+    @CurrentUser() user: AuthUser,
+  ): Promise<OrderResponse> {
+    return this.ordersService.updateAdminOrder(id, dto, user.sub);
+  }
+
   @Patch(':id/team')
   assignTeam(
     @Param('id', new ParseUUIDPipe()) id: string,
@@ -90,5 +111,13 @@ export class AdminOrdersController {
       userId: user.sub,
       comment: dto.comment,
     });
+  }
+
+  @Delete(':id')
+  remove(
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @CurrentUser() user: AuthUser,
+  ) {
+    return this.ordersService.removeAdminOrder(id, user.sub);
   }
 }

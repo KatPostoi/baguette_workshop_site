@@ -38,8 +38,8 @@ export const adminUpdateTeam = async (
     ...(input.active === undefined ? {} : { active: input.active }),
   });
 
-export const adminDeactivateTeam = async (id: string): Promise<Team> =>
-  httpClient.delete<Team>(`/admin/teams/${id}`);
+export const adminDeleteTeam = async (id: string): Promise<{ success: true }> =>
+  httpClient.delete<{ success: true }>(`/admin/teams/${id}`);
 
 export const adminAssignTeamToOrder = async (
   orderId: string,

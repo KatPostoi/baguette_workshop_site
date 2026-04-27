@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   adminCreateTeam,
-  adminDeactivateTeam,
+  adminDeleteTeam,
   adminListTeams,
   adminUpdateTeam,
 } from '../../../api/teams';
@@ -174,9 +174,9 @@ export const useAdminTeams = () => {
     setDeleting(true);
 
     try {
-      await adminDeactivateTeam(deleteCandidate.id);
+      await adminDeleteTeam(deleteCandidate.id);
       setDeleteCandidate(null);
-      addToast({ type: 'success', message: 'Рабочая группа деактивирована.' });
+      addToast({ type: 'success', message: 'Рабочая группа удалена.' });
       await loadTeams(appliedFilters);
     } catch (deleteError) {
       console.error(deleteError);
@@ -184,7 +184,7 @@ export const useAdminTeams = () => {
         type: 'error',
         message: getAdminErrorMessage(
           deleteError,
-          'Не удалось деактивировать рабочую группу.',
+          'Не удалось удалить рабочую группу.',
         ),
       });
     } finally {

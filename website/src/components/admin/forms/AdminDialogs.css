@@ -7,6 +7,7 @@
   box-shadow: 0 24px 60px rgba(0, 0, 0, 0.18);
   display: grid;
   gap: 18px;
+  font-family: 'Anonymous Pro', monospace;
 }
 
 .admin-dialog_confirm {
@@ -58,6 +59,30 @@
   gap: 14px;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   align-items: start;
+}
+
+.admin-dialog__stack {
+  display: grid;
+  gap: 16px;
+}
+
+.admin-dialog__section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.admin-dialog__section-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #271f18;
+}
+
+.admin-dialog__inline-action {
+  display: flex;
+  align-items: flex-end;
 }
 
 .admin-dialog__meta {

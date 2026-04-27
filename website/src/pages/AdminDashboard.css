@@ -1,43 +1,41 @@
-.admin-dashboard__bulk-actions {
-  display: flex;
-  gap: 12px;
-  align-items: center;
-  flex-wrap: wrap;
+.admin-orders-table .admin-table__head,
+.admin-orders-table .admin-table__row {
+  grid-template-columns:
+    minmax(220px, 1.1fr)
+    minmax(220px, 1.1fr)
+    minmax(240px, 1.2fr)
+    minmax(240px, 1.2fr)
+    minmax(180px, 0.9fr)
+    minmax(180px, 0.9fr)
+    minmax(260px, max-content);
 }
 
-.admin-dashboard__bulk-summary {
-  color: #5a534c;
-  font-weight: 700;
-}
-
-.admin-dashboard__bulk-select {
-  min-width: 240px;
-}
-
-.admin-orders__list {
+.admin-orders-table__identity {
   display: grid;
-  grid-template-columns: 1fr;
-  gap: 16px;
+  gap: 4px;
 }
 
-.admin-orders__body-line {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
+.admin-orders-table__name {
+  font-weight: 700;
+  color: #241d18;
 }
 
-.admin-orders__action-select {
-  min-width: 190px;
+.admin-orders-table__cell {
+  display: grid;
+  gap: 6px;
+}
+
+.admin-orders-table__cell span {
+  font-size: 18px;
+}
+
+.admin-orders-table__action-cell {
+  width: 100%;
 }
 
 @media (max-width: 720px) {
-  .admin-dashboard__bulk-actions {
-    width: 100%;
-    justify-content: stretch;
-  }
-
-  .admin-dashboard__bulk-select,
-  .admin-orders__action-select {
-    width: 100%;
+  .admin-orders-table .admin-table__head,
+  .admin-orders-table .admin-table__row {
+    grid-template-columns: 1fr;
   }
 }

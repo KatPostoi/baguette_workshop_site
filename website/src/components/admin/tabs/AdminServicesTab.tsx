@@ -9,15 +9,21 @@ import {
 import type { ServiceItem } from '../../../api/types';
 import {
   DEFAULT_ADMIN_PAGE_SIZE,
+  buildAdminSelectOptions,
   getAdminErrorMessage,
   matchesAdminSearch,
+  matchesAdminSelectValue,
 } from '../adminCrudUtils';
 import { useToast } from '../../../state/ToastContext';
+import { AdminCreateButton } from '../AdminCreateButton';
 import { AdminFilterPanel } from '../AdminFilterPanel';
-import { AdminInput } from '../AdminField';
+import { AdminInput, AdminSelect } from '../AdminField';
 import { AdminListBlock } from '../AdminListBlock';
 import { AdminListState } from '../AdminListState';
-import { AdminPagination } from '../AdminPagination';
+import {
+  AdminPaginationControls,
+  AdminPaginationInfo,
+} from '../AdminPagination';
 import { AdminRowActions } from '../AdminRowActions';
 import { AdminTable } from '../AdminTable';
 import { AdminEntityDialog } from '../forms/AdminEntityDialog';
@@ -26,6 +32,19 @@ import { Button } from '../../ui-kit/Button';
 
 type ServiceDraft = AdminServiceInput;
 type DialogMode = 'create' | 'edit' | null;
+type ServiceFilterState = {
+  id: string;
+  type: string;
+  title: string;
+  price: string;
+};
+
+const createServiceFilters = (): ServiceFilterState => ({
+  id: '',
+  type: '',
+  title: '',
+  price: '',
+});
 
 const createEmptyDraft = (): ServiceDraft => ({
   id: 0,
@@ -60,7 +79,12 @@ const validateServiceDraft = (draft: ServiceDraft, mode: DialogMode) => {
 export const AdminServicesTab = () => {
   const { addToast } = useToast();
   const [services, setServices] = useState<ServiceItem[]>([]);
-  const [search, setSearch] = useState('');
+  const [filters, setFilters] = useState<ServiceFilterState>(
+    createServiceFilters,
+  );
+  const [appliedFilters, setAppliedFilters] = useState<ServiceFilterState>(
+    createServiceFilters,
+  );
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -88,12 +112,29 @@ export const AdminServicesTab = () => {
     void loadServices();
   }, [loadServices]);
 
+  const typeOptions = useMemo(
+    () => buildAdminSelectOptions(services, (service) => service.type),
+    [services],
+  );
+  const titleOptions = useMemo(
+    () => buildAdminSelectOptions(services, (service) => service.title),
+    [services],
+  );
+  const priceOptions = useMemo(
+    () => buildAdminSelectOptions(services, (service) => service.price),
+    [services],
+  );
+
   const filteredServices = useMemo(
     () =>
-      services.filter((service) =>
-        matchesAdminSearch(search, service.id, service.type, service.title, service.price),
+      services.filter(
+        (service) =>
+          matchesAdminSearch(appliedFilters.id, service.id) &&
+          matchesAdminSelectValue(appliedFilters.type, service.type) &&
+          matchesAdminSelectValue(appliedFilters.title, service.title) &&
+          matchesAdminSelectValue(appliedFilters.price, service.price),
       ),
-    [search, services],
+    [appliedFilters, services],
   );
 
   useEffect(() => {
@@ -224,35 +265,95 @@ export const AdminServicesTab = () => {
     }
   };
 
+  const applyFilters = () => {
+    setAppliedFilters(filters);
+    setPage(1);
+  };
+
+  const resetFilters = () => {
+    const nextFilters = createServiceFilters();
+    setFilters(nextFilters);
+    setAppliedFilters(nextFilters);
+    setPage(1);
+  };
+
   return (
     <>
       <AdminFilterPanel
         actions={
           <>
-            <Button variant="secondary" onClick={() => void loadServices()} disabled={loading}>
-              Обновить
+            <Button onClick={applyFilters} disabled={loading}>
+              Применить
             </Button>
-            <Button onClick={openCreateDialog}>Новая услуга</Button>
+            <Button variant="secondary" onClick={resetFilters} disabled={loading}>
+              Сбросить
+            </Button>
           </>
         }
       >
         <AdminInput
-          label="Поиск"
-          value={search}
-          onChange={(event) => {
-            setSearch(event.target.value);
-            setPage(1);
-          }}
-          placeholder="ID, тип, название, цена"
-          helper="Услуги приведены к тому же modal CRUD-паттерну. В текущей схеме числовой ID задаётся вручную при создании."
+          label="ID"
+          value={filters.id}
+          onChange={(event) =>
+            setFilters((current) => ({ ...current, id: event.target.value }))
+          }
+          placeholder="ID"
         />
+        <AdminSelect
+          label="Тип"
+          value={filters.type}
+          onChange={(event) =>
+            setFilters((current) => ({ ...current, type: event.target.value }))
+          }
+        >
+          <option value="">Все типы</option>
+          {typeOptions.map((option) => (
+            <option key={option} value={option}>
+              {option}
+            </option>
+          ))}
+        </AdminSelect>
+        <AdminSelect
+          label="Название"
+          value={filters.title}
+          onChange={(event) =>
+            setFilters((current) => ({ ...current, title: event.target.value }))
+          }
+        >
+          <option value="">Все названия</option>
+          {titleOptions.map((option) => (
+            <option key={option} value={option}>
+              {option}
+            </option>
+          ))}
+        </AdminSelect>
+        <AdminSelect
+          label="Цена"
+          value={filters.price}
+          onChange={(event) =>
+            setFilters((current) => ({ ...current, price: event.target.value }))
+          }
+        >
+          <option value="">Все цены</option>
+          {priceOptions.map((option) => (
+            <option key={option} value={option}>
+              {option}
+            </option>
+          ))}
+        </AdminSelect>
       </AdminFilterPanel>
 
       <AdminListBlock
-        title="Услуги"
-        description="Услуги больше не смешивают list/search и always-open form. Таб работает как чистый CRUD-модуль с общим confirm-flow."
+        primaryAction={<AdminCreateButton onClick={openCreateDialog} />}
+        centerContent={
+          <AdminPaginationInfo
+            total={filteredServices.length}
+            page={page}
+            pageSize={DEFAULT_ADMIN_PAGE_SIZE}
+          />
+        }
         actions={
-          <AdminPagination
+          <AdminPaginationControls
             total={filteredServices.length}
             page={page}
             pageSize={DEFAULT_ADMIN_PAGE_SIZE}
@@ -267,7 +368,10 @@ export const AdminServicesTab = () => {
           loadingMessage="Загружаем услуги…"
           emptyMessage="Нет услуг."
         >
-          <AdminTable headers={['ID', 'Тип', 'Название', 'Цена', 'Действия']}>
+          <AdminTable
+            headers={['ID', 'Тип', 'Название', 'Цена', 'Действия']}
+            className="admin-services-table"
+          >
             {paginatedServices.map((service) => (
               <div key={service.id} className="admin-table__row">
                 <div>{service.id}</div>

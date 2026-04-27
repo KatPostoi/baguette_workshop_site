@@ -10,15 +10,21 @@ import { adminListStyles } from '../../../api/styles';
 import type { CatalogItem, FrameMaterial, FrameStyle } from '../../../api/types';
 import {
   DEFAULT_ADMIN_PAGE_SIZE,
+  buildAdminSelectOptions,
   getAdminErrorMessage,
   matchesAdminSearch,
+  matchesAdminSelectValue,
 } from '../adminCrudUtils';
 import { useToast } from '../../../state/ToastContext';
+import { AdminCreateButton } from '../AdminCreateButton';
 import { AdminFilterPanel } from '../AdminFilterPanel';
 import { AdminInput, AdminSelect, AdminTextarea } from '../AdminField';
 import { AdminListBlock } from '../AdminListBlock';
 import { AdminListState } from '../AdminListState';
-import { AdminPagination } from '../AdminPagination';
+import {
+  AdminPaginationControls,
+  AdminPaginationInfo,
+} from '../AdminPagination';
 import { AdminRowActions } from '../AdminRowActions';
 import { AdminTable } from '../AdminTable';
 import { AdminEntityDialog } from '../forms/AdminEntityDialog';
@@ -42,6 +48,23 @@ type CatalogDraft = {
 };
 
 type DialogMode = 'create' | 'edit' | null;
+type CatalogFilterState = {
+  id: string;
+  title: string;
+  price: string;
+  stock: string;
+  material: string;
+  style: string;
+};
+
+const createCatalogFilters = (): CatalogFilterState => ({
+  id: '',
+  title: '',
+  price: '',
+  stock: '',
+  material: '',
+  style: '',
+});
 
 const createEmptyDraft = (): CatalogDraft => ({
   id: '',
@@ -128,7 +151,10 @@ export const AdminCatalogTab = () => {
   const [catalog, setCatalog] = useState<CatalogItem[]>([]);
   const [materials, setMaterials] = useState<FrameMaterial[]>([]);
   const [styles, setStyles] = useState<FrameStyle[]>([]);
-  const [search, setSearch] = useState('');
+  const [filters, setFilters] = useState<CatalogFilterState>(createCatalogFilters);
+  const [appliedFilters, setAppliedFilters] = useState<CatalogFilterState>(
+    createCatalogFilters,
+  );
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -169,20 +195,46 @@ export const AdminCatalogTab = () => {
     void loadData();
   }, [loadData]);
 
+  const titleOptions = useMemo(
+    () => buildAdminSelectOptions(catalog, (item) => item.title),
+    [catalog],
+  );
+  const priceOptions = useMemo(
+    () => buildAdminSelectOptions(catalog, (item) => item.price),
+    [catalog],
+  );
+  const stockOptions = useMemo(
+    () => buildAdminSelectOptions(catalog, (item) => item.stock),
+    [catalog],
+  );
+  const materialOptions = useMemo(
+    () => buildAdminSelectOptions(catalog, (item) => item.material?.title),
+    [catalog],
+  );
+  const styleOptions = useMemo(
+    () =>
+      buildAdminSelectOptions(catalog, (item) => item.style?.name ?? 'Без стиля'),
+    [catalog],
+  );
+
   const filteredCatalog = useMemo(
     () =>
-      catalog.filter((item) =>
-        matchesAdminSearch(
-          search,
-          item.id,
-          item.title,
-          item.slug,
-          item.color,
-          item.material?.title,
-          item.style?.name,
-        ),
+      catalog.filter(
+        (item) =>
+          matchesAdminSearch(appliedFilters.id, item.id) &&
+          matchesAdminSelectValue(appliedFilters.title, item.title) &&
+          matchesAdminSelectValue(appliedFilters.price, item.price) &&
+          matchesAdminSelectValue(appliedFilters.stock, item.stock) &&
+          matchesAdminSelectValue(
+            appliedFilters.material,
+            item.material?.title,
+          ) &&
+          matchesAdminSelectValue(
+            appliedFilters.style,
+            item.style?.name ?? 'Без стиля',
+          ),
       ),
-    [catalog, search],
+    [appliedFilters, catalog],
   );
 
   useEffect(() => {
@@ -317,35 +369,123 @@ export const AdminCatalogTab = () => {
     }
   };
 
+  const applyFilters = () => {
+    setAppliedFilters(filters);
+    setPage(1);
+  };
+
+  const resetFilters = () => {
+    const nextFilters = createCatalogFilters();
+    setFilters(nextFilters);
+    setAppliedFilters(nextFilters);
+    setPage(1);
+  };
+
   return (
     <>
       <AdminFilterPanel
         actions={
           <>
-            <Button variant="secondary" onClick={() => void loadData()} disabled={loading}>
-              Обновить
+            <Button onClick={applyFilters} disabled={loading}>
+              Применить
             </Button>
-            <Button onClick={openCreateDialog}>Новая позиция</Button>
+            <Button variant="secondary" onClick={resetFilters} disabled={loading}>
+              Сбросить
+            </Button>
           </>
         }
       >
         <AdminInput
-          label="Поиск"
-          value={search}
-          onChange={(event) => {
-            setSearch(event.target.value);
-            setPage(1);
-          }}
-          placeholder="ID, название, slug, цвет, материал, стиль"
-          helper="Редактирование и создание вынесены в modal, filter-panel теперь отвечает только за поиск и действия."
+          label="ID"
+          value={filters.id}
+          onChange={(event) =>
+            setFilters((current) => ({ ...current, id: event.target.value }))
+          }
+          placeholder="ID"
         />
+        <AdminSelect
+          label="Название"
+          value={filters.title}
+          onChange={(event) =>
+            setFilters((current) => ({ ...current, title: event.target.value }))
+          }
+        >
+          <option value="">Все названия</option>
+          {titleOptions.map((option) => (
+            <option key={option} value={option}>
+              {option}
+            </option>
+          ))}
+        </AdminSelect>
+        <AdminSelect
+          label="Цена"
+          value={filters.price}
+          onChange={(event) =>
+            setFilters((current) => ({ ...current, price: event.target.value }))
+          }
+        >
+          <option value="">Все цены</option>
+          {priceOptions.map((option) => (
+            <option key={option} value={option}>
+              {option}
+            </option>
+          ))}
+        </AdminSelect>
+        <AdminSelect
+          label="Остаток"
+          value={filters.stock}
+          onChange={(event) =>
+            setFilters((current) => ({ ...current, stock: event.target.value }))
+          }
+        >
+          <option value="">Все остатки</option>
+          {stockOptions.map((option) => (
+            <option key={option} value={option}>
+              {option}
+            </option>
+          ))}
+        </AdminSelect>
+        <AdminSelect
+          label="Материал"
+          value={filters.material}
+          onChange={(event) =>
+            setFilters((current) => ({ ...current, material: event.target.value }))
+          }
+        >
+          <option value="">Все материалы</option>
+          {materialOptions.map((option) => (
+            <option key={option} value={option}>
+              {option}
+            </option>
+          ))}
+        </AdminSelect>
+        <AdminSelect
+          label="Стиль"
+          value={filters.style}
+          onChange={(event) =>
+            setFilters((current) => ({ ...current, style: event.target.value }))
+          }
+        >
+          <option value="">Все стили</option>
+          {styleOptions.map((option) => (
+            <option key={option} value={option}>
+              {option}
+            </option>
+          ))}
+        </AdminSelect>
       </AdminFilterPanel>
 
       <AdminListBlock
-        title="Каталог"
-        description="Каталог переведён на стабильный CRUD-паттерн: поиск и список на странице, создание и редактирование в отдельном dialog, удаление через единый confirm flow."
+        primaryAction={<AdminCreateButton onClick={openCreateDialog} />}
+        centerContent={
+          <AdminPaginationInfo
+            total={filteredCatalog.length}
+            page={page}
+            pageSize={DEFAULT_ADMIN_PAGE_SIZE}
+          />
+        }
         actions={
-          <AdminPagination
+          <AdminPaginationControls
             total={filteredCatalog.length}
             page={page}
             pageSize={DEFAULT_ADMIN_PAGE_SIZE}
@@ -370,6 +510,7 @@ export const AdminCatalogTab = () => {
               'Стиль',
               'Действия',
             ]}
+            className="admin-catalog-table"
           >
             {paginatedCatalog.map((item) => (
               <div key={item.id} className="admin-table__row">
@@ -378,7 +519,7 @@ export const AdminCatalogTab = () => {
                 <div>{item.price}</div>
                 <div>{item.stock}</div>
                 <div>{item.material?.title ?? '—'}</div>
-                <div>{item.style?.name ?? '—'}</div>
+                <div>{item.style?.name ?? 'Без стиля'}</div>
                 <AdminRowActions className="admin-table__actions">
                   <Button
                     size="sm"

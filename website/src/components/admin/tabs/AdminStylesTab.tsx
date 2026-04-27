@@ -9,15 +9,21 @@ import {
 import type { FrameStyle } from '../../../api/types';
 import {
   DEFAULT_ADMIN_PAGE_SIZE,
+  buildAdminSelectOptions,
   getAdminErrorMessage,
   matchesAdminSearch,
+  matchesAdminSelectValue,
 } from '../adminCrudUtils';
 import { useToast } from '../../../state/ToastContext';
+import { AdminCreateButton } from '../AdminCreateButton';
 import { AdminFilterPanel } from '../AdminFilterPanel';
-import { AdminInput } from '../AdminField';
+import { AdminInput, AdminSelect } from '../AdminField';
 import { AdminListBlock } from '../AdminListBlock';
 import { AdminListState } from '../AdminListState';
-import { AdminPagination } from '../AdminPagination';
+import {
+  AdminPaginationControls,
+  AdminPaginationInfo,
+} from '../AdminPagination';
 import { AdminRowActions } from '../AdminRowActions';
 import { AdminTable } from '../AdminTable';
 import { AdminEntityDialog } from '../forms/AdminEntityDialog';
@@ -26,6 +32,17 @@ import { Button } from '../../ui-kit/Button';
 
 type StyleDraft = AdminStyleInput;
 type DialogMode = 'create' | 'edit' | null;
+type StyleFilterState = {
+  id: string;
+  name: string;
+  coefficient: string;
+};
+
+const createStyleFilters = (): StyleFilterState => ({
+  id: '',
+  name: '',
+  coefficient: '',
+});
 
 const createEmptyDraft = (): StyleDraft => ({
   id: '',
@@ -52,7 +69,10 @@ const validateStyleDraft = (draft: StyleDraft) => {
 export const AdminStylesTab = () => {
   const { addToast } = useToast();
   const [styles, setStyles] = useState<FrameStyle[]>([]);
-  const [search, setSearch] = useState('');
+  const [filters, setFilters] = useState<StyleFilterState>(createStyleFilters);
+  const [appliedFilters, setAppliedFilters] = useState<StyleFilterState>(
+    createStyleFilters,
+  );
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -80,12 +100,27 @@ export const AdminStylesTab = () => {
     void loadStyles();
   }, [loadStyles]);
 
+  const nameOptions = useMemo(
+    () => buildAdminSelectOptions(styles, (style) => style.name),
+    [styles],
+  );
+  const coefficientOptions = useMemo(
+    () => buildAdminSelectOptions(styles, (style) => style.coefficient),
+    [styles],
+  );
+
   const filteredStyles = useMemo(
     () =>
-      styles.filter((style) =>
-        matchesAdminSearch(search, style.id, style.name, style.coefficient),
+      styles.filter(
+        (style) =>
+          matchesAdminSearch(appliedFilters.id, style.id) &&
+          matchesAdminSelectValue(appliedFilters.name, style.name) &&
+          matchesAdminSelectValue(
+            appliedFilters.coefficient,
+            style.coefficient,
+          ),
       ),
-    [search, styles],
+    [appliedFilters, styles],
   );
 
   useEffect(() => {
@@ -218,35 +253,84 @@ export const AdminStylesTab = () => {
     }
   };
 
+  const applyFilters = () => {
+    setAppliedFilters(filters);
+    setPage(1);
+  };
+
+  const resetFilters = () => {
+    const nextFilters = createStyleFilters();
+    setFilters(nextFilters);
+    setAppliedFilters(nextFilters);
+    setPage(1);
+  };
+
   return (
     <>
       <AdminFilterPanel
         actions={
           <>
-            <Button variant="secondary" onClick={() => void loadStyles()} disabled={loading}>
-              Обновить
+            <Button onClick={applyFilters} disabled={loading}>
+              Применить
             </Button>
-            <Button onClick={openCreateDialog}>Новый стиль</Button>
+            <Button variant="secondary" onClick={resetFilters} disabled={loading}>
+              Сбросить
+            </Button>
           </>
         }
       >
         <AdminInput
-          label="Поиск"
-          value={search}
-          onChange={(event) => {
-            setSearch(event.target.value);
-            setPage(1);
-          }}
-          placeholder="ID, название, коэффициент"
-          helper="Styles остаются эталонной проверкой для string IDs: ID создаётся один раз и дальше не редактируется."
+          label="ID"
+          value={filters.id}
+          onChange={(event) =>
+            setFilters((current) => ({ ...current, id: event.target.value }))
+          }
+          placeholder="ID"
         />
+        <AdminSelect
+          label="Название"
+          value={filters.name}
+          onChange={(event) =>
+            setFilters((current) => ({ ...current, name: event.target.value }))
+          }
+        >
+          <option value="">Все названия</option>
+          {nameOptions.map((option) => (
+            <option key={option} value={option}>
+              {option}
+            </option>
+          ))}
+        </AdminSelect>
+        <AdminSelect
+          label="Коэф."
+          value={filters.coefficient}
+          onChange={(event) =>
+            setFilters((current) => ({
+              ...current,
+              coefficient: event.target.value,
+            }))
+          }
+        >
+          <option value="">Все коэффициенты</option>
+          {coefficientOptions.map((option) => (
+            <option key={option} value={option}>
+              {option}
+            </option>
+          ))}
+        </AdminSelect>
       </AdminFilterPanel>
 
       <AdminListBlock
-        title="Стили"
-        description="Стили стабилизированы на string-ID контракте: создание, редактирование и удаление больше не зависят от старого UUID-ожидания."
+        primaryAction={<AdminCreateButton onClick={openCreateDialog} />}
+        centerContent={
+          <AdminPaginationInfo
+            total={filteredStyles.length}
+            page={page}
+            pageSize={DEFAULT_ADMIN_PAGE_SIZE}
+          />
+        }
         actions={
-          <AdminPagination
+          <AdminPaginationControls
             total={filteredStyles.length}
             page={page}
             pageSize={DEFAULT_ADMIN_PAGE_SIZE}
@@ -261,7 +345,10 @@ export const AdminStylesTab = () => {
           loadingMessage="Загружаем стили…"
           emptyMessage="Нет стилей."
         >
-          <AdminTable headers={['ID', 'Название', 'Коэф.', 'Действия']}>
+          <AdminTable
+            headers={['ID', 'Название', 'Коэф.', 'Действия']}
+            className="admin-styles-table"
+          >
             {paginatedStyles.map((style) => (
               <div key={style.id} className="admin-table__row">
                 <div>{style.id}</div>

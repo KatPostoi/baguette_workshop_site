@@ -65,7 +65,7 @@ export const AdminDataPage = () => {
   }
 
   return (
-    <AdminShell title="Данные" active="data">
+    <AdminShell active="data">
       <AdminPageLayout className="admin-data__page">
         <AdminTabBar
           tabs={ADMIN_DATA_TABS}

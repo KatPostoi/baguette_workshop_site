@@ -9,15 +9,21 @@ import {
 import type { FrameMaterial } from '../../../api/types';
 import {
   DEFAULT_ADMIN_PAGE_SIZE,
+  buildAdminSelectOptions,
   getAdminErrorMessage,
   matchesAdminSearch,
+  matchesAdminSelectValue,
 } from '../adminCrudUtils';
 import { useToast } from '../../../state/ToastContext';
+import { AdminCreateButton } from '../AdminCreateButton';
 import { AdminFilterPanel } from '../AdminFilterPanel';
-import { AdminInput, AdminTextarea } from '../AdminField';
+import { AdminInput, AdminSelect, AdminTextarea } from '../AdminField';
 import { AdminListBlock } from '../AdminListBlock';
 import { AdminListState } from '../AdminListState';
-import { AdminPagination } from '../AdminPagination';
+import {
+  AdminPaginationControls,
+  AdminPaginationInfo,
+} from '../AdminPagination';
 import { AdminRowActions } from '../AdminRowActions';
 import { AdminTable } from '../AdminTable';
 import { AdminEntityDialog } from '../forms/AdminEntityDialog';
@@ -35,6 +41,17 @@ type MaterialDraft = {
 };
 
 type DialogMode = 'create' | 'edit' | null;
+type MaterialFilterState = {
+  id: string;
+  title: string;
+  pricePerCm: string;
+};
+
+const createMaterialFilters = (): MaterialFilterState => ({
+  id: '',
+  title: '',
+  pricePerCm: '',
+});
 
 const createEmptyDraft = (): MaterialDraft => ({
   id: null,
@@ -88,7 +105,12 @@ const validateMaterialDraft = (draft: MaterialDraft) => {
 export const AdminMaterialsTab = () => {
   const { addToast } = useToast();
   const [materials, setMaterials] = useState<FrameMaterial[]>([]);
-  const [search, setSearch] = useState('');
+  const [filters, setFilters] = useState<MaterialFilterState>(
+    createMaterialFilters,
+  );
+  const [appliedFilters, setAppliedFilters] = useState<MaterialFilterState>(
+    createMaterialFilters,
+  );
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -118,18 +140,28 @@ export const AdminMaterialsTab = () => {
     void loadMaterials();
   }, [loadMaterials]);
 
+  const titleOptions = useMemo(
+    () => buildAdminSelectOptions(materials, (material) => material.title),
+    [materials],
+  );
+  const priceOptions = useMemo(
+    () =>
+      buildAdminSelectOptions(materials, (material) => material.pricePerCm),
+    [materials],
+  );
+
   const filteredMaterials = useMemo(
     () =>
-      materials.filter((material) =>
-        matchesAdminSearch(
-          search,
-          material.id,
-          material.title,
-          material.material,
-          material.description,
-        ),
+      materials.filter(
+        (material) =>
+          matchesAdminSearch(appliedFilters.id, material.id) &&
+          matchesAdminSelectValue(appliedFilters.title, material.title) &&
+          matchesAdminSelectValue(
+            appliedFilters.pricePerCm,
+            material.pricePerCm,
+          ),
       ),
-    [materials, search],
+    [appliedFilters, materials],
   );
 
   useEffect(() => {
@@ -254,35 +286,84 @@ export const AdminMaterialsTab = () => {
     }
   };
 
+  const applyFilters = () => {
+    setAppliedFilters(filters);
+    setPage(1);
+  };
+
+  const resetFilters = () => {
+    const nextFilters = createMaterialFilters();
+    setFilters(nextFilters);
+    setAppliedFilters(nextFilters);
+    setPage(1);
+  };
+
   return (
     <>
       <AdminFilterPanel
         actions={
           <>
-            <Button variant="secondary" onClick={() => void loadMaterials()} disabled={loading}>
-              Обновить
+            <Button onClick={applyFilters} disabled={loading}>
+              Применить
             </Button>
-            <Button onClick={openCreateDialog}>Новый материал</Button>
+            <Button variant="secondary" onClick={resetFilters} disabled={loading}>
+              Сбросить
+            </Button>
           </>
         }
       >
         <AdminInput
-          label="Поиск"
-          value={search}
-          onChange={(event) => {
-            setSearch(event.target.value);
-            setPage(1);
-          }}
-          placeholder="ID, название, тип, описание"
-          helper="Материалы редактируются в отдельном dialog. На странице остаются только поиск, список и действия."
+          label="ID"
+          value={filters.id}
+          onChange={(event) =>
+            setFilters((current) => ({ ...current, id: event.target.value }))
+          }
+          placeholder="ID"
         />
+        <AdminSelect
+          label="Название"
+          value={filters.title}
+          onChange={(event) =>
+            setFilters((current) => ({ ...current, title: event.target.value }))
+          }
+        >
+          <option value="">Все названия</option>
+          {titleOptions.map((option) => (
+            <option key={option} value={option}>
+              {option}
+            </option>
+          ))}
+        </AdminSelect>
+        <AdminSelect
+          label="Цена за см"
+          value={filters.pricePerCm}
+          onChange={(event) =>
+            setFilters((current) => ({
+              ...current,
+              pricePerCm: event.target.value,
+            }))
+          }
+        >
+          <option value="">Все цены</option>
+          {priceOptions.map((option) => (
+            <option key={option} value={option}>
+              {option}
+            </option>
+          ))}
+        </AdminSelect>
       </AdminFilterPanel>
 
       <AdminListBlock
-        title="Материалы"
-        description="Материалы выровнены под тот же CRUD-паттерн, что и каталог: модальный edit flow, общий confirm delete и чистый list block."
+        primaryAction={<AdminCreateButton onClick={openCreateDialog} />}
+        centerContent={
+          <AdminPaginationInfo
+            total={filteredMaterials.length}
+            page={page}
+            pageSize={DEFAULT_ADMIN_PAGE_SIZE}
+          />
+        }
         actions={
-          <AdminPagination
+          <AdminPaginationControls
             total={filteredMaterials.length}
             page={page}
             pageSize={DEFAULT_ADMIN_PAGE_SIZE}
@@ -297,7 +378,10 @@ export const AdminMaterialsTab = () => {
           loadingMessage="Загружаем материалы…"
           emptyMessage="Нет материалов."
         >
-          <AdminTable headers={['ID', 'Название', 'Цена за см', 'Действия']}>
+          <AdminTable
+            headers={['ID', 'Название', 'Цена за см', 'Действия']}
+            className="admin-materials-table"
+          >
             {paginatedMaterials.map((material) => (
               <div key={material.id} className="admin-table__row">
                 <div>{material.id}</div>

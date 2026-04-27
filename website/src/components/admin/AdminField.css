@@ -21,6 +21,7 @@
   font-size: 18px;
   background: transparent;
   font-family: 'Anonymous Pro', monospace;
+  color: #000000;
 }
 
 .auth-input:focus-visible {
