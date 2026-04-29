@@ -14,6 +14,7 @@ export const changePassword = (payload: { currentPassword: string; newPassword: 
 export type AdminUserSearchParams = {
   search?: string;
   role?: UserRole;
+  gender?: string;
   isActive?: boolean;
 };
 

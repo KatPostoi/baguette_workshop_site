@@ -34,16 +34,12 @@ type ServiceDraft = AdminServiceInput;
 type DialogMode = 'create' | 'edit' | null;
 type ServiceFilterState = {
   id: string;
-  type: string;
   title: string;
-  price: string;
 };
 
 const createServiceFilters = (): ServiceFilterState => ({
   id: '',
-  type: '',
   title: '',
-  price: '',
 });
 
 const createEmptyDraft = (): ServiceDraft => ({
@@ -112,16 +108,8 @@ export const AdminServicesTab = () => {
     void loadServices();
   }, [loadServices]);
 
-  const typeOptions = useMemo(
-    () => buildAdminSelectOptions(services, (service) => service.type),
-    [services],
-  );
   const titleOptions = useMemo(
     () => buildAdminSelectOptions(services, (service) => service.title),
-    [services],
-  );
-  const priceOptions = useMemo(
-    () => buildAdminSelectOptions(services, (service) => service.price),
     [services],
   );
 
@@ -130,9 +118,7 @@ export const AdminServicesTab = () => {
       services.filter(
         (service) =>
           matchesAdminSearch(appliedFilters.id, service.id) &&
-          matchesAdminSelectValue(appliedFilters.type, service.type) &&
-          matchesAdminSelectValue(appliedFilters.title, service.title) &&
-          matchesAdminSelectValue(appliedFilters.price, service.price),
+          matchesAdminSelectValue(appliedFilters.title, service.title),
       ),
     [appliedFilters, services],
   );
@@ -300,20 +286,6 @@ export const AdminServicesTab = () => {
           placeholder="ID"
         />
         <AdminSelect
-          label="Тип"
-          value={filters.type}
-          onChange={(event) =>
-            setFilters((current) => ({ ...current, type: event.target.value }))
-          }
-        >
-          <option value="">Все типы</option>
-          {typeOptions.map((option) => (
-            <option key={option} value={option}>
-              {option}
-            </option>
-          ))}
-        </AdminSelect>
-        <AdminSelect
           label="Название"
           value={filters.title}
           onChange={(event) =>
@@ -322,20 +294,6 @@ export const AdminServicesTab = () => {
         >
           <option value="">Все названия</option>
           {titleOptions.map((option) => (
-            <option key={option} value={option}>
-              {option}
-            </option>
-          ))}
-        </AdminSelect>
-        <AdminSelect
-          label="Цена"
-          value={filters.price}
-          onChange={(event) =>
-            setFilters((current) => ({ ...current, price: event.target.value }))
-          }
-        >
-          <option value="">Все цены</option>
-          {priceOptions.map((option) => (
             <option key={option} value={option}>
               {option}
             </option>
@@ -403,23 +361,11 @@ export const AdminServicesTab = () => {
       <AdminEntityDialog
         isOpen={dialogMode !== null}
         title={dialogMode === 'edit' ? 'Редактировать услугу' : 'Новая услуга'}
-        description={
-          dialogMode === 'edit'
-            ? 'ID услуги фиксирован и в режиме редактирования не меняется.'
-            : 'В текущей схеме ServiceItem не имеет autoincrement, поэтому числовой ID задаётся явно.'
-        }
         submitLabel={dialogMode === 'edit' ? 'Сохранить изменения' : 'Создать услугу'}
         onClose={closeDialog}
         onSubmit={() => void handleSave()}
         submitLoading={saving}
       >
-        {dialogMode === 'edit' ? (
-          <div className="admin-dialog__meta">
-            <span className="admin-dialog__meta-label">ID услуги</span>
-            <span className="admin-dialog__meta-value">{draft.id}</span>
-          </div>
-        ) : null}
-
         <div className="admin-dialog__form-grid">
           {dialogMode === 'create' ? (
             <AdminInput
@@ -427,7 +373,6 @@ export const AdminServicesTab = () => {
               type="number"
               value={draft.id || ''}
               onChange={onDraftInput('id', (value) => Number(value))}
-              helper="Обязателен только при создании."
             />
           ) : null}
           <AdminInput label="Тип" value={draft.type} onChange={onDraftInput('type')} />

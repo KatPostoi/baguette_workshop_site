@@ -35,6 +35,11 @@ export class AdminUserFilterDto {
   role?: UserRole;
 
   @IsOptional()
+  @Transform(trimOptionalString)
+  @IsString()
+  gender?: string;
+
+  @IsOptional()
   @Transform(parseOptionalBoolean)
   @IsBoolean()
   isActive?: boolean;

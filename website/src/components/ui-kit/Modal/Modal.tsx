@@ -18,6 +18,11 @@ const getFocusable = (container: HTMLElement) =>
 
 export const Modal = ({ isOpen, onClose, children, className }: ModalProps) => {
   const dialogRef = useRef<HTMLDivElement>(null);
+  const onCloseRef = useRef(onClose);
+
+  useEffect(() => {
+    onCloseRef.current = onClose;
+  }, [onClose]);
 
   useEffect(() => {
     if (!isOpen) {
@@ -30,11 +35,14 @@ export const Modal = ({ isOpen, onClose, children, className }: ModalProps) => {
     const focusables = dialog ? getFocusable(dialog) : [];
     const first = focusables[0];
     const last = focusables[focusables.length - 1];
-    first?.focus();
+    const firstEditableField = dialog?.querySelector<HTMLElement>(
+      'input:not([disabled]):not([readonly]):not([type="hidden"]), textarea:not([disabled]):not([readonly]), select:not([disabled])',
+    );
+    (firstEditableField ?? first)?.focus();
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
-        onClose();
+        onCloseRef.current();
         return;
       }
 
@@ -63,7 +71,7 @@ export const Modal = ({ isOpen, onClose, children, className }: ModalProps) => {
       document.removeEventListener('keydown', handleKeyDown);
       previousActive?.focus();
     };
-  }, [isOpen, onClose]);
+  }, [isOpen]);
 
   if (!isOpen) {
     return null;

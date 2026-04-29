@@ -51,8 +51,6 @@ type DialogMode = 'create' | 'edit' | null;
 type CatalogFilterState = {
   id: string;
   title: string;
-  price: string;
-  stock: string;
   material: string;
   style: string;
 };
@@ -60,8 +58,6 @@ type CatalogFilterState = {
 const createCatalogFilters = (): CatalogFilterState => ({
   id: '',
   title: '',
-  price: '',
-  stock: '',
   material: '',
   style: '',
 });
@@ -199,14 +195,6 @@ export const AdminCatalogTab = () => {
     () => buildAdminSelectOptions(catalog, (item) => item.title),
     [catalog],
   );
-  const priceOptions = useMemo(
-    () => buildAdminSelectOptions(catalog, (item) => item.price),
-    [catalog],
-  );
-  const stockOptions = useMemo(
-    () => buildAdminSelectOptions(catalog, (item) => item.stock),
-    [catalog],
-  );
   const materialOptions = useMemo(
     () => buildAdminSelectOptions(catalog, (item) => item.material?.title),
     [catalog],
@@ -223,8 +211,6 @@ export const AdminCatalogTab = () => {
         (item) =>
           matchesAdminSearch(appliedFilters.id, item.id) &&
           matchesAdminSelectValue(appliedFilters.title, item.title) &&
-          matchesAdminSelectValue(appliedFilters.price, item.price) &&
-          matchesAdminSelectValue(appliedFilters.stock, item.stock) &&
           matchesAdminSelectValue(
             appliedFilters.material,
             item.material?.title,
@@ -418,34 +404,6 @@ export const AdminCatalogTab = () => {
           ))}
         </AdminSelect>
         <AdminSelect
-          label="Цена"
-          value={filters.price}
-          onChange={(event) =>
-            setFilters((current) => ({ ...current, price: event.target.value }))
-          }
-        >
-          <option value="">Все цены</option>
-          {priceOptions.map((option) => (
-            <option key={option} value={option}>
-              {option}
-            </option>
-          ))}
-        </AdminSelect>
-        <AdminSelect
-          label="Остаток"
-          value={filters.stock}
-          onChange={(event) =>
-            setFilters((current) => ({ ...current, stock: event.target.value }))
-          }
-        >
-          <option value="">Все остатки</option>
-          {stockOptions.map((option) => (
-            <option key={option} value={option}>
-              {option}
-            </option>
-          ))}
-        </AdminSelect>
-        <AdminSelect
           label="Материал"
           value={filters.material}
           onChange={(event) =>
@@ -545,23 +503,11 @@ export const AdminCatalogTab = () => {
       <AdminEntityDialog
         isOpen={dialogMode !== null}
         title={dialogMode === 'edit' ? 'Редактировать позицию каталога' : 'Новая позиция каталога'}
-        description={
-          dialogMode === 'edit'
-            ? 'Изменяется существующая карточка каталога. Внутренний ID остаётся неизменяемым.'
-            : 'Новая позиция попадёт в общий каталог после успешного сохранения.'
-        }
         submitLabel={dialogMode === 'edit' ? 'Сохранить изменения' : 'Создать позицию'}
         onClose={closeDialog}
         onSubmit={() => void handleSave()}
         submitLoading={saving}
       >
-        {dialogMode === 'edit' ? (
-          <div className="admin-dialog__meta">
-            <span className="admin-dialog__meta-label">Внутренний ID</span>
-            <span className="admin-dialog__meta-value">{draft.id}</span>
-          </div>
-        ) : null}
-
         <div className="admin-dialog__form-grid">
           <AdminInput label="Название" value={draft.title} onChange={onDraftInput('title')} />
           <AdminInput label="Slug" value={draft.slug} onChange={onDraftInput('slug')} />

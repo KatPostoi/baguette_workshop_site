@@ -22,12 +22,6 @@
   font-size: 18px;
 }
 
-.admin-teams-table__meta {
-  color: #6b5e52;
-  font-size: 12px;
-  word-break: break-word;
-}
-
 .admin-teams-badge {
   display: inline-flex;
   align-items: center;
@@ -48,13 +42,6 @@
 
 .admin-teams-badge_status-inactive {
   color: #8b2727;
-}
-
-.admin-teams-dialog__note {
-  margin: 0;
-  font-size: 13px;
-  line-height: 1.45;
-  color: #6b5e52;
 }
 
 @media (max-width: 960px) {

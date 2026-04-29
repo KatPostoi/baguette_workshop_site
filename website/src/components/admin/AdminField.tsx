@@ -10,7 +10,6 @@ import './AdminField.css';
 
 type BaseProps = {
   label: ReactNode;
-  helper?: ReactNode;
   className?: string;
 };
 
@@ -25,25 +24,22 @@ type TextareaProps = BaseProps &
 type SelectProps = BaseProps &
   Omit<SelectHTMLAttributes<HTMLSelectElement>, 'className' | 'children'>;
 
-export const AdminInput = ({ label, helper, className, type = 'text', ...rest }: InputProps) => (
+export const AdminInput = ({ label, className, type = 'text', ...rest }: InputProps) => (
   <label className={classNames('admin-field', className)}>
     <span className="admin-field__label">{label}</span>
     <input className="auth-input" type={type} {...rest} />
-    {helper ? <small className="admin-field__helper">{helper}</small> : null}
   </label>
 );
 
-export const AdminTextarea = ({ label, helper, className, ...rest }: TextareaProps) => (
+export const AdminTextarea = ({ label, className, ...rest }: TextareaProps) => (
   <label className={classNames('admin-field', className)}>
     <span className="admin-field__label">{label}</span>
     <textarea className="auth-input" {...rest} />
-    {helper ? <small className="admin-field__helper">{helper}</small> : null}
   </label>
 );
 
 export const AdminSelect = ({
   label,
-  helper,
   className,
   children,
   ...rest
@@ -53,6 +49,5 @@ export const AdminSelect = ({
     <select className="auth-input" {...rest}>
       {children}
     </select>
-    {helper ? <small className="admin-field__helper">{helper}</small> : null}
   </label>
 );

@@ -16,17 +16,17 @@ import { DEFAULT_ADMIN_PAGE_SIZE } from '../adminCrudUtils';
 import { AdminEntityDialog } from '../forms/AdminEntityDialog';
 import { AdminUserEditForm } from '../forms/AdminUserEditForm';
 import {
+  type AdminUserGenderFilter,
   formatUserGender,
   formatUserRole,
   formatUserStatus,
-  type AdminUserRoleFilter,
 } from './adminUserUtils';
 import { useAdminUsers } from './useAdminUsers';
 import './AdminUsers.css';
 
 type AdminUserManagementTabProps = {
   collectionLabel: string;
-  defaultRole: AdminUserRoleFilter;
+  defaultRole: 'ADMIN' | 'CUSTOMER';
   emptyMessage: string;
   entityLabel: string;
 };
@@ -83,18 +83,18 @@ export const AdminUserManagementTab = ({
           placeholder="ФИО, Email, телефон"
         />
         <AdminSelect
-          label="Роль"
-          value={filters.role}
+          label="Пол"
+          value={filters.gender}
           onChange={(event) =>
             setFilters((current) => ({
               ...current,
-              role: event.target.value as AdminUserRoleFilter,
+              gender: event.target.value as AdminUserGenderFilter,
             }))
           }
         >
-          <option value="ALL">Все роли</option>
-          <option value="CUSTOMER">Покупатели</option>
-          <option value="ADMIN">Администраторы</option>
+          <option value="ALL">Любой</option>
+          <option value="M">Мужской</option>
+          <option value="F">Женский</option>
         </AdminSelect>
         <AdminSelect
           label="Статус"
@@ -212,30 +212,10 @@ export const AdminUserManagementTab = ({
             ? `Редактировать ${entityLabel}`
             : `Создать ${entityLabel}`
         }
-        description={
-          dialogMode === 'edit'
-            ? 'Email и passwordHash не редактируются через админку. Здесь доступны только безопасные профильные поля и lifecycle-флаг.'
-            : 'Откроется тот же профильный сценарий, но с пустыми полями. Новый пользователь сразу появится в общем user-domain и станет доступен в соответствующей вкладке.'
-        }
         submitLabel={dialogMode === 'edit' ? 'Сохранить изменения' : 'Создать'}
         onClose={closeDialog}
         onSubmit={() => void handleSave()}
         submitLoading={saving}
-        footerStart={
-          dialogMode === 'create' ? (
-            <span className="admin-users-dialog__note">
-              Email используется как логин, пароль задаётся один раз при создании.
-            </span>
-          ) : isEditingSelf ? (
-            <span className="admin-users-dialog__note">
-              Текущий администратор не может менять свою роль или деактивировать себя.
-            </span>
-          ) : (
-            <span className="admin-users-dialog__note">
-              Из админки редактируются только безопасные профильные поля и lifecycle-флаг.
-            </span>
-          )
-        }
       >
         <AdminUserEditForm
           mode={dialogMode === 'edit' ? 'edit' : 'create'}

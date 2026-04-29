@@ -169,11 +169,6 @@ export const AdminTeamManagementTab = () => {
             ? 'Редактировать рабочую группу'
             : 'Новая рабочая группа'
         }
-        description={
-          dialogMode === 'edit'
-            ? 'Меняется только существующая Team-сущность: имя и статус активности.'
-            : 'Новая группа сразу создаётся активной и становится доступной для назначения заказов.'
-        }
         submitLabel={dialogMode === 'edit' ? 'Сохранить изменения' : 'Создать группу'}
         onClose={closeDialog}
         onSubmit={() => void handleSave()}

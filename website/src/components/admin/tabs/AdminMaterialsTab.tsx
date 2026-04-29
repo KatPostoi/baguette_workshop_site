@@ -44,13 +44,11 @@ type DialogMode = 'create' | 'edit' | null;
 type MaterialFilterState = {
   id: string;
   title: string;
-  pricePerCm: string;
 };
 
 const createMaterialFilters = (): MaterialFilterState => ({
   id: '',
   title: '',
-  pricePerCm: '',
 });
 
 const createEmptyDraft = (): MaterialDraft => ({
@@ -144,22 +142,13 @@ export const AdminMaterialsTab = () => {
     () => buildAdminSelectOptions(materials, (material) => material.title),
     [materials],
   );
-  const priceOptions = useMemo(
-    () =>
-      buildAdminSelectOptions(materials, (material) => material.pricePerCm),
-    [materials],
-  );
 
   const filteredMaterials = useMemo(
     () =>
       materials.filter(
         (material) =>
           matchesAdminSearch(appliedFilters.id, material.id) &&
-          matchesAdminSelectValue(appliedFilters.title, material.title) &&
-          matchesAdminSelectValue(
-            appliedFilters.pricePerCm,
-            material.pricePerCm,
-          ),
+          matchesAdminSelectValue(appliedFilters.title, material.title),
       ),
     [appliedFilters, materials],
   );
@@ -334,23 +323,6 @@ export const AdminMaterialsTab = () => {
             </option>
           ))}
         </AdminSelect>
-        <AdminSelect
-          label="Цена за см"
-          value={filters.pricePerCm}
-          onChange={(event) =>
-            setFilters((current) => ({
-              ...current,
-              pricePerCm: event.target.value,
-            }))
-          }
-        >
-          <option value="">Все цены</option>
-          {priceOptions.map((option) => (
-            <option key={option} value={option}>
-              {option}
-            </option>
-          ))}
-        </AdminSelect>
       </AdminFilterPanel>
 
       <AdminListBlock
@@ -412,23 +384,11 @@ export const AdminMaterialsTab = () => {
       <AdminEntityDialog
         isOpen={dialogMode !== null}
         title={dialogMode === 'edit' ? 'Редактировать материал' : 'Новый материал'}
-        description={
-          dialogMode === 'edit'
-            ? 'ID материала генерируется базой данных и остаётся неизменяемым.'
-            : 'Новый материал сразу попадёт в справочник после сохранения.'
-        }
         submitLabel={dialogMode === 'edit' ? 'Сохранить изменения' : 'Создать материал'}
         onClose={closeDialog}
         onSubmit={() => void handleSave()}
         submitLoading={saving}
       >
-        {dialogMode === 'edit' && draft.id ? (
-          <div className="admin-dialog__meta">
-            <span className="admin-dialog__meta-label">ID материала</span>
-            <span className="admin-dialog__meta-value">{draft.id}</span>
-          </div>
-        ) : null}
-
         <div className="admin-dialog__form-grid">
           <AdminInput label="Название" value={draft.title} onChange={onDraftInput('title')} />
           <AdminInput label="Материал" value={draft.material} onChange={onDraftInput('material')} />

@@ -22,7 +22,10 @@ export type AdminTeamInput = {
   active?: boolean;
 };
 
-export type AdminTeamSearchParams = Pick<AdminTeamQuery, 'search' | 'active'>;
+export type AdminTeamSearchParams = Pick<
+  AdminTeamQuery,
+  'search' | 'active' | 'includeInactive'
+>;
 
 export const adminCreateTeam = async (input: AdminTeamInput): Promise<Team> =>
   httpClient.post<Team>('/admin/teams', {

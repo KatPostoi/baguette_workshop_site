@@ -274,6 +274,10 @@ export class UsersService {
       where.role = filters.role;
     }
 
+    if (filters.gender) {
+      where.gender = filters.gender;
+    }
+
     if (filters.isActive !== undefined) {
       where.isActive = filters.isActive;
     }

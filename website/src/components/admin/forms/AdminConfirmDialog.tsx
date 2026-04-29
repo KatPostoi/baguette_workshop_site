@@ -8,7 +8,6 @@ type AdminConfirmDialogProps = {
   title: ReactNode;
   description: ReactNode;
   confirmLabel?: ReactNode;
-  cancelLabel?: ReactNode;
   loading?: boolean;
   onConfirm: () => void;
   onCancel: () => void;
@@ -19,7 +18,6 @@ export const AdminConfirmDialog = ({
   title,
   description,
   confirmLabel = 'Удалить',
-  cancelLabel = 'Отмена',
   loading = false,
   onConfirm,
   onCancel,
@@ -40,15 +38,11 @@ export const AdminConfirmDialog = ({
     </div>
 
     <div className="admin-dialog__body">
-      <p className="admin-dialog__description">{description}</p>
+      <p className="admin-dialog__text">{description}</p>
     </div>
 
-    <div className="admin-dialog__footer">
-      <span />
+    <div className="admin-dialog__footer admin-dialog__footer_single">
       <div className="admin-dialog__footer-actions">
-        <Button variant="secondary" onClick={onCancel} disabled={loading}>
-          {cancelLabel}
-        </Button>
         <Button
           className="admin-dialog__danger-button"
           onClick={onConfirm}

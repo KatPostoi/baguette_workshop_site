@@ -68,13 +68,6 @@ export const AdminOrderEditForm = ({
 
   return (
     <>
-      {draft.id ? (
-        <div className="admin-dialog__meta">
-          <span className="admin-dialog__meta-label">UUID заказа</span>
-          <span className="admin-dialog__meta-value">{draft.id}</span>
-        </div>
-      ) : null}
-
       <div className="admin-dialog__form-grid">
         <AdminInput
           label="ФИО клиента"
@@ -186,11 +179,9 @@ export const AdminOrderEditForm = ({
         <div className="admin-dialog__stack">
           <span className="admin-dialog__section-title">Позиции заказа</span>
           {draft.items.map((item, index) => (
-            <div key={item.key} className="admin-dialog__meta">
-              <span className="admin-dialog__meta-label">
-                Позиция #{index + 1}
-              </span>
-              <span className="admin-dialog__meta-value">
+            <div key={item.key} className="admin-dialog__summary-row">
+              <span className="admin-dialog__summary-label">Позиция #{index + 1}</span>
+              <span className="admin-dialog__summary-value">
                 {item.title} × {item.quantity}
               </span>
             </div>

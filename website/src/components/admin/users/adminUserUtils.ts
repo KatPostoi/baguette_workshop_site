@@ -3,19 +3,17 @@ import type { UserProfile, UserRole } from '../../../api/types';
 import type { AdminUserDraft } from '../forms/AdminUserEditForm';
 
 export type AdminUserActivityFilter = 'active' | 'inactive' | 'all';
-export type AdminUserRoleFilter = UserRole | 'ALL';
+export type AdminUserGenderFilter = 'ALL' | 'M' | 'F';
 
 export type AdminUserFilterState = {
   search: string;
-  role: AdminUserRoleFilter;
+  gender: AdminUserGenderFilter;
   activity: AdminUserActivityFilter;
 };
 
-export const createAdminUserFilters = (
-  role: AdminUserRoleFilter = 'ALL',
-): AdminUserFilterState => ({
+export const createAdminUserFilters = (): AdminUserFilterState => ({
   search: '',
-  role,
+  gender: 'ALL',
   activity: 'active',
 });
 
@@ -45,9 +43,11 @@ export const mapUserToDraft = (user: UserProfile): AdminUserDraft => ({
 
 export const buildAdminUserQuery = (
   filters: AdminUserFilterState,
+  role?: UserRole,
 ): AdminUserSearchParams => ({
   search: filters.search.trim() || undefined,
-  role: filters.role === 'ALL' ? undefined : filters.role,
+  role,
+  gender: filters.gender === 'ALL' ? undefined : filters.gender,
   isActive:
     filters.activity === 'all'
       ? undefined

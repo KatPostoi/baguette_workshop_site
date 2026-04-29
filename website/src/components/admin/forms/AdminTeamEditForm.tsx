@@ -20,38 +20,23 @@ export const AdminTeamEditForm = ({
   mode,
   onChange,
 }: AdminTeamEditFormProps) => (
-  <>
-    {draft.id ? (
-      <div className="admin-dialog__meta">
-        <span className="admin-dialog__meta-label">UUID</span>
-        <span className="admin-dialog__meta-value">{draft.id}</span>
-      </div>
+  <div className="admin-dialog__form-grid">
+    <AdminInput
+      label="Название группы"
+      value={draft.name}
+      onChange={(event) => onChange('name', event.target.value)}
+      placeholder="Например, Цех №1"
+    />
+
+    {mode === 'edit' ? (
+      <AdminSelect
+        label="Статус"
+        value={draft.active ? 'active' : 'inactive'}
+        onChange={(event) => onChange('active', event.target.value === 'active')}
+      >
+        <option value="active">Активна</option>
+        <option value="inactive">Неактивна</option>
+      </AdminSelect>
     ) : null}
-
-    <div className="admin-dialog__form-grid">
-      <AdminInput
-        label="Название группы"
-        value={draft.name}
-        onChange={(event) => onChange('name', event.target.value)}
-        placeholder="Например, Цех №1"
-      />
-
-      {mode === 'edit' ? (
-        <AdminSelect
-          label="Статус"
-          value={draft.active ? 'active' : 'inactive'}
-          onChange={(event) => onChange('active', event.target.value === 'active')}
-        >
-          <option value="active">Активна</option>
-          <option value="inactive">Неактивна</option>
-        </AdminSelect>
-      ) : null}
-    </div>
-
-    {mode === 'create' ? (
-      <p className="admin-teams-dialog__note">
-        Новая рабочая группа создаётся активной и сразу доступна для назначения заказов.
-      </p>
-    ) : null}
-  </>
+  </div>
 );

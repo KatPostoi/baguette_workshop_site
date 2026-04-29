@@ -400,11 +400,6 @@ export const AdminDashboardPage = () => {
         title={
           dialogMode === 'edit' ? 'Редактировать заказ' : 'Создать заказ'
         }
-        description={
-          dialogMode === 'edit'
-            ? 'Редактируются контактные данные, доставка, статус и назначенная команда.'
-            : 'Новый заказ создаётся из выбранных позиций каталога и сразу появляется в общем списке.'
-        }
         submitLabel={dialogMode === 'edit' ? 'Сохранить заказ' : 'Создать заказ'}
         onClose={closeDialog}
         onSubmit={() => void handleSave()}

@@ -35,13 +35,11 @@ type DialogMode = 'create' | 'edit' | null;
 type StyleFilterState = {
   id: string;
   name: string;
-  coefficient: string;
 };
 
 const createStyleFilters = (): StyleFilterState => ({
   id: '',
   name: '',
-  coefficient: '',
 });
 
 const createEmptyDraft = (): StyleDraft => ({
@@ -104,21 +102,13 @@ export const AdminStylesTab = () => {
     () => buildAdminSelectOptions(styles, (style) => style.name),
     [styles],
   );
-  const coefficientOptions = useMemo(
-    () => buildAdminSelectOptions(styles, (style) => style.coefficient),
-    [styles],
-  );
 
   const filteredStyles = useMemo(
     () =>
       styles.filter(
         (style) =>
           matchesAdminSearch(appliedFilters.id, style.id) &&
-          matchesAdminSelectValue(appliedFilters.name, style.name) &&
-          matchesAdminSelectValue(
-            appliedFilters.coefficient,
-            style.coefficient,
-          ),
+          matchesAdminSelectValue(appliedFilters.name, style.name),
       ),
     [appliedFilters, styles],
   );
@@ -301,23 +291,6 @@ export const AdminStylesTab = () => {
             </option>
           ))}
         </AdminSelect>
-        <AdminSelect
-          label="Коэф."
-          value={filters.coefficient}
-          onChange={(event) =>
-            setFilters((current) => ({
-              ...current,
-              coefficient: event.target.value,
-            }))
-          }
-        >
-          <option value="">Все коэффициенты</option>
-          {coefficientOptions.map((option) => (
-            <option key={option} value={option}>
-              {option}
-            </option>
-          ))}
-        </AdminSelect>
       </AdminFilterPanel>
 
       <AdminListBlock
@@ -379,30 +352,17 @@ export const AdminStylesTab = () => {
       <AdminEntityDialog
         isOpen={dialogMode !== null}
         title={dialogMode === 'edit' ? 'Редактировать стиль' : 'Новый стиль'}
-        description={
-          dialogMode === 'edit'
-            ? 'String ID используется как первичный ключ и в режиме редактирования не меняется.'
-            : 'Укажите устойчивый string ID, например baroque или minimalism.'
-        }
         submitLabel={dialogMode === 'edit' ? 'Сохранить изменения' : 'Создать стиль'}
         onClose={closeDialog}
         onSubmit={() => void handleSave()}
         submitLoading={saving}
       >
-        {dialogMode === 'edit' ? (
-          <div className="admin-dialog__meta">
-            <span className="admin-dialog__meta-label">String ID</span>
-            <span className="admin-dialog__meta-value">{draft.id}</span>
-          </div>
-        ) : null}
-
         <div className="admin-dialog__form-grid">
           {dialogMode === 'create' ? (
             <AdminInput
               label="Строковый ID"
               value={draft.id}
               onChange={onDraftInput('id')}
-              helper="Используется как ключ в базе данных и API."
             />
           ) : null}
           <AdminInput label="Название" value={draft.name} onChange={onDraftInput('name')} />

@@ -62,11 +62,6 @@
   color: #8b2727;
 }
 
-.admin-users-dialog__note {
-  font-size: 13px;
-  line-height: 1.4;
-}
-
 @media (max-width: 1100px) {
   .admin-users-table .admin-table__head,
   .admin-users-table .admin-table__row {

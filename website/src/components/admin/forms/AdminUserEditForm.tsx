@@ -51,13 +51,11 @@ export const AdminUserEditForm = ({
             value={draft.password}
             onChange={(event) => onChange('password', event.target.value)}
             placeholder="Минимум 6 символов"
-            helper="Пароль сразу хэшируется на backend и не хранится в открытом виде."
           />
         </div>
       ) : (
-        <div className="admin-dialog__meta">
-          <span className="admin-dialog__meta-label">Email</span>
-          <span className="admin-dialog__meta-value">{draft.email}</span>
+        <div className="admin-dialog__form-grid">
+          <AdminInput label="Email" type="email" value={draft.email} readOnly />
         </div>
       )}
 
@@ -72,24 +70,21 @@ export const AdminUserEditForm = ({
           value={draft.phone}
           onChange={(event) => onChange('phone', event.target.value)}
           placeholder="+7..."
-          helper="Можно очистить поле, оставив его пустым."
         />
-        <AdminInput
+        <AdminSelect
           label="Пол"
           value={draft.gender}
           onChange={(event) => onChange('gender', event.target.value)}
-          placeholder="M / F / другое значение"
-        />
+        >
+          <option value="">Не указан</option>
+          <option value="M">Мужской</option>
+          <option value="F">Женский</option>
+        </AdminSelect>
         <AdminSelect
           label="Роль"
           value={draft.role}
           onChange={(event) => onChange('role', event.target.value as UserRole)}
           disabled={roleDisabled}
-          helper={
-            roleDisabled
-              ? 'Текущий администратор не может разжаловать себя через админку.'
-              : 'Users и Admins остаются одной сущностью User, меняется только role.'
-          }
         >
           <option value="CUSTOMER">Покупатель</option>
           <option value="ADMIN">Администратор</option>
@@ -99,11 +94,6 @@ export const AdminUserEditForm = ({
           value={draft.isActive ? 'active' : 'inactive'}
           onChange={(event) => onChange('isActive', event.target.value === 'active')}
           disabled={activityDisabled}
-          helper={
-            activityDisabled
-              ? 'Текущий администратор не может деактивировать себя через админку.'
-              : 'Удаление в UI означает soft deactivate, а не hard delete.'
-          }
         >
           <option value="active">Активен</option>
           <option value="inactive">Неактивен</option>

@@ -11,7 +11,7 @@ export type AdminTeamFilterState = {
 
 export const createAdminTeamFilters = (): AdminTeamFilterState => ({
   search: '',
-  activity: 'active',
+  activity: 'all',
 });
 
 export const buildAdminTeamQuery = (
@@ -22,7 +22,7 @@ export const buildAdminTeamQuery = (
   return {
     ...(search ? { search } : {}),
     ...(filters.activity === 'all'
-      ? {}
+      ? { includeInactive: true }
       : { active: filters.activity === 'active' }),
   };
 };

@@ -20,25 +20,24 @@ import {
   createAdminUserFilters,
   mapUserToDraft,
   type AdminUserFilterState,
-  type AdminUserRoleFilter,
   validateAdminUserDraft,
 } from './adminUserUtils';
 
-export const useAdminUsers = (initialRole: AdminUserRoleFilter) => {
+export const useAdminUsers = (initialRole: 'ADMIN' | 'CUSTOMER') => {
   const { addToast } = useToast();
   const [users, setUsers] = useState<UserProfile[]>([]);
-  const [filters, setFilters] = useState<AdminUserFilterState>(() =>
-    createAdminUserFilters(initialRole),
+  const [filters, setFilters] = useState<AdminUserFilterState>(
+    createAdminUserFilters,
   );
-  const [appliedFilters, setAppliedFilters] = useState<AdminUserFilterState>(() =>
-    createAdminUserFilters(initialRole),
+  const [appliedFilters, setAppliedFilters] = useState<AdminUserFilterState>(
+    createAdminUserFilters,
   );
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [dialogMode, setDialogMode] = useState<AdminUserDialogMode | null>(null);
   const [draft, setDraft] = useState<AdminUserDraft>(
-    createEmptyAdminUserDraft(initialRole === 'ADMIN' ? 'ADMIN' : 'CUSTOMER'),
+    createEmptyAdminUserDraft(initialRole),
   );
   const [saving, setSaving] = useState(false);
 
@@ -48,7 +47,7 @@ export const useAdminUsers = (initialRole: AdminUserRoleFilter) => {
       setError(null);
 
       try {
-        setUsers(await adminListUsers(buildAdminUserQuery(nextFilters)));
+        setUsers(await adminListUsers(buildAdminUserQuery(nextFilters, initialRole)));
       } catch (loadError) {
         console.error(loadError);
         setError(
@@ -58,7 +57,7 @@ export const useAdminUsers = (initialRole: AdminUserRoleFilter) => {
         setLoading(false);
       }
     },
-    [appliedFilters],
+    [appliedFilters, initialRole],
   );
 
   useEffect(() => {
@@ -91,19 +90,13 @@ export const useAdminUsers = (initialRole: AdminUserRoleFilter) => {
   };
 
   const resetFilters = () => {
-    const nextFilters = createAdminUserFilters(initialRole);
+    const nextFilters = createAdminUserFilters();
     setFilters(nextFilters);
     setAppliedFilters(nextFilters);
     setPage(1);
   };
 
-  const resolveCreateRole = () => {
-    if (filters.role === 'ADMIN' || filters.role === 'CUSTOMER') {
-      return filters.role;
-    }
-
-    return initialRole === 'ADMIN' ? 'ADMIN' : 'CUSTOMER';
-  };
+  const resolveCreateRole = () => initialRole;
 
   const openCreateDialog = () => {
     setDraft(createEmptyAdminUserDraft(resolveCreateRole()));
@@ -170,7 +163,7 @@ export const useAdminUsers = (initialRole: AdminUserRoleFilter) => {
       setDraft(createEmptyAdminUserDraft(resolveCreateRole()));
       addToast({
         type: 'success',
-      message:
+        message:
           dialogMode === 'edit'
             ? 'Профиль пользователя обновлён.'
             : 'Пользователь создан.',
