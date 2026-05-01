@@ -14,7 +14,10 @@ type BaseProps = {
 };
 
 type InputProps = BaseProps &
-  Omit<InputHTMLAttributes<HTMLInputElement>, 'className' | 'children' | 'type'> & {
+  Omit<
+    InputHTMLAttributes<HTMLInputElement>,
+    'className' | 'children' | 'type'
+  > & {
     type?: string;
   };
 
@@ -24,7 +27,12 @@ type TextareaProps = BaseProps &
 type SelectProps = BaseProps &
   Omit<SelectHTMLAttributes<HTMLSelectElement>, 'className' | 'children'>;
 
-export const AdminInput = ({ label, className, type = 'text', ...rest }: InputProps) => (
+export const AdminInput = ({
+  label,
+  className,
+  type = 'text',
+  ...rest
+}: InputProps) => (
   <label className={classNames('admin-field', className)}>
     <span className="admin-field__label">{label}</span>
     <input className="auth-input" type={type} {...rest} />
