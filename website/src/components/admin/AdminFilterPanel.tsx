@@ -17,6 +17,8 @@ export const AdminFilterPanel = ({
   <section className={classNames('admin-filter-panel', className)}>
     <h2 className="admin-filter-panel__title">{title}</h2>
     <div className="admin-filter-panel__grid">{children}</div>
-    {actions ? <div className="admin-filter-panel__actions">{actions}</div> : null}
+    {actions ? (
+      <div className="admin-filter-panel__actions">{actions}</div>
+    ) : null}
   </section>
 );
